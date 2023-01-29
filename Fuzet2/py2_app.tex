@@ -1,0 +1,610 @@
+\appendix
+\section{A {\tt doctest} keretrendszer}
+\index{doctest}
+
+Ez a tesztel\'esi k\"ornyezet els\H{o}sorban olyankor rendk\'{\i}v\"ul hasznos, ha a teszteket maga a 
+k\'odot \'{\i}r\'o programoz\'o hat\'arozza meg. Emelett olyan esetekben is nagy seg\'{\i}ts\'eg, ha a 
+modul fejleszt\'ese k\"ozben szeretn\'enk m\'ar teszteket futtatni, m\'eg akkor is, ha tudjuk, hogy vannak 
+a k\'odban hib\'ak. Els\H{o} k\"ozel\'{\i}t\'esben sokan azt gondolj\'ak, hogy ezzel nem lehet bonyolultabb 
+dolgokat ellen\H{o}rizni, de ez szerencs\'ere nincsen \'{\i}gy. Majd a k\'es\H{o}bbiekben m\'elyebbre fogunk 
+\'asni. Gondoljuk, hogy mindenkinek a c\'{\i}m alapj\'an vil\'agos, hogy ezeket a teszteket a f\"uggv\'enyek 
+(met\'odusok), illetve szkriptek  dokument\'acis\'os stringj\'ebe kell \'{\i}rni, majd valamilyen m\'odon 
+r\'avenni a Python-t, futtassa is azokat le. L\'assunk erre egy egyszer\H{u} p\'eld\'at az el\H{o}z\H{o} 
+f\"uzetk\'enk egyik f\"ggv\'eny\'evel:
+
+TODO   teszt 
+
+\begin{Verbatim}[fontsize=\small]
+# testmod.py
+
+"""
+Teszt futtatas:
+>>> paros(4)
+'I'
+>>> paros(9)
+'N'
+"""
+
+def paros(n):
+   """   Ez is teszt
+   >>> paros(346)
+   'I'
+   """
+   maradek = n % 2
+
+   if maradek == 0:
+      ki = 'I'
+   else:
+      ki = 'N'
+
+   return(ki)
+
+if __name__ == "__main__":
+   import doctest
+   doctest.testmod()
+
+\end{Verbatim}
+
+\noindent Miel\H{o}tt v\'egrehajtan\'ank a k\'odot, n\'ezz\"uk meg egy kiss\'e alaposabban is. A be\'{\i}rt 
+teszt utas\'{\i}t\'asok pontosan \'ugy n\'eznek ki, mintha egy p\'arbesz\'edes parancsm\'od\'u ablakba \'{\i}rtuk 
+volna be. Pontosan ez ennek a m\'odszernek a l\'enyege. Az is l\'atszik, hogy a kipr\'ob\'aland\'o eseteket 
+be\'{\i}rhatjuk a f\"uggv\'eny defin\'{\i}ci\'oj\'aba, de mag\'aba a szkriptbe is. Az import\'alt {\tt dosctest} 
+modul lefuttatja nek\"unk mindet. A szkript v\'eg\'en a m\'ar ismert el\'agaz\'ast l\'atjuk, amely lehet\H{o}v\'e 
+teszi a kor\'abbiak alapj\'an a modul egy r\'esz\'enek f\H{o}programszer\H{u} v\'egrehajt\'as\'at. Alaposabban 
+megn\'ezve a k\'odot l\'atjuk, hogy teljesen mindegy, hogy a tesztel\H{o} kommentett (megjegyz\'est) a 
+k\'erd\'eses f\"uggv\'enyhez, vagy pedig egyszer\H{u}en a szkriptbe \'{\i}rjuk be.
+
+A fenti szlriptet p\'arbesz\'edes ablakban a:
+
+\begin{Verbatim}[fontsize=\small]
+python testmod.py
+\end{Verbatim}
+
+\noindent parancs seg\'{\i}ts\'eg\'evel, akkor meglep\H{o} m\'odon semmit sem fogunk l\'atni. Ez igaz\'ab\'ol 
+azt jelenti, hpgy minden teszt sikeresen lefutott. R\'a tudjuk venni a Pythont, hogy b\H{o}vebb inform\'aci\'oval 
+l\'asson el minket:
+
+\begin{Verbatim}[fontsize=\small]
+python testmod.py -v
+\end{Verbatim}
+
+\noindent Itt a {\tt -v} kapcsol\'o r\'eszletes kimenetet \'all\'{\i}tja be. A futtat\'as sor\'an valami hasonl\'o 
+\"uzeneteket kapunk:
+
+\begin{Verbatim}[fontsize=\small]
+Trying:
+    paros(4)
+Expecting:
+    'I'
+ok
+Trying:
+    paros(9)
+Expecting:
+    'N'
+ok
+Trying:
+    paros(346)
+Expecting:
+    'I'
+ok
+2 items passed all tests:
+   2 tests in __main__
+   1 tests in __main__.paros
+3 tests in 2 items.
+3 passed and 0 failed.
+Test passed.
+\end{Verbatim}
+
+Mi t\"ort\'enik akkor, ha valamelyik teszt eset sikertelen, ennek megvizsg\'al\'as\'ara "rontsuk el" a 
+fenti szkript\"unket:
+
+\begin{Verbatim}[fontsize=\small]
+# testmod_2.py
+
+"""
+Teszt futtatas:
+>>> paros(4)
+'I'
+>>> paros(9)
+'N'
+"""
+
+def paros(n):
+   """   Ez is teszt
+   >>> paros(346)
+   'I'
+   """
+   maradek = n % 2
+
+   if maradek == 0:
+      ki = 'I'
+   else:
+      ki = 'N'
+
+   return(ki)
+
+if __name__ == "__main__":
+   import doctest
+   doctest.testmod()
+
+\end{Verbatim}
+
+\noindent A futtat\'as sor\'an most a kimenetben l\'atjuk, hogy az egyik teszt eset sikertelen\"ul futott, 
+b\'ar nem kaptunk kiv\'etelt. A f\"uggv\'eny ismeret\'eben tdjuk, hogy ez az elv\'art kimenet nem is lehet 
+helyes.
+
+TODO -v be volt kaplcsova??
+
+\begin{Verbatim}[fontsize=\small]
+****************************************************************
+File "testmod2.py", line 7, in __main__
+Failed example:
+    paros(9)
+Expected:
+    ')'
+Got:
+    'N'
+****************************************************************
+1 items had failures:
+   1 of   2 in __main__
+***Test Failed*** 1 failures.
+\end{Verbatim}
+
+A bemutatott p\'elda egyszer\H{u}, annyira, hogy csak p\'eldak\'ent \'erdemes haszn\'alni. Enn\'eel szerencs\'ere 
+bonyolultabb esetekben is j\'ol alkalmazhat\'o, egy modulban ak\'ar az \"osszes f\"uggv\'eny is letesztelhet\H{o} 
+ezzel a m\'odszerrel. L\'assunk erre is p\'eld\'et:
+
+\begin{Verbatim}[fontsize=\small]
+# testmod_a.py
+
+"""
+Teszt futtatas:
+>>> paros(4)
+'I'
+>>> paros(9)
+'N'
+
+"""
+
+def paros(n):
+   maradek = n % 2
+
+   if maradek == 0:
+      ki = 'I'
+   else:
+      ki = 'N'
+
+   return(ki)
+
+def felez(adat):
+    """
+    Teszt futtatas 2:
+    >>> felez(4)
+    2
+    >>> felez(9)
+    -1
+    >>> felez(14)
+    7
+    """    
+    res = -1
+    ts = paros(adat)
+    if ts == 'I':
+        res = adat // 2
+    return(res)
+
+if __name__ == "__main__":
+   import doctest
+   doctest.testmod()
+\end{Verbatim}
+
+\noindent A fent p\'eld\'aban l\'athat\'o, hogy a m\'asodik f\"uggv\'eny tesztel\'es\'et a {\tt felez} 
+f\"uggb\'eny dokument\'aci\'os stringj\'ebe kellett \'rnunk, mert egy modulban a teszt eseteket csak 
+egyetlen helyre tehetj\"uk be. (Lehet\H{o}s\'eg lett volna az \"osszese esetet egyetlen dokstringbe 
+\"osszeszedni, de szerint\"unk az rontan\'a a k\'od olvashat\'os\'ag\'at.) A futt\'as sor\'an a m\'ar 
+ismert m\'odon bekapcsolva a r\'eszletes kimenetet ay al'bbi eredm\'eny kapjuk:
+
+\begin{Verbatim}[fontsize=\small]
+Trying:
+    paros(4)
+Expecting:
+    'I'
+ok
+Trying:
+    paros(9)
+Expecting:
+    'N'
+ok
+Trying:
+    felez(4)
+Expecting:
+    2
+ok
+Trying:
+    felez(9)
+Expecting:
+    -1
+ok
+Trying:
+    felez(14)
+Expecting:
+    7
+ok
+1 items had no tests:
+    __main__.paros
+2 items passed all tests:
+   2 tests in __main__
+   3 tests in __main__.felez
+5 tests in 3 items.
+5 passed and 0 failed.
+Test passed.
+\end{Verbatim}
+
+Az ocas\'okban felmer\"ulhet term\'eszetesen az a k\'erd\'es, hogy mit tehet\"unk akkor, 
+ha a modul oszt\'alyokat tartalmaz:
+
+TODO
+
+\begin{Verbatim}[fontsize=\small]
+# testmod_3.py
+
+class Pont:
+    def __init__(self, pX=0.0, pY = 0.0):
+        self.x = pX
+        self.y = pY
+
+    def getX(self):
+        return(self.x)
+
+    def getY(self):
+        return(self.y)
+
+    def Mozgat(self, dX, dY):
+        self.x += dX
+        self.y += dY
+
+"""
+>>> ak = Pont(1,2)
+>>> int(sk.getX())
+1
+"""
+
+if __name__ == "__main__":
+   import doctest
+   doctest.testmod()
+
+\end{Verbatim}
+
+\noindent Megpr\'ob\'alva a k\'odot a szok\'as szerint v\'egrehajtani sajnos nem j\'arunk sikerrel. Ez 
+l\'atszik az kimeneten:
+
+\begin{Verbatim}[fontsize=\small]
+python testmod3.py -v
+6 items had no tests:
+    __main__
+    __main__.Pont
+    __main__.Pont.Mozgat
+    __main__.Pont.__init__
+    __main__.Pont.getX
+    __main__.Pont.getY
+0 tests in 6 items.
+0 passed and 0 failed.
+Test passed.
+\end{Verbatim}
+
+\noindent Ezek szerint levonhatjuk a k\"ovetkeztet\'est, hogy az ilyen esetekben a tesztel\'es 
+automatiz\'al\'as\'ara ez a keretrendszer nem haszn\'alhat\'o.
+
+-- Kieg\'esz\'{\i}t\'es????
+
+\section{A v\'egrehajt\'asi id\H{o} \'es hat\'ekonys\'ag m\'er\'ese}
+
+Sokszor fordul el\H{o}, hogy sz\"uks\'eg\"unk lenne arra, hogy meg tudjuk mondani egy Python szkript 
+fut\'as\'ahos sz\"uks\'eges id\H{o}t. A hagyom\'anyos programoz\'oi megk\"ozel\'{\i}t\'es szerint 
+ugyanis a k\'od hat\'ekonys\'aga is min\H{o}s\'egi k\'erd\'es. Ez jelenleg ugyanakkor nem olyan 
+egyszer\H{u}, sok m\'as nyelvvel ellent\'etben nem k\"ozvetlen\"ul g\'epi k\'odra ford\'{\i}tva 
+fut a program. Formai ellen\H{o}rz\'es ut\'an a futtat\'o rendszer gyakorlatilag soronk\'ent 
+\'ertelmezi a k\'odot, \'es ez mindenk\'eppen lass\'u. Ez azt is jelenti, hogy a t\'enyleges 
+fu\'asid\H{o} sok mindent\H{o}l f\"ugg, \'es csak r\'eszben att\'ol, hogy mik\'ent lett meg\'{\i}rva 
+a program. A tapasztalatok szerint, b\'ar a Python nagyon k\"onnyen haszn\'alhat\'o programoz\'asi 
+nyelv, \'es gyorsan is lehet benne fejleszteni, a futtat\'asa el\'egg\'e sok mem\'ori\'at  \'es 
+egy\'eb g\'epi er\H{o}forr\'ast ig\'enyel.
+
+Az igazi neh\'ezs\'eg, hogy a fut\'asid\H{o} b\'armilyen m\'er\'ese maga is ig\'enyel 
+er\H{o}for\-r\'asokat, ez\'ert lass\'{\i}tja a fut\'ast. \'Eppen ez\'ert csak a fejleszt\'es 
+\'es a tesztel\'es idej\'en javasolhatjuk, a m\'ar k\'esz, \'eles k\"ornyezetben hazn\'alter 
+szkript eset\'eben m\'ar nem. \'Atgondoltan alkalmazva t\'enyleg seg\'{\i}ts\'eg\"unkre lehet 
+abban, hogy megtal\'aljuk a leglassabb r\'eszleteket. 
+
+\subsection{Egyszer\H{u} m\'odszer}
+
+Az t\H{u}nik a legk\'ezenfekv\H{o}bb megold\'asnak, ha a program bizonyos pontjain kiiratjuk a 
+(m\'asodpercre) a pontos id\H{o}t. Ad\'odik, hogy a gyan\'us f\"uggv\'enyek megh\'{\i}v\'asa 
+el\H{o}tt, \'es ut\'an, valamint a becsl\'as\"unk szerint hosszab ciklusok el\H{o}t t\'es ut\'an. 
+Erre a f\'ajlokkal kapcsolatos m\H{u}veletek eset\'en is sz\"uks\'eg lehet, mert azok nem csak 
+a k\'odt\'ol f\"uggenek. Term\'eszetesen nem mell\H{o}zhetjk\"uk mindezt a szkrpt ind\'{\i}t\'asa 
+\'es le\'all\'asa eset\'en. 
+
+A helyzet az\'ert nem annyira neh\'ez, hiszen kor\'abban m\'ar foglalkoztunk a napl\'oz\'as 
+k\'erd\'es\'evel. Ak\'ar mi \'{\i}rjuk meg, ak\'ar a Python saj\'at {\tt logging} modulj\'at 
+alkalmazzuk, a m\'asodpercre pontos id\H{o}adat mindenk\'eppen beleker\"ul a logba. Ez a 
+m\'odszer eg\'esz szkriptek, vagy nagyobb k\'odr\'eszletek eset\'en is alkalmazhat\'o, a 
+pontoss\'aga azonban r\"ovidebb v\'egrehajt\'as eset\'en nem kiel\'eg\'{\i}t\H{o}. Ennek 
+ellen\'ere kiindult\'ask\'ent j\'ol haszn\'alhat\'o adatokat kapunk.
+
+\subsection{Profiler haszn\'alata}
+
+Az el\H{o}z\H{o} alfejezetben bemutatott m\'odszer lehet\H{o}v\'e teszi, hogy nagyj\'ab\'ol 
+meghat\'arozzuk a v\'egrehajt\'asui id\H{o} szempontj\'ab\'ol leg k\'enyesebb r\'eszeket. A 
+tov\'abbi vizsg\'al\'od\'ashoz viszont m\'ar m\'as, pontosabb megold\'ast kell haszn\'alnunk. 
+
+\section{Vegyesk\"oret, avagy szerte\'agaz\'o gondolatok a programoz\'asr\'ol}
+
+Szerint\"unk olvas\'oink is r\'aj\"ottek eddigre, hogy m\'{\i}g az els\H{o} f\"uzet\"nk f\H{o}leg a 
+Python programoz\'asi nyelvr\H{o}l sz\'olt, addig most m\'ar ink\'abb mag\'ar\'ol a programoz\'ast 
+emelt\"uk ki, illetve olyan Python modulokat \'{\i}rtunk le, amelyek szint\'en a programoz\'ast 
+seg\'{\i}tik. Ugyanakkor nagyon fontos, hogy ne csak a szkriptek \'{\'i}r\'as\'at \'es kipr\'ob\'al\'as\'at 
+k\"onnyebb\'e tev\H{o} eszk\"oz\"okr\'el besz\'elj\"unk, hanem mag\'ar\'ol a program\'{\i}r\'as 
+folyamat\'ar\'ol is. A f\"uggel\'eknek ez az egyetlen olyan fejezete, amelyik nincsen olyan szoros 
+kapcsolatban a Python programoz\'asi nyelvvel, hiszen az itt megfogalmazott alapelvek a t\"obbi nyelv 
+eset\'eben is j\'ol alkalmazhat\'oak. 
+
+Az\'ert is egyed\"ul\'all\'o ez a fejezet, mert els\H{o}sorban elveket mutatunk, \'es tan\'acsokat fogunk 
+fogunk adni, amelyeket a saj\'at tapasztalataink alapj\'an gondolunk, de nem jelenti mindez azt, hogy 
+gondolkod\'as n\'elk\"ul kell k\"ovetn\"unk. Saj\'at m\'odszereket is kital\'alhatunk indokolt alkamakkor, 
+de \'erdemes azokhoz ut\'ana ragaszkaodni. Az els\H{o} k\'et r\'eszben alapvet\H{o}n felt\'etelezz\"uk, hogy 
+valaki {\bf egyed\"ul} \'{\i}rja a k\'odot. Az utols\'o a k\"oz\"os munka eset\'ere ad \"otleteket.
+
+\subsection{K\'odol\'asi st\'{\i}lus}
+
+Amikor egy programot meg\'{\i}runk, vagy legal\'abb is elkezd\"unk rajta dolgozni, akkor le mer\"unk fogadni, 
+hogy a legte\"obben nem fogj\'ak fontosnak tartani a k\'od kin\'ezet\'et. Nagy val\'osz\'{\i}n\H{u}s\'eg szerint 
+a f\H{o} hangs\'ulyt arra fogj\'ak helyezni, hogy helyesen m\H{u}k\"odj\"on. (Porgramoz\'oi tev\'ekenys\'eg\"uk 
+elej\'en ez a szerz\H{o}kkel is megesett.) Nem tagadva ennek a szempontnak a l\'enyeges volt\'at, gondoljunk 
+arra, hogy az egy\'ebk\'ent j\'ol m\H{o}k\"od\H{o} szkript\"unkh\"oz egy-k\'et h\'onap, esetleg b\H{o} egy 
+\'ev ut\'an, m\'egis hozz\'a kell valami\'ert ny\'ulni. (B\'ar ez az alfejezet nem a csapatmunk\'ar\'ol 
+sz\'ol, de m\'asvalaki k\'odj\'at is kellhet m\'odos\'{\i}tani.) Azt hissz\"uk, hogy vil\'agosan l\'atszik, 
+nem mindegy, hogy ezzel mennyi id\H{o}t kell elt\"olteni, mennyi hibalahet\H{o}s\'eget kell kik\"usz\"ob\"olni. 
+Ha siker\"ul magunknak kialak\'{\i}tani egy m\'odszert a k\'od meg\'{\i}r\'as\'ara, akkor k\'es\H{o}bb sokkal 
+k\"onnyebben meg tudjuk tal\'alni az \'atirand\'o r\'eszeket. A legjobb  esetben elegend\H{o} lesz az al\'abbi, 
+id\H{o}nk\'ent az\'ert egym\'asnak is ellentmond\'o, elveket \'erv\'enyre juttatni. Az egyens\'uly megtal\'al\'as\'ahoz 
+az egy\'eni, megszerzett, tud\'as \'es tapasztalat seg\'{\i}t, \"or\"ok\'erv\'eny\H{u} tan\'acsokat nem tudunk adni: 
+
+\noindent{\sl A k\'od legyen olvashat\'o}:
+
+Ezzel szerencs\'ere az esetek nagy t\"obbs\'eg\'eben a Python programoz\'asi nyelv eset\'eben nincsen gond. 
+A vez\'erl\'esi szerkezetek (el\'agaz\'asok, ciklusok) el\'egg\'e \'atteknihet\H{o}ek. Nem lehet szempont, 
+hogy azonnal minden r\'eszlet \'erthet\H{o}  legyen, de a fontos r\'eszt viszonylag r\"ovid id\H{o} alatt meg kell 
+tudni tal\'alni. 
+
+\noindent{\sl R\"ovidebb blokkok}:
+
+A Python rendk\'{\i}v\"ul t\"om\"or k\'odot eredm\'enyez, ez\'ert t\"orekedni kell arra, hogy a f\"uggv\'enyek, 
+met\'odusok ne legyenek t\'uls\'egosan hossz\'uak. Kis m\'odo\-s\'{\i}\-t\'a\-sok\-kal ez a vez\'erl\'esi 
+szerkezetek be\'agyazott blokkjaira is igaz. A tapasztalat szerint k\"or\"ul-bel\"ul egy k\'eperny\H{o}nyi, 
+vagyis 25-30 sor a legt\"obb, amit k\"onnyen \'et lehet tekinteni \'es meg\'ertani. A Python ugyanis 
+rendk\'{\i}v\"ul t\"om\"or. Ha indokolt esetben ett\H{o}l elt\'er\"unk akkor \"ures sorokkal tagoljuk a 
+forr\'ask\'odot.
+
+\noindent{\sl Besz\'edes azonos\'{\i}t\'ok, v\'altoz\'onevek}:
+
+Nagyon fontos, hogy mind a bevezett v\'altoz\'oink, oszt\'alyaink, f\"uggv\'enyeink, met\'odusaink neve lehet\H{o}leg 
+legyen besz\'edes, vagyis utaljon arra, ami\'ert hasz\-n\'al\-juk. N\'ezz\"uk meg az al\'abbi p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+a43 = 1200
+
+magassag = 1200
+\end{Verbatim}
+
+\noindent A Python sz\'am\'ara nincsen k\"ul\"onbs\'eg a k\'et \'ert\'ekad\'as k\"oz\"ott, de sz\'amunkra, akik 
+adott esetben meg kell, hogy \'erts\'ek, igenis van. Ugyanilyen m\'odon a f\"uggv\'enyek \'es param\'erterek 
+eset\'en is fontos lehet, hogy milyen m\'odon nevezz\"uk el:
+
+\begin{Verbatim}[fontsize=\small]
+def fun(s, l):
+   ....
+
+def kovSziget(start, lista)
+\end{Verbatim}
+
+\noindent Ahogyan a p\'elda is mutatja, a m\'asodik f\"uggv\'eny fejl\'ec sokkal t\"obbet el\'arul a 
+k\'od feladat\'ar\'ol.
+
+\noindent{\sl Lehet\H{o}leg kev\'es param\'eter}:
+
+Programoz\'oi tapasztalatok szerint, nem csak Python-ban, c\'elszer\H{o} eker\"ulni, hogy egy 
+f\"uggv\'enynek, vagz met\'odusnak sok param\'etere legyen. Ilyenkor mindig felmer\"ul, hogy 
+nem akartunk-e t\'uls\'agosan sok mindent egybe becsomagolni. Sokat jav\'{\i}that a k\'od 
+\'attekinthet\H{o}s\'eg\'en, ha alkalmazzuk az alap\'ertelmezett argumentumokat. Emelett, ha 
+v\'egk\'epp nem tudjuk a param\'eterek sz\'am\'at cs\"okenteni, akkor csin\'ajunk bel\H{o}le 
+sz\'ot\'art, hogyan a p\'eld\'ban is \'atjuk:
+
+TODO
+
+\noindent{\sl Dokument\'alja a k\'od \"onmag\'at}:
+
+Sok programoz\'o hagyatkozik az olvashat\'os\'ag \'erdek\'eben kiz\'ar\'olag arra, hogy a k\'odba 
+lehets\'eges megjegyz\'eseket \'{\i}rni. A szerz\H{o}k nem tagadj\'ak, hogy indokolt esetben 
+ezzel \'erdemes is \'elni, ugyanakkor nem tartj\'ak mindent megold\'o csodaszernek. Tapasztalatunk 
+szerint ugyanis sokszor fordul el\H{o}, hogy a k\'od m\'ar nem felel meg a programoz\'o eredeti 
+megjegyz\'es\'enek, ezzel ak\'ar nagyobb gondot is okozva. A kommentek m\'odos\'{\i}t\'as\'ara 
+sokszor m\'ar nincsen id\H{o}. Szerencs\'esebb, ha maga a k\'od annyira j\'ol olvashat\'o, hogy 
+mag\'at dokument\'alja. 
+
+A megjegyz\'esekkel kapcsolatban ugyanakkor nem a {\tt pydoc} dokument\'aci\'ot k\'arhoztatjuk, 
+hiszen arra sok esetben nagy sz\"uks\'eg lehet. Ebben az esetek t\"obbs\'eg\'eben nen a k\'od 
+van r\'esz;etesen le\'{\i}rva, hanem maga a r\'eszfeladatat. Tulajdonk\'eppen a hivat\'asos 
+programoz\'ok szavaj\'ar\'asan szerint nem m\'as, mint fejleszt\H{o}i specifik\'aci\'o. M\'as 
+sz\'oval ez els\H{o}sorban a hibajav\'{\i}t\'as, illetve a b\H{o}v\'{\i}t\'es eset\'en lesz 
+igaz\'an hasznos. Viszont mindenk\'eppen gondot kell arra ford\'{\i}tani, hogy t\'enylegesen 
+megfeleljen a k\'odnak.
+
+\subsection{Programoz\'as \'ep\'{\i}t\H{o}kocka st\'{\i}lusban}
+
+A Python programoz\'asi nyelv eredetileg arra k\'esz\"ult, hogy elj\'ar\'asokat lehessen 
+kipr\'ob\'alni, illetve tesztel\'es c\'elj\'ab\'ol \'atmenetileg \"osszekapcsolni. 
+\'Eppen ez\'ert el\'egg\'e er\H{o}s a k\'{\i}s\'ert\'es, hogy a programunkat darabonk\'ent, 
+kisseb egys\'egekb\H{o}l "rakjuk" \"ossze. Ez ugyanis elvileg lehet\H{o}v\'e teszi, hogy 
+viszonylag r\"ovid id\H{o} alatt valamit m\'ar meg tudjunk csin\'alni, kor\'an meg tudjuk 
+\'allap\'{\i}tani, hogy az elgondol\'as m\H{u}k\"odik-e egy\'altal\'an. Emelett nem tagazdhat\'o, 
+el\H{o}ny az is, nem kell egyszerre tesztelni az eg\'esz bonyoult szkriptet. 
+
+Ezek\'ert a l\'atsz\'olagos el\H{o}ny\"ok\'ert azonban meg is kell fizetni az \'arat. Az esetek
+egy r\'esz\'eben ez a m\'odszer lehet\H{o}v\'e teszi azt is, hogy teljesen \'atgondolt \'atfog\'o 
+terv n\'elk\"ul \'alljunk neki a programoz\'asnak, \'es ez hosszabb t\'avon nem szerencs\'es. Az 
+\'ujabb \'es \'ujabb elemek beilleszt\'ese egyre ink\'abb azzal fog j\'arni, hogy kor\'abban 
+m\'ar meg\'{\i}rt (\'es letesztelt) k\'odokhoz is hozz\'a kell ny\'ulni ez sok hibalehet\H{o}s\'eget 
+is jelent. Magyar\'an, a kor\'abbi tesztek egy j\'o r\'esz\'et rendszeresen meg kell ism\'etelni, 
+teh\'at folyamatosan n\H{o} a munkaig\'eny. 
+
+\subsection{Dolgozzunk csapatban}
+
+Nagyobb feladatokat term\'eszetesen nem egyed\"ul fogunk megoldani, ez pedig m\'ar \"onmag\'aban is 
+tov\'abbi k\'erd\'eseket \'es bonyodalmakat vet fel. A legfontosabb, hogy t\"obb r\'esztvev\H{o} 
+eset\'en  a munk\'at egyvalakinek \"ossze kell fognia. Ez nem csup\'an arra szor\'{\i}tkozik, hogy a 
+r\'eszfeladatokat kiadja, \'es megmondja, mikorra kellene elk\'esz\'{\i}teni. Azt is jelenti, a 
+megirand\'o programot neki valamilyen szinten el\H{o}re mewg kell terveznie, \'at kell gondolnia. 
+Ha nem is egyed\"ul, de ki kell alak\'{\i}tania a k\"oz\"os k\'odol\'asi st\'{\i}lus, n\'evad\'asi 
+szab\'alyokat, stb. Listaszer\H{u}en \"osszefoglaljuk az eredm\'enyes k\"oz\"os munka felt\'eteleit, 
+amelyek m\'ar a hivat\'asos programoz\'ok sz\'am\'ara is elegend\H{o} \'utmutat\'o lenne:
+
+\begin{itemize}
+   \item{- kell egy \'atfog\'o terv el\H{o}re a program m\H{u}k\"od\'es\'es\'er\H{o}l, 
+      fel\'ep\'{\i}t\'es\'er\H{o}l,}
+   \item{- az egyes r\'eszek m\H{u}k\"d\'es\'t alaposan \'at kell gondolni, egym\'ashoz val\'o 
+      viszonyukat meghat\'arozni}
+   \item{- valamilyen szinten mindenkinek dokument\'alnmi kell a k\'odj\'at}
+   \item{- ki kell alak\'{\i}tani egy k\"oz\"os k\'odol\'asi st\'{\i}llust, \'es azt azuut\'an mindenkinek 
+      betartani}
+   \item{- a r\'eszfeladatokat pontosan meg kell fogalmazni, \'es egy\'ertelm\H{u}en r\"ogz\'{\i}teni}
+   \item{- meg kell hat\'arozni, hogy az egyes r\'eszfeladatokat milyen sorrendben a legc\'elszer\H{u}bb 
+      megcsin\'alni }
+   \item{- k\"ovetni kell, hogy melyik k\'odr\'eszletet ki, mikor, mi\'ert m\'odos\'{\i}totta, \'es pontosan 
+      mi v\'altozott.}
+\end{itemize} 
+
+\noindent A v\'elm\'eny\"unk szerint sok magyar\'azatot nem kell ehhez hozz\'af\H{u}zni, de az\'ert 
+egy-k\'et dolgot \'erdemes megeml\'{\i}tani. Legal\'abb egy v\'azlatos terv akkor is j\'o, ha egyed\"ul 
+programozunk, de a csoportmunk\'ahoz viszont elengedhetetlen. A k\"oz\"os nyelvet a csoport csak 
+\'{\i}gy tudja kialak\'{\i}tani. Az egyes alkot\'oelemek egym\'ashoz val\'o viszony\'at \'es 
+egy\"uttm\H{o}d\'es\'et szint\'en bele kell venni a tervbe, \'es azon lehet\H{o}leg csk nagyon 
+indokolt esetben v\'altoztassunk. Az \'attervez\'es persze id\H{o}nk\'ent elker\"ulhetetlen, 
+de tudnunk kell, mindenkor t\"obblet munk\'aval j\'ar, \'es \"onmag\'aban n\"veli a hib\'ak 
+lehet\H{o}s\'eg\'et. 
+
+A fenti lista h\'arom utols\'o pontja viszont elk\'epzelhet\H{o}, hogy els\H{o} olvas\'asra nem 
+t\H{u}nik mag\'at\'ol \'ertet\H{o}d\H{o}nek. Az indokl\'as pedig nem annyira bonyolult, t\'etelezz\"uk 
+fel, hogy adott k\'et alkot\'oelem (modul), {\bf A} \'es {\bf B}, valamint {\bf B} hasz\-n\'al\-ja 
+a m\'asikat. Ekkor term\'eszetesen addig nem lehet a {\bf B}-nek neki\'allni, ameddig az {\bf A} 
+nincsen k\'eszen, \'es nem lett letesztelve. Addig teh\'at a {\bf B}-t programoz\'o csapattagnak 
+m\'as feladatot c\'elszer\H{u} adni, p\'eld\'aul \'{\i}rhatn\'a ak\'ar az {\bf A} automatikus 
+tesztj\'et is. Ha r\'eszfeladatok el\'egg\'e pontosan vannak meghat\'arzva, akkor nagyon szerencs\'es, 
+ha a k\'odol\'ast \'es a tesztel\'est (automatiz\'alt tesztel\'est) nem ugyanaz a szem\'ely v\'egzi 
+el. Bonyolultabb esetekben nem is olyan egyszer\H{u} meghat\'arozni, mik\'ent lehet a feladatokat 
+kiosztani, hogy lehet\H{o}leg ne akad\'aolyozz\'ak egym\'ast az emberek.
+
+A felsorol\'as legutols\'o pontja az, ami tal\'an a legnagyobb \'ujdons\'ag, de a csapatunka 
+legnagyobb probl\'em\'aja is egyben. Ide\'alis esetben a csoportban mindenki csak a saj\'at 
+feladat\'aval foglalkozik, csak az ahhoz tartoz\'o k\'odokat fogja meg\'altoztatni. Azonban a 
+t\'enyleges fejleszt\'es sor\'an sohasem ide\'alis az eset, ez\'ert teh\'at nagyon k\"onnyen 
+el\H{o}\'all, hogy m\'as csoporttag k\'odj\'aban is kell ahhoz m\'odos\'{\i}tanunk, hogy a 
+feladatunkat megoldjuk. Ennek az oka lehet egyszer\H{u} hibajav\'{\i}t\'as, a tapasztalatok 
+alapj\'an k\'enyszer\H{u} \'attervez\'es, vagy ak\'ar az is, hogy a r\'eszfeladatok nem 
+teljesen f\"uggetlenek egym\'ast\'ol. Ha nem is fontoss\'agi sorrendben, de szedj\"uk \"ossze 
+az elv\'ar\'asainkat: 
+
+\begin{enumerate}
+\item{A csoport minden \'erintett tagja \'ertes\"ulj\"on arr\'ol, hogy egy adott k\'odot 
+   valaki egy adott pillanatban megv\'altoztatott, \'es, hogy ki. Minden \'erintett tag 
+   jusson hozz\'a a legfrisebb v\'altozathoz.}
+\item{Minden egyes v\'altoztat\'as eset\'en lehessen k\"ovetni, hogy ki \'es mikor tette, 
+   \'es legyen egy\'ertelm\H{u}, hogy mi v\'altozott, esetleg mi\'ert.}
+\item{Nagyon szerencs\'es, ha minden modul eset\'en vissza tudunk l\'epni egy tetsz\H{o}leges 
+   kor\'abbi v\'alozatra.}
+\end{enumerate}
+
+\noindent A fenti felsorol\'asban szerepl\H{o} elv\'asr\'asok egy r\'esze egy kis szervez\'essel 
+tulajdonk\'eppen megoldhat\'o, hiszen a modulokba a kor\'abban bemutatott m\'odon a fontos 
+inform\'aci\'ok a dokument\'aci\'es stringbe be\'{\i}rhat\'ok. A m\'odszer egyszer\H{u} \'es 
+k\'ezenfekv\H{o}, de van egy viszonylag komoly h\'atul\"ut\H{o}je. Nagym\'errt\'ekben att\'ol 
+f\"ugg, hogy a csoport programoz\'o tagja hajland\'ok-e betartani egy ilyen k\'odol\'asi szab\'alyt. 
+Emellett m\'eg a m\'odos\'{\i}t\'asok pontoos k\"ovet\'ese nem lesz teljesen megoldott. Viszont 
+l\'eteznek olyan programok, amelyek pontosan az ilyen v\'altoztat\'asok k\"ovet\'es\'ere lettek 
+kidolgozva, ezeket {\sl verzi\'o kezel\H{o}, verzi\'o kontroll} rendszereknek nevezz\"uk. 
+\index{verzi\'o kontroll} Nem akarunk ennek r\'eszleteibe belemenni, vannak olyanok is, amelyeket 
+ingyenesen le lehet t\"olteni. 
+
+Ha m\'ar eml\'{\i}tett\"uk a v\'altoz\'asok k\"ovet\'es\'et, r\"oviden \'erinteni sz\"uks\'eges azt a 
+k\'erde\'est is hogyan tudjuk a csoport feladatait, a felel\H{o}s\"oket \'es a hat\'arid\H{o}ket 
+\'eszbentartani. Arr\'ol van sz\'o, hogy l\'eteznek olyan programok, amelyek a hib\'ajav\'{\i}t\'asok, 
+\'es a m\'odos\'{\i}t\'asok folyamat\'at is nyomon lehet k\"ovetni. 
+
+
+\section{Tov\'abbi olvasnival\'ok}
+
+A vil\'agh\'al\'on sok olvasnival\'ot tal\'alunk, sajnos a t\"obbs\'eg\'et angol nyelven. Ennek 
+ellen\'ere az\'ert igyeksz\"unk egy list\'at k\'esz\'{\i}teni, h\'atha valaki az\'ert kedvet kap 
+arra, hogy ut\'annan\'ezzen bizonyos dolgoknak. Az inform\'aci\'ok egy r\'esze r\'eszletes 
+technikai le\'{\i}r\'as, egy r\'esze viszont bevezet\H{o} jelleg\H{u} tank\"onyv. Tal\'an 
+kezdj\"uk az el\H{o}bbivel.
+
+A Python honlapj\'an el\'egg\'e r\'eszletes a teljes dokument\'ac\'o, m\'eghozz\'a minden egyes 
+verzi\'okoz k\"ul\"un-k\"ul\"on. Tal\'alhat\'o k\"ozt\"uk egy bevezet\H{o} jelleg\H{o} tananyag. 
+Van formai le\'{\i}r\'as mag\'ar\'ol a nyelv szab\'alyair\'ol, \'es teljes referencia sok p\'eld\'aval. 
+T\'argym,utat\'o, \'es a szabv\'anyos modulokr\'el egy bet\H{u}rendes lista seg\'{\i}t minket abban, 
+hogy gyorsan megtal\'aljuk a keresett inform\'aci\'ot. Mindez sajnos csak angol nyelven el\'erhet\H{o}, 
+de aki a programoz\'asba bele akartja mag\'at \'asni az ezzel folyamatosan szembes\"ul. Szint\'en 
+a honlapon tal\'alhatunk egy oldalt, els\H{o}rban kezd\H{o}k sz\'am\'ara szedtek \"ossze tov\'abbi 
+olvasnival\'okat. Szint\'en a honlapon megtal\'alhatjuk a k\"oz\"oss\'eg \'altal \"uzemeltetett 
+oldalakat, levelezH{o} list\'akat \'es f\'osumokat. Az\'ert \'erdemes ezeket id\H{o}nk\'ent 
+felkeresni, mert saj\'at probl\'em\'ainkra is lelheth\"unk megold\'asokat. Azt a k\'es\H{o}biekre 
+n\'ezve \'erdemes megjegyezni, hogy ez a seg\'{\i}ts\'eg term\'eszetes teljesen \"onk\'entes. Vagyis 
+egy id\H{o} ut\'an mi is eljutunk arra a szintre, hogy tudunk seg\'{\i}teni a n\'alunk k\'ezd\H{o}bbekbek. 
+
+Ha keres\"unk az interneten anyagokat, akkor meglehet\H{o}sen b\H{o}s\'egesen ta\-l\'a\-lunk ilyeneket. 
+Azok nem minden esetekben szoktak megfelel\H{o} m\'odon hasznosak lenni, de megn\'ezni azokat mindenk\'eppen 
+\'erdemes. Azt is figyelembe kell venni, hogy a netes tartalmas tartalom gyosan v\'altozhat, ak\'ar 
+el is t\H{u}nhet. Van egy ingyenesen let\"olthet\H{o} tank\"onyv, ami j\'ol \'erthet\H{o} m\'odon 
+alaposan le\'{\i}rja a Python programoz\'as csalafintas\'agait. Az angol nyelv\H{o} {\tt PDF} mellett 
+m\'eg sok p\'eldaprogramot is tal\'alunk a csomagban. C\'{\i}me "{\it Dive into Python}".
+
+\setcounter{section}{10}
+\section{Ism\'et kimaradt t\'emak\"or\"ok}
+
+Ebben a m\'asodik f\"uzetben ugyan sok t\'em\'at fut\'olag bemutattunk, pontosabban haszn\'alat\'ahoz adtunk 
+bevezet\H{o} jelleg\H{u} inform\'aci\'ot. Viszont r\'eszben helyhi\'any miatt, r\'eszben pedig a t\'emak\"or\"ok 
+bonyolults\'aga miatt hagytunk ki dolgokat. Ezen k\'{\i}l nem eml\'{\i}tett\"unk meg olyan r\'eszleteket, amelyek 
+t\'enyleg csak a hivat\'asos programoz\'ok sz\'am\'ara lehetnek l\'enyegesek. Most, hogy a m\'asodik s\'et\'ank 
+is a v\'eg\'ere \'ert, a szerz\H{o}k sz\"uks\'eg\'et \'erzik annak, hogy a v\'alogat\'as szempontjair\'ol m\'eg 
+egyszer besz\'eljenk. 
+
+A sz\'am\'{\i}t\'ag\'epes technol\'ogia, \'es ezzel term\'eszetesen maga a programoz\'as is, meglehet\H{o}sen 
+nagy l\'eptekkel fejl\H{o}dik, \'es sokan gondolj\'ak azt, hogy a kor\'abban megszerzett szaktud\'as 
+gyorsan el tud avulni. Ezzel mi nem tuduk teljesen egyet\'erteni, de vil\'agos, hogy az egyre er\H{o}sebb 
+sz\'am\'{\i}t\'og\'epek kor\'aban a hat\'akony \'es \'esszer\H{u} k\'odol\'as egyel\H{o}re a h\'att\'erbe 
+szorult. H\'ats\'o sz\'and\'ekunk szerint a Python programoz\'asi nyelvet a k\"onny\H{u} tanulhat\'os\'aga \'es 
+jelenlegi n\'epszer\H{u}s\'ege miatt v\'alaszotottuk, de alapvet\H{o}en programozni szeretn\'enk tan\'{\i}tani. 
+Ez\'ert kihagytunk szinte mindent, ami m\'as programoz\'asi nyelvek megtanul\'asa szempontj\'ab\'ol komoly 
+akad\'aly lehetne. Nem mell\'ekesen nem szabad arr\'ol sem elfeledkezni, hogy a kor\'abban m\'ar \'{\i}rtak 
+alapj\'an a Python nyelv is fejl\H{o}dik, az \'ujabb verz\i\'okban \'ujabb elemek jelennek meg. Mi pr\'ob\'altunk 
+a m\'ar tesztelt \'es elfogadott m\'odszereket bemutatni. \'Es most l\'assuk a list\'at:
+
+\begin{itemize}
+   \item{grafikus felhaszn\'al\'oi fel\"ulet k\'esz\'{\i}t\'ese,}
+   \item{a {\tt unittest} keretrendszer tov\'abbi r\'eszletei}
+   \item{t\"obbsz\'al\'u programok \'{\i}r\'asa}
+   \item{webes alkalmaz\'asok (CGI) \'{\i}r\'asa} 
+   \item{adatok p\'arbesz\'edes bead\'asa   ????????}
+   \item{konfigur\'aci\'os \'allom\'anyok feldolgoz\'asa} 
+   \item{a {\tt with} utas\'{\i}t\'as haszn\'alata saj\'at oszt\'alyokkal}
+   \item{adatb\'azisok haszn\'alata}
+   \item{h\'alozatokkal kapcsolatos programoz\'asi m\'odszerek}
+   \item{saj\'at iter\'ator \'{\i}r\'as\'anak rejtelmei}
+   \item{x}
+   \item{x}
+   \item{x}
+\end{itemize}
+
+\printindex
+
+\end{document}

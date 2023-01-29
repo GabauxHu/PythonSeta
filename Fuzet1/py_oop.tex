@@ -1,0 +1,607 @@
+\section{Oszt\'alyok, objektumok}
+
+Ez az a t\'emak\"ro, ami miatt a Python olyan n\'epszer\H{u} programoz\'asi nyelv. Az \'uj byelvi elemek mellett egy 
+\'uj gondolkod\'ast is megismer\"unk. El\H{o}sz\"or is pr\'ob\'aljuk meg a c\'{\i}mben eml\'{\i}tett k\'et fogalmat 
+meghat\'arozni, \'es ha lehets\'eges, megk\"ul\"onb\"oztetni. M\'ar csak az\'ert is fontos ez, mert sok m\'as 
+programoz\'asi nyelv \'es sok programoz\'asr\'ol sz\'ol\'o k\"onyv eset\'eben szokt\'ak ezt a kett\H{o}t 
+\"osszekeverni. A Python programoz\'asi nyelven minden v\'altoz\'ot {\sl objektumk\'ent} \index{objektum} kell 
+felfogni, vagyis ez nem jelent m\'ast, hogy l\'enyeg\'eben egyform\'an kezeli azokat f\"uggetlen\"ul a benne 
+t\'arolt adatokt\'ol. Ez a magyar\'azata p\'eld\'aul annak, hogy a list\'akban vegyesen tudtunk sz\'amokat \'es 
+bet\H{u}sorozatokat berakni. Az {\sl oszt\'alyok} \index{oszt\'aly} azonban a programban, vagy scriptben 
+l\'etrehozott adathalmazok, amelyek sokf\'ele bels\H{o} tuladons\'ag\'at a Python parancs\'ertelmez\H{o} 
+sz\'am\'ara mi adjuk meg. (Itt jegyezz\"uk meg, hogy sok be\'ep\'{\i}tett szabv\'anyos nyelvi elem van a Pythonban 
+oszt\'alyk\'ent defini\'alva.) Ha ez a defin\'{\i}ci\'o most esetleg hom\'alyos is, a fejezet v\'eg\'ere rem\'elhet\H{o}leg 
+vil\'agos \'es \'erthet\H{o} lesz.
+
+\subsection{Oszt\'alyok \'es p\'eld\'anyok}
+
+A legegyszer\H{u}bb, ha szok\'as szerint azonnal megn\'ez\"unk egy r\"ovid p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# osztaly1.py
+
+class Pelda:
+   j = 23
+
+   def fu(self):
+      print('Hello')
+
+sajt = Pelda()
+
+sajt.fu()
+print(sajt.j)
+
+print('Vege')
+\end{Verbatim}
+
+A fenti scriptet futtat\'as el\H{o}tt n\'ezz\"uk meg egy kiss\'e alaposan. Egyetlen \'uj nyelvi elemet tal\'alunk 
+benne, a 
+
+\begin{Verbatim}[fontsize=\small]
+class Pelda:
+\end{Verbatim}
+
+sort. Ez mondja meg a Python parancs\'ertelmez\H{o}nek, hogy van egy "Pelda" nev\H{u} oszt\'aly a scriptben, amelyhez 
+hozz\'arendelt\"unk egy v\'altoz\'ot ("j") \'es egy f\"uggv\'enyt ("fu"). Az \'uj fogalom a v\'altoz\'okra oszt\'alyok 
+eset\'en a {\sl mez\H{o}} \index{mez\H{o}}, illetve sokszor szokt\'ak az {\sl attrib\'ut\'um} \index{attrib\'utum} nevet 
+is haszn\'alni, a f\"uggv\'enyek ``\'alneve'' ebben az esetben pedig a {\sl met\'odus} \index{met\'odus}. B\'ar 
+f\"uggv\'enyek defin\'{\i}ci\'oj\'aval m\'ar nem egyszer tal\'alkoztunnk, ez most a kor\'abbiakt\'ol elt\'er. 
+T\'enylegesen nem haszn\'al semmif\'ele argumentumot, a z\'ar\'ojelben l\'ev\H{o} param\'eterlista m\'eg sem \"ures, 
+mint ahogyan az egy\'ebk\'ent ilyen esetekben logikus lenne. Met\'odusok eset\'en ugyanis minden esetben els\H{o} 
+argumentumk\'ent szerepelnie kell a {\tt self} param\'eternek, amely mag\'at a defini\'alt oszt\'alyt jelenti. Az 
+oszt\'aly defin\'{\i}ci\'oja ut\'an l\'athatunk egy \'erdekes sort, ami legink\'abb egy \'ert\'ekad\'ashoz 
+hasonl\'{\i}t:
+
+\begin{Verbatim}[fontsize=\small]
+sajt = Pelda()
+\end{Verbatim}
+
+\noindent Az egyetlen k\"ul\"onbs\'eg, hogy ebben az esetben nem \'ert\'eket adunk, hanem "sajt" n\'even l\'etrehozzuk 
+az oszt\'aly egy {\sl p\'eld\'any\'at}i \index{oszt\'alyp\'eld\'any}. Az ilyen p\'eld\'anyokat nevezhetj\"uk ak\'ar 
+objektumoknak is. A kor\'abban 
+az oszt\'aly k\'odj\'aban eml\'{\i}tett {\tt self} minden esetben az adott, t'enylegesen l\'etrehozott p\'eld\'anyra 
+fog hivatkozni. A k\"ovetkez\H{o}kben l\'athatjuk, hogy \'erj\"uk el a p\'eld\'any mez\H{o}it \'es met\'odusait. 
+Tov\'abbi pr\'obak\'eppen \'{\i}rjuk be a scriptbe a kiirat\'as ut\'an az al\'abbi k\'et \'uj sort.
+
+\begin{Verbatim}[fontsize=\small]
+print(sajt.j)
+sajt.j = -2
+print(sajt.j)
+\end{Verbatim}
+
+\noindent Futttat\'as ut\'an l\'atszik, hogy az oszt\'aly mez\H{o}j\'et nemcsak le tudtuk k\'erdezni, hanem m\'odos\'{\i}tani 
+is tudtuk, hiszen a met\'odusokkal egy\"utt teljesen ny\'{\i}lv\'anos elemek. Ezt a lehet\H{o}s\'eget, vagyis a 
+mez\H{o}k k\"ozvetlen m\'odos\'{\i}t\'as\'at, ugyanakkor nagyon \'ovatosan \'es k\"or\"ultekint\H{o}en kell alkalmazni, 
+\'es val\'oj\'aban szerencs\'esebb elker\"ulni. -- M\'ar itt szeretn\'enk az Olvas\'ok figyelm\'et felh\'{\i}vni arra a 
+t\'enyre, hogy az oszt\'alyok l\'etrehoz\'asa a f\"uggv\'enyek defin\'{\i}ci\'oj\'ahoz hasonl\'oan nem k\"ozvetlen\"ul 
+v\'egrehajthat\'o utas\'{\i}t\'as.
+
+\subsection{Oszt\'alyok bels\H{o} v\'altoz\'okkal \'es f\"uggv\'enyekkel}
+
+Ebben az alfejezetben az el\H{o}z\H{o} p\'eld\'at fogjuk tov\'abbfejleszteni. L\'attuk, hogy az oszt\'alyban mez\H{o}ket 
+(adatokat) \'es met\'odusokat (f\"uggv\'enyeket) tudunk \"osszekapcsolni, ez\'ert logikusan mer\"ul fel, hogy az oszt\'aly 
+gondoskodjon a saj\'at adatainak helyess\'eg\'er\H{o}l, \'es feldolgoz\'as\'ar\'ol. Ennek els\H{o} l\'ep\'ese, hogy a 
+mez\H{o}k ny\'{\i}lv\'anoss\'ag\'at ugyan megsz\"untetni nem tudjuk, de elker\"ulj\"uk a k\"ozvetlen felhaszn\'al\'as\'at. 
+Azonban az a neh\'ezs\'eg, hogy az p\'eld\'any adatainak a l\'etrehoz\'as pillanat\'aban is helyesnek kell lennie, nem lehet 
+teh\'at csak \'ugy egyszer\H{u}en lek\'odolni, mint az els\H{o} p\'eld\'ankban. Lennie kell teh\'at egy k\"ul\"onleges 
+met\'o\-dus\-nak, amelyik a p\'eld\'anyokat sz\'epen fel\'ep\'{\i}ti nek\"unk a sz\'am\'{\i}t\'og\'ep mem\'ori\'aj\'aban, 
+ezeket h\'{\i}vjuk {\sl konstruktoroknak} \index{konstruktor}:
+
+\begin{Verbatim}[fontsize=\small]
+# osztaly2.py
+
+class Pelda:
+   def __init__(self, jV):
+      self.j = jV
+
+   def lekerJ(self):
+      return self.j
+
+   def fu(self):
+      print('Hello')
+
+sajt = Pelda(4)
+
+sajt.fu()
+print(sajt.getJ())
+
+print('Vege')
+\end{Verbatim}
+
+\noindent Ebben a p\'eld\'aban az els\H{o} met\'odus egyb\H{o}l fel is t\H{u}nik, az\'ert, mert a nev\'eben 
+el\"ol \'es h\'atul al\'ah\'uz\'as karakterek vannak. Ez az a met\'odus, amely a {\sl p\'eld\'anyos\'{\i}\-t\'as\-n\'al} 
+\index{p\'eld\'anyos\'{\i}t\'as} minden esetben lefut, teh\'at a fentebb eml\'{\i}tett konstruktor. L\'atjuk azt is, 
+hogy az \'ert\'ekad\'as {\tt self.j = jV} tartalmazza a {\tt self} hivatkoz\'as, vagyis egy\'ertelm\H{u}en jelezz\"uk, 
+hogy az oszt\'aly saj\'at v\'altoz\'oj\'at haszn\'aljuk. Ez teszi lehet\H{o}v\'e, hogy t\"obb p\'eld\'any 
+l\'etrehoz\'asa eset\'en mindegyik objektum a saj\'at v\'altoz\'oj\'at haszn\'al\-hat\-ja. Nem is haszn\'aljuk a 
+{\tt self.j} mez\H{o}t, erre szolg\'al a {\tt lekerJ()} met\H{o}dus. Ez\'altal tudjuk biztos\'{\i}tani, hogy az 
+oszt\'alyon k\'{\i}v\"ulr\"ol nem piszk\'alunk bele a mez\H{o} \'ert\'ek\'ebe
+
+Ahogyan a mez\H{o}ket nem lehet eldugni az oszt\'alyhoz k\'epest k\"uls\H{o} k\"ornyezet el\H{o}l, ugyan\'ugy a Python 
+nyelv nem teszi azt lehet\H{o}v\'e met\'odusok eset\'en sem. Ha szeretn\'enk el\'erni, hogy egy elj\'ar\'ast ne lehessen 
+k\"onnyen megh\'{\i}vni a az objektumot k\'{\i}v\H{u}lr\'ol, akkor annak nev\'et is az al\'ah\'uz\'as karakterrel kell 
+kezdeni. 
+
+Besz\'elt\"unk m\'ar a konstruktorr\'ol, amelyik szab\'alyosan fel\'ep\'{\i}ti az oszt\'aly p\'eld\'anyat, 
+ez\'ert logikusnak l\'atszik a k\'erd\'es, hogy van-e olyan p\'arja, amelyik az objektum t\"orl\'ese eset\'en 
+fut. Ilyen met\'odus van, \'es {\sl destruktornak} \index{destruktor} nevezz\"uk. A Python programoz\'asi nyelven 
+csak el\'eg ritk\'an kell haszn\'alni, de id\H{o}nk\'ent viszont megker\"ulhetetlen. A konstruktorral egy\"utt a 
+m\H{u}k\"od\'es\'et az al\'abbi nagyon egyszer\H{u} p\'eld\'an mutatjuk be:
+
+\begin{Verbatim}[fontsize=\small]
+## proba.py
+
+class Proba:
+    def __init__(self):
+        print('Be.. \n')
+
+    def __del__(self):
+        print('.. Ki \n')
+
+q = Proba()
+q = None
+\end{Verbatim}
+
+\noindent Futtat\'asa eset\'en ezt l\'ajuk:
+
+\begin{Verbatim}[fontsize=\small]
+Be..
+
+.. Ki
+\end{Verbatim}
+
+
+%% TODO polimorfizmus
+
+\subsection{Oszt\'alyok egym\'asba\'ep\'{\i}t\'ese}
+
+Ebben a r\'eszben az oszt\'alyok \'es objektumok haszn\'alat\'anak nyelvi elemeit ismerj\"uk meg, de ezt nem lehet teljesen 
+sz\'etv\'alasztani a programtervez\'es k\'erd\'eseit\H{o}l (amelyekr\H{o}l a k\"ovetkez\H{o} fejezetben t\"obbet fogunk 
+olvasni.) Ennek megfelel\H{o}en most sok olyan p\'eld\'at fogunk megismerni, ahol oszt\'alyok \"ossze\'ep\'{\i}t\'es\'et 
+tanulm\'anyozhatjuk, \'es le\'{\i}r\'asunkban a k\"oz\"olt p\'eld\'ak most el\H{o}sz\"or nem azonnal lefuttathat\'ok. 
+Kiz\'ar\'olag az \'ujdons\'agok bemutat\'as\'ara fogunk \"osszpontos\'{\i}tani. A fejezet v\'eg\'en adjuk azt a 
+feladatot, hogy a itt v\'azolt \"otletek alapj\'an futtathat\'o scripteket \'{\i}rjanak az olvas\'ok.
+
+Hogy a p\'eld\'aink az olvas\'oknak egy kiss\'e sz\'orakoztat\'obbak \'es \'erthet\H{o}bbek legyenek, a labdasportok 
+ter\"ulet\'er\H{o}l venni a probl\'em\'akat. El\H{o}sz\"or n\'ezz\"uk az egyszer\H{u}bb esetet:
+
+\begin{Verbatim}[fontsize=\small]
+class Jatekos:
+   def __init__(self, pNev, pMezSzam):
+      self.nev = pNev
+      self.mezSzam = pMezSzam
+
+   ...
+\end{Verbatim}
+
+Minden egyes j\'at\'ekos eset\'en az objektumban ny\'{\i}lv\'antartjuk a nev\'et \'es az \'altala viselt mez sz\'am\'at. 
+Ezeket az adatokat a kor\'abban megszokott m\'od\'on a konstruktorban adjuk \'at. (Gondolom, felt\"unt az olvas\'oknak 
+a param\'eterek list\'aja: "pNev, pMezSzam", ahol a "p" jelzi a k\'od olvas\'oj\'anak, hogy param\'eterekr\H{o}l van sz\'o. 
+A javasoolt k\'odol\'asi szab\'alyokr\'ol majd a k\"ovetkez\H{o} alfejezetben fogunk n\'eh\'any sz\'ot sz\'olni.) N\'ezz\"uk 
+most meg, hogyan tudn\'ank egy t\'arol\'o oszt\'alyt k\'esz\'{\i}teni egy csapatnak:
+
+\begin{Verbatim}[fontsize=\small]
+class Csapat:
+   def __init__(self, pNev, pKapNev, pMezSzam):
+      self.csapatNev = pNev
+      kapitany = Jatekos(pKapNev, pMezSzam)
+      self.csapatKapitany = kapitany
+      self.jatekosok = []
+      self.cserek = []
+
+   ...
+\end{Verbatim}
+
+Ebben az utols\'o k\'odr\'eszletben l\'atszik, hogy a Csapat oszt\'aly konstruktor\'aban megadjuk a csapatkapit\'any 
+nev\'et \'es mezsz\'am\'at, amit egy ideiglenesen l\'etrehozott {\tt Jatekos} t\'{\i}pus\'u objektumba csomagoljuk be. 
+Ezt az adatot elhelyezz\"uk a "Csapat" oszt\'aly "csapatKapit\'any" nev\H{u} mez\H{o}j\'ebe. Ez a mez\H{o} teh\'at 
+maga is objektum. Teljesen ugyan\'ugy kezeli a Python futtat\'orendszer, mintha sima v\'altoz\'o lenne. Ezt saj\'at 
+haszn\'alatra {\sl be\'agyaz\'asnak} \index{be\'agyaz\'as} fogjuk nevezni. A k\'od felt\'etelezi, hogy az \"uresen 
+hagyott {\tt jatekosok} \'es {\tt cserek} list\'ak szint\'en {\tt Jatekos} objektumokat fognak t\'arolni.
+
+\begin{Verbatim}[fontsize=\small]
+class Kapus(Jatekos):
+   def __init__(self, pNev, pMezSzam):
+      Jatekos.__init__(self, pNev, pMezSzam)
+      self.hely = 'kapu' 
+
+   ...
+\end{Verbatim}
+
+A programoz\'asi tank\"onyvek ezt a k\'odol\'asi m\'odszert {\sl lesz\'armaztat\'asnak} \index{lesz\'armaz\'as}, 
+vagy esetleg {\sl \"or\"okl\'esnek} \index{\"or\"okl\'es} nevezik. Egy kor\'abban elk\'esz\'{\i}tett 
+oszt\'alyt \'ugy csomagolunk be egy \'ujabba, hogy a r\'egi tulajdons\'agait az \'ugy oszt\'alyban, annak 
+k\'odol\'asakor, korl\'atoz\'as n\'elk\"ul k\'enyelmesen haszn\'alni tudjuk. A {\tt Jatekos}-t nevezz\"uk 
+{\sl b\'azis\-osz\-t\'aly\-nak} \index{b\'azisoszt\'aly}, vagy {\sl alaposzt\'alynak } \index{alaposzt\'aly}, 
+a {\tt Kapus} a {\sl sz\'armaztatott oszt\'aly} \index{sz\'armaztatott oszt\'aly}. Ha alaposabban megn\'ezz\"uk 
+a konstruktort, akkor l\'atjuk, hogy a param\'eterek azonnal a b\'azisoszt\'aly konstruktor\'anak vannak 
+\'atadva, \'es a {\tt Kapus} konstruktor\'anak csak annyi dolga van, hogy a {\tt Kapus} oszt\'alyban bevezetett 
+\'uj mez\H{o}nek ad kezd\H{o}\'ert\'eket. Amit l\'atszik, egyetlen apr\'o neh\'ezs\'eg az\'ert akad, az alaposzt\'aly 
+konstruktor\'anak \'at kell adni a {\tt self} hivatkoz\'ast. Szeretn\'enk m\'ar most kiemelni a fenti p\'elda egy fontos 
+tapasztalat\'at: az \"or\"okl\'es sor\'an a b\'azisoszt\'aly \'es lesz\'armazottja (vagy lesz\'armazottjai) k\"oz\"ott 
+logikai kapcsolat is van, nem puszt\'an k\'odol\'asi lustas\'ag. Az \'uj oszt\'aly minden esetben a b\'azisoszt\'alyhoz 
+tartozik, csak k\"ul\"onleges tulajdons\'agai miatt t\'er el. A fent bemutatott p\'eld\'an teh\'at a Kapus olyan J\'at\'ekos, 
+amelzyik a kapuban \'all.
+
+\section{Oszt\'alyok \'es objektumok alkalmaz\'asa a programoz\'asban}
+
+El\H{o}z\H{o} fejezetben azzal ismerkedt\"unk meg, mik\'eppen kell olyan Python scriptet \'{\i}rni, amelyben 
+oszt\'alyok \'es objektumok vannak. Eddig els\H{o}sorban az alapvet\H{o} neyelvi elemekre, a legfontosabb technikai 
+r\'eszletekre figyelt\"unk, most viszont a programok\footnote{Mostant\'ol kezdve a program \'es script szavakat 
+felv\'altva fogjuk haszn\'alni.} tervez\'es\'ere \'es \'{\i}r\'as\'ara fogunk egyszer\H{u} p\'eld\'ak seg\'{\i}ts\'eg\'evel 
+\"osszpontos\'{\i}tani. Olvas\'oinknak figyelembe kell venni azt a t\'enyt, hogy a programoz\'ok \'altal\'aban igyekeznek 
+a munk\'at a legke\-ve\-sebb id\H{o} alatt elv\'egezni, \'es m\'ar kor\'abban meg\'{\i}rt, kipr\'ob\'alt programr\'eszletek 
+ism\'etelten felhaszn\'alni. Ahogyan a programoz\'asi feladatok eset\'en is l\'attuk a feladatok is besorolhat\'ok 
+n\'eh\'any alapt\'{\i}pusba, \'ugy az oszt\'alyokkal val\'o tervez\'esn\'el is vannak egyszer\H{u} \'es j\'ol 
+\'attekinthet\H{o} tervez\'esi mint\'ak.
+
+Ezzel a most t\'argyalt t\'emak\"orrel terjedelmes szakk\"onyvek foglalkoznak, most csak a legegyszer\H{u}bb alapelveket 
+fogjuk tudni le\'{\i}rni. (Nem csak a helyhi\'any korl\'a\-toz\-za a bemutatand\'o t\'em\'akat, azok egy r\'esz\'enek  
+meg\'ert\'ese sajnos szinte lehetetlen sok \'eves programoz\'oi tapasztalat n\'elk\"ul.) A szakk\"onyvek ezt 
+{\sl objektum-orient\'alt programoz\'asnak} (OOP) \index{OOP} \index{objektum-orient\'alt programoz\'as} nevezik, 
+de nek\"unk nem kell a n\'evt\H{o}l megijedni, mert a m\'odszer egy\'altal\'aban nem bonyoult. (Az elnevez\'es 
+ugyanakkor szerencs\'esebb lenne, ha objektum helyett oszt\'aly szerepelne bene, mert alapvet\H{o}en a megfelel\H{o} 
+oszt\'alyok tervez\'es\'evel \'es k\'odol\'as\'aval foglalkozik.) Az OOP a k\"ovetkez\H{o} alapelveket alkalmazza:
+
+\begin{itemize}
+   \item {\bf becsomagol\'as}
+   \item {\bf \"or\"okl\'es}
+   \item {\bf sokalak\'us\'ag}
+\end{itemize}
+
+Az \"or\"okl\'essel, legal\'abbis a Python programoz\'asi nyelv szintj\'en, m\'ar kor\'abban megismerkedt\"unk, most a 
+tervez\'esi felhaszn\'al\'as\'at fogjuk megn\'ezni. A {\sl becsomagol\'as} \index{becsomagol\'as}  tulajdonk\'eppen 
+nem jelent m\'ast, mint a m\'ar bemutatott alapelvet, hogy az objektum bels\H{o} adatait csak \'es kiz\'ar\'olag a 
+met\'odusokon kereszt\"ul haszn\'aljuk. Ezzel szemben a {\sl sokalak\'us\'ag} \index{sokalak\'us\'ag} teljesen \'uj 
+fogalom. Mivel k\'es\H{o}bb t\'enyleges Python k\'odon alaposan meg fogjuk magyar\'azni, most elegend\H{o} egy 
+t\"om\"or le\'{\i}r\'as is. Azt az \'erdekess\'eget jelenti, hogy egy b\'azisoszt\'aly k\"ul\"onb\"oz\H{o} 
+lesz\'armazottai adott esetben egym\'ast is helyettes\'{\i}thetik. (L\'asd a m\'ar eml\'{\i}tett vegyes tartalma\'u 
+list\'akat.) Ennek a haszn\'ar\'ol a k\'es\H{o}bbiekben meggy\H{o}z\H{o}dhet\"unk. 
+
+\subsection{Gondolkodjunk el\H{o}re}
+
+Ebben az alfejeztben olyan egyszer\H{u} k\'ed\'eseket fogunk az OOP-vel kapcsolatban feltenni, amelyek az eddigi p\'eld\'aink 
+\'es ismereteink alapj\'an meg\'erthet\H{o}ek \'es meg\-v\'a\-la\-szol\-ha\-t\'o\-ak. Emelett seg\'{\i}tenek abban, hogy 
+elsaj\'at\'{\i}tsuk a sz\'am\'{\i}t\'og\'epes feladatmegold\'as m\'od\-sze\-re\-it. N\'ezz\"uk meg ism\'et a kor\'abbi 
+{\tt Jatekos / Kapus} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+class Kapus(Jatekos):
+   def __init__(self, pNev, pMezSzam):
+      Jatekos.__init__(self, pNev, pMezSzam)
+      self.hely = 'kapu' 
+
+   ...
+\end{Verbatim}
+
+Ahogyan kor\'abban is meg\'allap\'{\i}tottuk, a sz\'armaztat\'as sor\'an b\H{o}\-v\'{\i}\-tet\-t\"uk az osz\-t\'aly\-ban 
+t\'arolt adatokat, ez\'ert a kor\'abban eml\'{\i}tett helyettes\'{\i}t\'es nem lehet teljes k\"or\H{u}. Ez a probl\'ema 
+viszont a b\'azisoszt\'aly k\'odol\'asa (\'es tervezes\'ese) sor\'an el\H{o}re gondolkodva megoldhat\'o:
+
+\begin{Verbatim}[fontsize=\small]
+class Jatekos:
+   def __init__(self, pNev, pMezSzam, pHely = ''):
+      self.nev = pNev
+      self.mezSzam = pMezSzam
+      self.hely = pHely
+
+   ...
+
+class Kapus(Jatekos):
+   def __init__(self, pNev, pMezSzam):
+      Jatekos.__init__(self, pNev, pMezSzam,'kapu')
+
+   ...   
+\end{Verbatim}
+
+Nem t\"ort\'ent m\'as, mint a {\tt hely} mez\H{o}t \'atemelt\"uk a b\'azisoszt\'alyba. Ennek a k\"ovetkezm\'enyek\'ent a 
+lesz\'armazott oszt\'aly nem tartalmaz t\"obb mez\H{o}t, mint a b\'azisoszt\'aly, vagyis a helyettes\'{\i}t\'esnek ebb\H{o}l 
+a szempontb\'ol semmi akad\'alya.
+
+K\"ovetkez\H{o} \'erdekes kalandunk meg\'{\i}rni a {\tt Csapat} oszt\'alyhoz a {\tt Csere} met\'odust. El\H{o}re gondolkodva 
+most k\'et lehet\H{o}s\'eg\"unk van: megadhatjuk a k\'et j\'at\'ekos nev\'et, vagy mezsz\'am\'at. B\'armelyik megold\'ast 
+v\'alasztjuk, a leprogramozand\'o l\'ep\'esek az al\'abbiak:
+
+\begin{enumerate}
+   \item Megkeress\"uk a k\'et j\'at\'akost a {\tt cserek} \'es {\tt jatekosok} list\'akban. 
+   \item T\'enylegesen kicser\'elj\"uk az adatokat
+\end{enumerate}
+
+K\'et tov\'abbi megjegyz\'es: ilyen esetekben j\'onak l\'atszik, ha a met\'odus jelzi, hogy sikeres volt-e a h\'{\i}v\'as. 
+Erre k\'enyelmes eszk\"oz a visszat\'er\'esi \'ert\'ek. A m\'asik pedig az hogy, c\'elszer\H{u}nek l\'atszik mind a 
+k\'etf\'ele megk\"ozel\'{\i}t\'essel meg\'{\i}rni a k\'erd\'eses met\'odust, de kor\'abban a f\"uggv\'enyekn\'el szerzett 
+tapasztalataink alapj\'an tulajdonk\'eppen k\'etf\'ele met\'odusr\'ol van sz\'o:
+
+%% TODO -- tesztelni
+
+\begin{Verbatim}[fontsize=\small]
+class Csapat:
+   def __init__(self, pNev, pKapNev, pMezSzam):
+      self.csapatNev = pNev
+      kapitany = Jatekos(pKapNev, pMezSzam)
+      self.csapatKapitany = kapitany
+      self.jatekosok = []
+      self.cserek = []
+
+   def feltolt(self, jLista, csLista):
+      self.jatekosok = jLista
+      self.cserek = csLista
+
+   def csereNev(self, jatekosNev, csereNev):
+      ret = -1
+      jpos = -1
+      cspos = -1
+
+      nJ = len(self.jatekosok)
+      for idx in range(nJ):
+         if self.jatekosok[idx].nev == jatekosNev:
+            jpos = idx
+            break
+      nCs = len(self.cserek)
+      for idx in range(nCs):
+         if self.cserek[idx].nev == csereNev:
+            cspos = idx
+            break
+
+      if cspos > -1 and jpos > -1:
+         tmp = self.cserek[cspos]
+         self.cserek[cspos] = self.jatekosok[jpos]
+         self.jatekosok[jpos] = tmp
+         ret = 1
+      else:
+         ret = 0
+
+      return ret
+
+   def csereMez(self, jatekosMez, csereMez):
+      ret = -1
+      jpos = -1
+      cspos = -1
+
+      nJ = len(self.jatekosok)
+      for idx in range(nJ):
+         if self.jatekosok[idx].mezSzam == jatekosMez:
+            jpos = idx
+            break
+      nCs = len(self.cserek)
+      for idx in range(nCs):
+         if self.cserek[idx].mezSzam == csereMez:
+            cspos = idx
+            break
+
+      if cspos > -1 and jpos > -1:
+         tmp = self.cserek[cspos]
+         self.cserek[cspos] = self.jatekosok[jpos]
+         self.jatekosok[jpos] = tmp
+         ret = 1
+      else:
+         ret = 0
+
+      return ret
+
+   ...
+\end{Verbatim}
+
+A fenti k\'odot megn\'ezve l\'atjuk, hogy a sikeres h\'{\i}v\'as eset\'en a visszat\'er\'esi \'ert\'ek 1, egy\'ebk\'ent 
+0. Az is l\'atszik, hogy mind a k\'et esetben gyakorlatilag ugyanazt hajtja v\'egre a k\'et f\"uggv\'eny. Futtathat\'o 
+scriptet az eddigi ismeretek alapj\'an az olvas\'ok is \'{\i}rhatnak. Ehhez seg\'{\i}ts\'eget k\'{\i}v\'antunk adni, 
+el\H{o}re megadtunk egy olyan met\'oduust: {\tt feltolt}, amely a j\'at\'ekosok \'es a cser\'ek list\'aj\'at felt\"olti 
+a {\tt Csapat} oszt\'alyba. (Tov\'abbi \"otlet: \'ep\'{\i}ts\"uk fel utas\'{\i}t\'asokkal a {\tt Jatekos} konstruktor\'aval 
+a list\'akat k\'ezzel, majd az {\tt append} f\"uggv\'ennyel tegy\"uk bele egyenk\'ent a param\'eterk\'ent \'atadand\'o 
+k\'et list\'aba.)
+
+\subsection{M\'odszerek, amelyeket \'erdemes haszn\'alnunk}
+
+Objektumok \'es oszt\'alyok haszn\'alata sokat seg\'{\i}t a programok meg\'{\i}r\'as\'aban, de az el\H{o} r\'eszben 
+m\'ar tal\'alkoztunk olyan k\'erd\'esekkel, amikor alapos el\H{o}zetes t\"opreng\'esre volt sz\"uks\'eg a script 
+t\'enyleges meg\'{\i}r\'as\'ahoz. Nem c\'elunk, hogy a programtervez\'es elm\'eleti m\'elys\'egeibe elmer\"ulni, 
+de fontosnak tartjuk n\'eh\'any szempont meg\-t\'ar\-gya\-l\'a\-s\'at gyakorlati szempontb\'ol. Ha takar\'ekoskodni 
+szeretn\'enk a programok \'{\i}r\'as\'ara ford\'{\i}tott id\H{o}nkkel, akkor tersz\'eszetes a t\"orekv\'es, hogy 
+k\"onnyen \'erthet\H{o} \'es \'ujra hasznos\'{\i}that\'o k\'odot \'{\i}rjunk. Szerencs\'ere a Python \'attekinthet\H{o} 
+szerekezet erre teljes m\'ert\'ekben alkalmas. Ne felejts\"uk el, hogy nem csak az \'{\i}r\'as ut\'ani percekben kell 
+egy-egy scriptet meg\'erten\"unk, han\'am ak\'ar sok h\'onappal k\'es\H{o}bb is.
+
+\noindent {\it Legy\"unk egyszer\H{u}ek  -- TODO}
+
+Programjaink olvashat\'os\'aga szempontj\'ab\'ol nagyon l\'enyeges, hogy az oszt\'alyok minden esetben j\'ol le\'{\i}rhat\'o, 
+\'es lehet\H{o}leg vil\'agosan megfogalmazhat\'o tulajdons\'agokat val\'os\'{\i}tsanak meg. Visszat\'erve gondolatban a 
+kor\'abban m\'ar l\'atott labdasportos p\'eld\'ahoz. Lehet\H{o}s\'eg lett volna, hogy egy nagyobb oszt\'alyban \'{\i}rjuk 
+meg, de sokkal bonyolultabb lett volna a k\'od. R\'aad\'asul, mivel a csapat \'es a j\'at\'ekos oszt\'alyok el vannak 
+egym\'ast\'ol v\'alasztva, \"or\"okl\'essel mind a kett\H{o} b\H{o}v\'{\i}thet\H{o}, \'ujrahasznos\'{\i}that\'o ak\'ar 
+k\"ul\"on-k\"ul\"on is. L\'assunk tov\'abbi p\'eld\'at is, hogy ezt a gondolatot megmutassuk:
+
+{\noindent \bf TODO p\'elda}
+
+\begin{Verbatim}[fontsize=\small]
+class Pont:
+   def __init__(self, pX, pY):
+      self.x = pX
+      self.y = pY
+
+class Alakzat(Pont):
+   def __init__(self, pX, pY, pMeret):
+      Pont.__init__(self, pX, pY)
+      self.meret = pMeret
+      
+\end{Verbatim}
+
+Scriptek \'es programok \'{\i}r\'asakor a k\'od olvashat\'os\'aga \'es \'attekinthet\H{o}s\'ege nagyon fontos, kimondhatjuk, 
+a helyess\'eg egyik garanci\'aja. Ennek \'erdek\'eben az al\'abbi j\'otan\'acsokat aj\'anlom az olvas\'ok figyelm\'ebe:
+
+\begin{itemize}
+   \item egy met\'odusnak (f\"uggv\'enynek) lehet\H{o}leg ne legyen sok param\'etere, ha elker\"ulhetetlen, akkor adjuk \'at 
+      listak\'ent,
+   \item az oszt\'alyoknak, met\'odusoknak (f\"uggv\'enyneknek) \'es mez\H{o}knek legyenek \'ert\-he\-t\H{o}, besz\'edes 
+      nevei,
+   \item lehet\H{o}leg ker\"ulj\"uk azt el, hogy 10 sorn\'al hosszabb f\"uggv\'enyeket \'{\i}rjunk
+   \item minden met\'odus (f\"uggv\'eny) lehet\H{o}leg egy j\'ol meghat\'arozott dolgot csin\'aljon.
+\end{itemize}
+
+Gondolom, hogy el\'egg\'e meglep\H{o} ez a felsorol\'as, de sok \'ev tapasztalata alapj\'an mondhatom, hogy val\'oban seg\'{\i}t. 
+N\'eh\'any r\"ovid megjegyz\'est az\'ert m\'eg szeretn\'ek hozz\'atenni. A Python a t\"obbi programoz\'asi nyelvhez k\'epest 
+nagyon t\"om\"or, ez\'ert 10 sornyi k\'od el\'egg\'e sok feldolgoz\'ast tud v\'egrehajtani. Ezek a tan\'acsok a kezd\'eshez 
+adnak hasznos \'utmutat\'ast, k\'es\H{o}bb m\'ar nagyobb gyakorlattal el is fogunk t\H{o}l\"uk t\'erni. Ki is fog alakulni az 
+a k\'odol\'asi szok\'as, amellyel t\'enyleg hat\'akonyan tudunk dolgozni.
+
+\noindent {\it Mi ker\"ulj\"on a b\'azisoszt\'alyba  -- TODO}
+ 
+Kor\'abban m\'ar l\'attunk p\'eld\'at arra, hogy az \"or\"okl\'es sor\'an egy oszt\'aly adatait \'es tev\'ekenys\'eg\'et 
+is kitterjsztj\"uk, valamint azt is, hogy hasonl\'o feladatokat megold\'o oszt\'alyokat c\'elszer\H{u} egyetlen k\"oz\"os 
+b\'azisoszt\'alyb\'ol lesz\'armaztatni. Az viszont alapos \'atgondol\'asra szorul, hogy milyen tulajdons\'agokat a 
+legc\'elszer\H{u}bb a b\'azisoszt\'alyba tenni. A sokalak\'us\'ag akkor tud igaz\'an hat\'akonyan m\H{u}k\"odni, ha arr\'ol 
+tudunk gondoskodni, hogy a b\'azisoszt\'aly \'es a lesz\'armazott tudja egym\'ast helyettes\'{\i}teni. Id\'ezz\"uk vissza 
+az egyik kor\'abbi p\'eld\'ankat:
+
+\begin{Verbatim}[fontsize=\small]
+class Jatekos:
+   def __init__(self, pNev, pMezSzam, pHely = ''):
+      self.nev = pNev
+      self.mezSzam = pMezSzam
+      self.hely = pHely
+
+   ...
+
+class Kapus(Jatekos):
+   def __init__(self, pNev, pMezSzam):
+      Jatekos.__init__(self, pNev, pMezSzam,'kapu')
+
+   ...   
+\end{Verbatim}
+
+Eml\'ekezz\"unk vissza, hogy a {\tt self.hely} mez\H{o}t az\'ert tett\"uk bele a b\'azisoszt\'alyba, hogy minden olyan 
+helyen, ahol "Kapus" lehet, ott lehessen "Jatekos" is. Gondoljuk azonban v\'egig, hogy mit is jelent az \"or\"okl\H{o}d\'es 
+a script tervez\'ese sor\'an. Alaposan megn\'ezve ism\'et a fenti p\'eld\'at \'eszrevehetj\"uk azt, hogy a b\'azisoszt\'aly 
+\'altal\'anosabb, mint a lesz\'armazott. Ez seg\'{\i}t annak a k\'erd\'esnek az eld\"ont\'es\'eben, hogy milyen mez\H{o}ket 
+\'es met\'odusokat c\'elszer\H{u} a b\'azisoszt\'alyba tenni. Logikusan azt a j\'otan\'acsot adhatjuk, nem \'erdemes 
+t\'uls\'agosan sok mindent, mert az csak csorb\'{\i}tan\'a az \'altal\'anoss\'ag\'at. Ha sz\"uks\'eg van arra, hogy a 
+helyettes\'{\i}thet\H{o}s\'eg miatt az \"or\"okl\'es sor\'an k\'es\H{o}bben defini\'aland\'o met\'odusokat \'es mez\H{o}ket 
+m\'egiscsak be kell tenni a b\'azisoszt\'alyba, akkor azokat \"uresen kell l\'etrhozni (most figyelm\"unket csak a k\'es\H{o}bb 
+meghat\'arozand\'o r\'eszletekre fogjuk \"osszpontos\'{\i}tani) :
+
+\begin{Verbatim}[fontsize=\small]
+class Bazis:
+   def __init__(self, pDat = ''):
+      self.adat = pDat
+
+   def fuggv(self, param = []):
+      pass
+
+\end{Verbatim}
+
+A fenti megold\'asban az egyetlen \'ujdons\'ag az \"ures lista param\'eterrel ell\'atott {\tt fuggv} nev\H{u} met\'odus. 
+Felid\'ezve, hogy a Python programoz\'asi nyelven egy lista tartalmazhat vegyesen mindenf\'ele t\'{\i}pus\'u adatot, az itt 
+bemutatott megold\'as nem akad\'alyozza meg, hogy a lesz\'armaztat\'as sor\'an tetsz\H{o}leges adatot \'atadjunk. A 
+met\'{dus} belsej\'eben szerepl\H{o} {\tt pass} utas\'{\i}t\'as semmit nem csin\'al, de a Python nyelv szempontj\'ab\'ol 
+fomrailag sz\"uks\'eg van r\'a. Egy\'ebk\'ent a futtat\'orendszer hib\'at jelezne. \'Igy viszont ak\'ar meg is lehet 
+h\'{\i}vni, ugyanis semmit sem csin\'al. 
+
+
+%% -- TODO
+
+\noindent {\it \"Or\"okl\'esi m\'elys\'eg, t\"obbsz\"or\"os \"or\"okl\'es  -- TODO}
+
+M\'ar l\'attuk a kor\'abbiakban, hogy az \"or\"okl\'es milyen nagy seg\'{\i}ts\'eget jelent a programoz\'as sor\'an, de az 
+eddigiek alapj\'an azt is sejthetj\"uk, hogy az\'ert ovatosan kell alkalmazni. Minden programoz\'onak a lehet\H{o}s\'egekhez 
+k\'epest t\"orekednie kell arra, hogy az \'altala meg\'{\i}rt scriptek, programok a legegyszer\H{u}bbek legyenek. Ez 
+mindenk\'eppen kifizet\H{o}d\H{o}, mert egyr\'eszt sokkal k\"onnyebb a k\'odot meg\'{\i}rni, \'es az esetleges hib\'akat 
+megtal\'alni, ha j\'ol olvashat\'o, vil\'agos szerkezet\H{u}. Ez azt is jelenti, hogy az \'ujrahasznos\'{\i}t\'as miatt 
+is fontos, hogy a lehet\H{o} legkevesebb bonyodalmat okozzuk magunknak \'es m\'asoknak. Kor\'abban m\'ar foglalkoztunk vele, 
+az \"or\"okl\'es az OOP eset\'en els\H{o}sorban nem arra szolg\'al, hogy kevesebb programsort kelljen \'{\i}rni, hanem 
+egyfajta logikai kapcsolatot is ki kell fejezzen. A {\tt Kapus} egy k\"ul\"onleges {\tt Jatekos}, \'es az \"or\"okl\'est 
+csak erre \'erdemes haszn\'alni, teh\'at az \'altal\'anos tulajdons\'agok sz\H{u}k\'{\i}t\'es\'ere. 
+
+Ha egy oszt\'aly egyn\'el t\"obb b\'azisoszt\'alyt haszn\'al, akkor {\sl t\"obbsz\"or\"os \"or\"okl\'esr\H{o}l} besz\'el\"unk. 
+Vannak olyan OOP-re alkalalmas programoz\'asi nyelvek, amelyek ezt nem engedig meg, mert vannak a gyakorlati 
+megval\'os\'{\i}t\'as\'aval kapcsolatosan lehets\'eges probl\'em\'ak. A Python viszont ismeri ezt a lehet\H{o}s\'eget. A nyelvi 
+megold\'as el\'egg\'e egyszer\H{u}:
+
+\begin{Verbatim}[fontsize=\small]
+class Enyem(Bazis1, Bazis2)
+   def __init__(self,.....):
+      Bazis1.__init__(.....)
+      Bazis2.__init__(.....)
+      ....
+\end{Verbatim}
+
+L\'atszik a fenti p\'eld\'ab\'ol, hogy tulajdonk\'eppen t\'enyleg nem bonyolult.
+
+\subsection{\'Ujrahasznos\'{\i}t\'as \'es scriptek}
+
+Az OOP egyik legfontosabb gyakorlati haszna, hogy lehet\H{o}v\'e teszi a kor\'abban meg\'{\i}rt k\'odok \'ujra 
+felhaszn\'al\'as\'at. Ez nem csak sok id\H{o}t takar\'{\i}that meg a programoz\'asn\'al, hanem azt is eredm\'enyezi, 
+hogy biztosak lehet\"unk abban, hogy alaposan kipr\'ob\'alt \'es ellen\H{o}rz\"ott oszt\'alyokat \'es f\"uggv\'enyeket 
+\'ep\'{\i}thet\"unk be a programjainkba. Ugyanakkor nagyon k\'enyelmetlen lenne, ha minden esetben t\'enylegesen is be 
+kellene m\'asolni a r\'egebbi k\'odot az \'uj scriptekbe. A k\'enyelmetlens\'eg mellett m\'eg azzal is bonyol\'{\i}tan\'a 
+az \'elet\"unket, hogy nagyon k\"onnyen csin\'aln\'ank hib\'at a m\'asol\'as sor\'an. Szerencs\'ere a Python ad nek\"unk 
+erre a pro1bl\'em\'ara is megold\'ast: a {\sl modulokat}. Ezek \'altal\'aban nem tartalmaznak k\"ozvetlen\"ul 
+v\'egrehajthat\'o k\'odot, csak f\"uggv\'eny \'es oszt\'alydefin\'{\i}ci\'okat. A nyelv sok be\'ep\'{\i}tett komponense 
+is ilyen modulokban \'all a rendelkez\'esre. Nem fogunk nagyon belem\'elyedni a modulok \'{\i}r\'as\'anak r\'eszleteibe, 
+ehelyett kor\'abbi f\"uggv\'enyeink egy r\'esz\'er\'eb\H{o}l \"ossze\'all\'{\i}tunk egy egyszer\H{u}bbet, \'es megmutatjuk, 
+hogyan is kell haszn\'alni. Legyen a k\"ovetkez\H{o} k\'od a modulunk:
+
+\begin{Verbatim}[fontsize=\small]
+# modul1.py
+
+def paros(n):
+   maradek = n % 2
+
+   if maradek == 0:
+      ki = 'I'
+   else:
+      ki = 'N'
+
+   return ki
+
+def osztok(n):
+   i = 2
+
+   while i < n:
+      if n % i == 0:
+	 print (i)
+      i = i + 1
+
+def oszto(n, start = 1):
+   ret = 0
+
+   i = start + 1
+
+   while n % i <> 0 and i < n:
+      i = i + 1
+
+   if i <> n:
+      ret = i
+
+   return ret
+\end{Verbatim}
+
+Ha egy scriptben szeretn\'enk haszn\'alni a k\"uls\H{o} modulban meg\'{\i}rtakat, akkor be kell emelni a k\'odunkba, ezt 
+Pythonban \'ugy nevezz\"uk szakkifejez\'essel, hogy {\sl import\'aljuk}. Erre szolg\'al a {\tt import} utas\'{\i}t\'as, 
+amelynek adott esetekben k\'etf\'ele m\'odj\'at vehetj\"uk ig\'enybe.
+
+\begin{Verbatim}[fontsize=\small]
+import modul1
+
+modul1.osztok(28)
+\end{Verbatim}
+
+Ebben az esetben egyetlen utas\'{\i}t\'assal az eg\'esz modul el\'erhet\H{o}s\'eg\'er\H{o}l gondoskodtunk, ez\'ert 
+a t\'enyleges haszn\'alat sor\'an minden esetben a modul nev\'et a f\"uggv\'enyek \'es oszt\'alyok neve el\'e kell 
+\'{\i}rni. A m\'asik lehet\H{o}s\'eg:
+
+\begin{Verbatim}[fontsize=\small]
+from modul1 import oszto
+
+oszto(78, 3)
+\end{Verbatim}
+
+Ha az import\'al\'as sor\'an r\'eszletezz\"uk, mit szeretn\'enk az adott modulb\'ol beemelni, akkor a t\'enyleges 
+haszn\'alat sor\'an nem kell a modul nev\'et haszn\'alni. Ez az ut\'obbi m\'odszer b\'armennyire is k\'enyelmesnek 
+\'{\i}g\'erkezik, nagyon nagy kavarod\'ashoz vezethet, ha k\"ul\"onb\"oz\H{o} modulok is tartalmaznak ugyanolyan 
+nev\H{u} \"osszetev\H{o}ket. Ebben az esetben az els\H{o} form\'at biztons\'agosabb haszn\'alni. Term\'eszetesen a 
+gyakorlati programoz\'as sor\'an ezt a lehet\H{o}s\'egek szerint a nevek \"utkoz\'es\'et c\'elszer\H{u} elker\"ulni. 
+Abban az esetben lehet kiz\'ar\'olagosan \'es nagyon \'ovatosan azonos nevetek adni, ha a feladatuk is alapvet\H{o}en 
+azonos, csak m\'as jelleg\H{u} adatokon dolgoznak ezek a f\"uggv\'enyek / met\'odusok. Oszt\'alyok \'es 
+objektumokkal kapcsolatban emlegett\"uk most a modulokat, de helyhi\'any miatt itt csak egyszer\H{u} f\"ugg\'enyekkel 
+mutattuk meg haszn\'alatokat. 
+
+

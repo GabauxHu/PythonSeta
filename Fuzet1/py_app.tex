@@ -1,0 +1,1088 @@
+\appendix
+\section{Kiirat\'as sz\'epen}
+
+A kor\'abbi fejezetekben is irattunk ki a k\'eperny\H{o}re adatokat, de k\"ul\"on\"osebben nem foglalkoztunk azzal, hogyan 
+is jelenik meg az inform\'aci\'o. A szerz\H{o} azt is bevallja, hogy el\'eg sok dolgot kellett megtanulnunk el\H{o}bb, 
+hogy ezzel a k\'erd\'essel alaposan tudjunk foglalkozni. Most viszont tov\'abb nem halogathatjuk. Haszn\'altuk m\'ar a 
+{\tt str} f\"uggv\'enyt, \'es a kimenet\'et \'atadtuk a {\tt print} utas\'{\i}t\'asnak. Az\'ert volt ugyanakkor \'edemes ezt 
+a t\'em\'at a f\"uggel\'ekre hagyni, mert sok esetben az ilyen kiirat\'asokat az oszt\'alyokban szokt\'ak met\'odusk\'ent 
+meg\'{\i}rni. 
+
+\subsection{T\'aron bel\"uli \'atalak\'{\i}t\'as}
+
+Azt m\'ar a kor\'abbiakb\'ol tudjuk, hogy a kiirat\'as sor\'an minden esetben bet\H{u}\-so\-ro\-za\-to\-kat tudunk a 
+k\'eprny\H{o}re kik\"uldeni, ez\'ert id\H{o}nk\'ent \'erdemes az adatokat bet\H{u}sorozatokk\'a j\'oval a t\'enyleges 
+kiirat\'as el\H{o}tt \'atalak\'{\i}tani. Ez a sz\'am\'{\i}t\'og\'ep mem\'ori\'aj\'aban t\"ort\'enik, teh\'at val\'oban 
+t\'aron bel\"ul. A k\"ovetkez\H{o} p\'elda el\'egg\'e egyszer\H{u}:
+
+\begin{Verbatim}[fontsize=\small]
+>>> j = 12 
+>>> st = 'j => %d'%j
+>>> print (st)
+j => 12
+\end{Verbatim}
+
+Kipr\'ob\'alva a fenti utas\'{\i}t\'ast olyan \'ert\'ekad\'ast tal\'altunk benne, amelyet kor\'abban m\'g nem. 
+{\sl \'Atalak\'{\i}t\'asi mint\'anak} nevezz\"uk saj\'at haszn\'alatra az aposztr\'ofok k\"oz\"otti bet\H{u}sorozatot. Az 
+ebben szerepl\H{o} sz\'azal\'ekjel ut\'ani bet\H{u} mondja meg, hogy az \'atalak\'{\i}tand\'o adat (v\'altoz\'o) milyen 
+tipus\'u. Az al\'abbi t\'abl\'azatban felsoroljuk a legfontosabb tipusokhoz tartoz\'o jel\"ol\'est:
+
+\begin{center}
+   \begin{tabular}{cl}
+      {\bf Bet\H{u}} & {\bf T\'{\i}pus} \\
+      {\tt d} & Eg\'esz sz\'am \\
+      {\tt f} & Tizedest\"ort sz\'am \\
+      {\tt c} & Egyetlen bet\H{u} \\
+      {\tt s} & Bet\H{u}sorozat 
+   \end{tabular}
+\end{center}
+
+\subsection{T\'enyleges kiirat\'as \'es form\'az\'as}
+
+A kor\'abban megismert, \'es sokszor haszn\'alt {\tt print} utas\'{\i}t\'as v\'egzi el a t\'enyleges kiirat\'ast. 
+Azonban haszn\'alhatjuk arra is, hogy egyszer\H{u}bb form\'az\'ast r\'a tudjunk b\'{\i}zni. Bemeleg\'{\i}t\'esk\'ent 
+pr\'ob\'aljuk ki az al\'abbi utas\'{\i}t\'ast:
+
+\begin{Verbatim}[fontsize=\small]
+>>> print ('Ha\nHo')
+Ha
+Ho
+\end{Verbatim}
+
+Nagyon nem akarjuk a fenti p\'eld\'at elemezgetni, hiszen az oszt\'alyok \'es objektumok alkalmaz\'as\'aval enn\'el 
+sokkal \"ugyesebb \'es eleg\'ansabb form\'az\'ast tudunk el\'erni. Szeretn\'enk viszont az egyetlen \'ujdons\'agot 
+b\H{o}vebben k\"or\"ul\'{\i}rni az olvas\'oknak. A $\backslash$ jel, ami a kiirat\'o utas\'{\i}t\'asban szerepel a 
+Python futtat\'orendszer sz\'am\'ara speci\'alis jelent\'essel b\'{\i}r. A m\"og\"otte l\'ev\H{o} bet\H{u} a kimeneti 
+lista sz\'am\'ara {\sl vez\'erl\H{o}jelk\'ent} szerepel. A bemutatotton k\'{\i}v\"ul van m\'eg sok, de mi csak egyetlen 
+egyet fogunk itt alkalmazni:
+
+\begin{Verbatim}[fontsize=\small]
+>>> print ('Ha\tHo\tTe')
+Ha     Ho     Te
+\end{Verbatim}
+
+Az itt bemutatott vez\'erl\H{o}jel t\'abl\'azatos kiirat\'ast tesz lehet\H{o}. R\"oviden \"osszefoglalva a 
+vez\'erl\H{o}jeleket:
+
+\begin{center}
+   \begin{tabular}{cl}
+      {\bf Bet\H{u}} & {\bf T\'{\i}pus} \\
+      {\tt n} & \'Uj sorba irat\'as \\
+      {\tt t} & T\'abl\'azatos kiirat\'as \\      
+   \end{tabular}
+\end{center}
+
+\subsection{Oszt\'alyok, p\'eld\'anyok kiirat\'asa}
+
+Ezt a fejezetet azzal fogjuk lez\'arni, hogy megimserj\"uk azt a m\'odszert, hogyan is lehet egy oszt\'alyt, 
+annak p\'eld\'any\'at megjelen\'{\i}teni a k\'eperny\H{o}n. Ha csak egyszer\H{u}en kiadn\'ank a {\tt print} 
+utas\'{\i}t\'ast, akkor nem tudn\'ank meg m\'ast, mint a p\'eld\'any t\'arol\'as\'anak n\'eh\'any r\'eszlet\'et. 
+Szerencs\'ere a Python programoz\'asi nyelv megengedi, hogy minden egyes oszt\'aly sz\'am\'ara \'{\i}rjunk egy 
+met\'odust, amellyel sz\"ovegg\'e lehessen alak\'{\i}tani, induljunk ki egy kor\'abban mutatott egyszer\H{u} 
+objektumbn\'ol:
+
+\begin{Verbatim}[fontsize=\small]
+class Jatekos:
+   def __init__(self, pNev, pMezSzam):
+      self.nev = pNev
+      self.mezSzam = pMezSzam
+
+   def __str__(self):
+      text = 'Nev = ' + self.nev + '\n Mezszam = ' + self.mezszam
+      return(text)
+
+   ....
+
+hatved = Jatekos('Zoli', 3)
+
+print(hatved)
+\end{Verbatim}
+
+Ha kipr\'ob\'aljuk a fenti k\'odot, akkor l\'atjuk, hogy a kiirat\'as sor\'an \"onmag\'at\'ol lefut az 
+\'altalunk meg\'{\i}rt \'uj met\'odus, \'es ez gondoskodik a megfelel\H{o} form\'az\'asr\'ol. Ez 
+a megold\'as k\'enyelmes megold\'ast jelent, hogyan is lehet egy objketum adatait megjelen\'{\i}teni. 
+Felmer\"ul ugyanakkor, mit is lehetne csin\'alni, ha \"or\"okl\'essel \'uj otsz\'alyt hozunk l\'etre. 
+Erre is mutatunk mint\'at:
+
+\begin{Verbatim}[fontsize=\small]
+class Jatekos:
+   def __init__(self, pNev, pMezSzam):
+      self.nev = pNev
+      self.mezSzam = pMezSzam
+
+   def __str__(self):
+      text = 'Nev = ' + self.nev + '\n Mezszam = ' + self.mezszam
+      return(text)      
+   ...
+
+class Kapus(Jatekos):
+   def __init__(self, pNev, pMezSzam):
+      Jatekos.__init__(pNev, pMezSzam)
+      self.hely = 'Kapu'
+
+   def __str__(self):
+      text = Jatekos.__str__(self)
+      text = text + '\n Helye = ' + self.hely
+      return(text)
+
+\end{Verbatim}
+
+Olvas\'onkra b\'{\i}zzuk azt az egyszer\H{u} feladatot, hogy a fenti k\'odr\'eszlet alapj\'an futtathat\'o szkriptet 
+\'{\i}rjanak. K\"ul\"on\"os magyaraz\'atot nem k\'{\i}v\'anunk ehhez f\H{u}zni, hiszen vil\'agos, a konstruktorhoz 
+hasonl\'o m\'odon most is meg kellett h\'{\i}vni a b\'azisoszt\'aly azonos nev\H{u} met\'odus\'at. 
+
+Ide k\'{\i}v\'ankozk a k\"ovetkez\H[o] k\'odr\'eszlet is, amelyben a fent le\'{\i}rt oszt\'alyokat haszn\'aljuk:
+
+\begin{Verbatim}[fontsize=\small]
+j = Kapus('Sanyi, 4')
+s = str(j)
+\end{Verbatim}
+
+Ebben a m\'ar kor\'abban megismert {\tt str} f\"uggv\'eny \'erdekes tulajdons\'ag\'at tapasztaljuk. Automatkusan 
+megh\'{\i}vja ugyanazt a met\'odust, mint amit a {\tt print} eset\'en is megh\'{\i}v mag\'at\'ol a Python 
+keretrendszer.
+
+\section{T\"obbsz\"or\"os adatokr\'ol b\H{o}vebben}
+
+A kor\'abbiakban foglalkoztunk m\'ar a Python programoz\'asi nyelven a list\'akkal, most szeretn\'enk ilyen 
+ir\'any\'u ismereteinket b\H{o}v\'{\i}teni. A Python programoz\'asi nyelven azonban a list\'akkal hason\'o egy\'eb 
+adatszerkezetek is a rendelkez\'es\"unkra \'allnak. Most ebben a r\'eszben ezekkel fogunk megimserkedni, illetve a 
+list\'ak kezel\'es\'enek n\'eh\'any tov\'abbi r\'eszlet\'et is megmutatjuk.
+
+\subsection{List\'ak szeletel\'ese, kiterjeszt\'ese, \'es t\"orl\'es a list\'ab\'ol}
+
+A kor\'abbiakban minden alkalommal olyan list\'at (m\'as programoy\'asi nyelveken ezeket az adatszerkezeteket {\sl 
+t\"omb\"oknek} \index{t\"omb} szokt\'ak nevezni.)) hoztunk l\'etre, amely tartalmaz is adatokat, de lehet\H{o}s\'eg\"unk 
+van arra is, hogy \"ures list\'at k\'esz\'{\i}ts\"unk:
+
+\begin{Verbatim}[fontsize=\small]
+>>> ures = []
+>>> len(ures)
+0
+\end{Verbatim}
+
+\noindent Programoz\'asi feladatok megold\'asakor sokszor van erre sz\"uks\'eg, a fenti uta\-s\'{\i}\-t\'as alapj\'an 
+t\'enyleg nem tartalmaz adatot. Ismerj\"uk m\'ar az {\tt append} parancsot, pr\'ob\'al\-koz\-zunk az al\'abbiak szerint tov\'abb:
+
+\begin{Verbatim}[fontsize=\small]
+>>> ures.append(2)
+>>> ures.append(6)
+>>> len(ures)
+2
+>>> ures
+[2, 6]
+>>> ures[0] = 15
+>>> ures
+[15, 6]
+>>> del ures[0]
+>>> ures
+[6]
+>>> len(ures)
+1
+\end{Verbatim}
+
+A k\'et sz\'amot pontosan a v\'eg\'ere illesztette a Python futtat\'orendszer, most viszont tal\'alunk egy 
+\'ujdons\'agot is, ez nem m\'as, mint a {\tt del} utas\'{\i}t\'as. Ennek hat\'as\'ara a list\'ab\'ol t\"orl\"odik 
+az els\H{o} elem, aminek 0 az indexe. A list\'ak sok \'erdekes tulajdons\'aga k\"oz\"ul csak egyetlen egyet fogunk 
+megismerni, m\'egpedig az \'ugynevezett {\sl szeletel\'est}. A kor\'abbiak alapj\'an tudjuk, hogy a bet\H{u}sorozatok 
+is list\'aknak sz\'am\'{\i}tanak\footnote{Egyetlen nagyon fontos elt\'er\'essel, hogy nem lehet a bet\H{u}sorozatb\'ol 
+egyetlen bet\H{u}t ut\'olag lecser\'elni.}, ez\'ert most ilyen sorozattal fogunk k\'{\i}s\'erletezni:
+
+\begin{Verbatim}[fontsize=\small]
+>>> szo = 'halihoka'
+>>> szo[:3]
+'hal'
+>>> szo[3:]
+'ihoka'
+>>> szo[3:7]
+'ihok'
+>>> szo[3:-1]
+'ihok'
+\end{Verbatim}
+
+\noindent A szeletel\'es sor\'an egyszerre a lista t\"obb elem\'et tudjuk kivenni, l\'atszik, hogy a sz\"ogletes 
+z\'ar\'ojelben a kett\H{o}spont ut\'an \'{\i}rva a sz\'amot (3) a sz\'o els\H{o} h\'arom bet\H{u}t kapjuk meg, 
+ha el\'e, akkor a negyedikt\H{o}l a sz\'o v\'eg\'eig. A harmadik sorban a sz\'o k\"ozep\'er\H{o}l emel\"unk ki 
+bet\H{u}ket , ugyanez volt az eredm\'eny a k\"ovetkez\H{o}ben is. L\'atjuk, hogy Python a list\'ak eset\'eben a 
+negat\'{\i}v indexek is szerepelhetnek, a -1 az utols\'o el\H{o}tti elemet c\'{\i}mezi meg, vagyis \'altal\'anosan 
+a negat\'{\i}v indexek a lista v\'eg\'er\H{o}l c\'{\i}mezik meg az elemeket. Most pr\'ob\'aljuk ki a szeletel\'est 
+"rendes" list\'ak eset\'eben is:
+
+\begin{Verbatim}[fontsize=\small]
+>>> ver = [4,66,7,8,12,32]
+>>> ver[:2]
+[4,66]
+>>> ver[2:4]
+[7,8]
+\end{Verbatim}
+
+\noindent Azt gondoljuk, a kor\'abbiak alapj\'an nem kell magyar\'azat.
+
+Utols\'o t\'em\'ank ebben az alfejezetben, hogy a hozz\'af\H{u}z\'es mint\'aj\'ara vajon van-e lehet\H{o}s\'eg 
+arra, hogy egy elemet t\"or\"olj\"unk. Erre val\'o a {\tt del} utas\'{\i}t\'as, amelyben a t\"orlend\H{o} elem 
+listabeli c\'{\i}m\'et kell magadni. A p\'elda:
+
+\begin{Verbatim}[fontsize=\small]
+>>> ver = [32,4,616,71,8,12,32]
+>>> del ver[2]
+>>> ver
+[32, 4, 71, 8, 12, 32]
+>>>
+\end{Verbatim}
+
+\subsection{Nem v\'altoztathat\'o sorozatok}
+
+Scriptek \'es programok \'{\i}r\'asakor sz\"uks\'eg van olyan v\'altoz\'okra is, amelyek ugyan\'ugy t\"obb adatot tudnak 
+t\'arolni, mint a list\'ak, de l\'ertrehoz\'asuk ut\'an m\'ar nem v\'altaztathat\'ok meg. Erre nincs igaz\'an j\'o magyar 
+szakkifejez\'es, ez\'ert most saj\'at haszn\'alatra a {\sl sorozat} sz\'ot fogjuk haszn\'alni. L\'assunk erre is 
+p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+>>> t = 4, 8, 1
+>>> t
+(4, 8, 1)
+>>> t[1]
+8
+>>> t[1] = 0
+Traceback (most recent call last):
+  File "<stdin>", line 1, in <module>
+TypeError: 'tuple' object does not support item assignment
+\end{Verbatim}
+
+\noindent Az utols\'o sor, \'es az az\'ert kapott hiba\"uzenet bizony\'{\i}tja, hogy a sorozat tagjait nem lehet 
+megv\'altoztatni. Hasonl\'o eredm\'ennyel j\'arunk, ha a sorozat v\'eg\'ehez szeretn\'enk hozz\'af\H{u}zni: 
+
+\begin{Verbatim}[fontsize=\small]
+>>> t = 3, 5, 6, 12
+>>> t.append(22)
+Traceback (most recent call last):
+  File "<pyshell#1>", line 1, in <module>
+    t.append(22)
+AttributeError: 'tuple' object has no attribute 'append'
+\end{Verbatim}
+
+A futtat\'as alapj\'an l\'atjuk, hogy a sorozat val\'oban nem v\'altoztathaht\'o meg.
+
+\subsection{Sz\'ot\'arak}
+
+Mind a list\'ak, mind pedig a sorozatok, amiket eddig megismert\"unk, rendelkeznek egyetlen k\"oz\"os tulajdons\'aggal. 
+Az egyes elemei a sorsz\'amukkal, pontosabban az index\"ukkel \'erhet\H{o}l el. Lehet\H{o}s\'eg van ugyanakkor 
+arra is, hogy az adatsor egyes elemeit egy {\sl kulcs} \'ert\'ekkel \'erj\"uk el, az ilyen adatszerkezetet Python-ban 
+{\sl sz\'ot\'araknak} nevezz\"uk. L\'assunk el\H{o}sz\"or egy egyszer\H{u} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+>>> allat = {'malac' : 2, 'cica': 3, 'kutya' : 1}
+>>> allat['cica']
+3
+\end{Verbatim}
+
+L\'atszik, hogy ebben a "list\'aban" nem egyszer\H{u} elemek vannak t\'arolva, hanem kulcs \'es \'ert\'ek p\'arok. A 
+v\'altoz\'ot az els\H{o} sorban hozzuk l\'etre, a m\'asodik sorban pedig kiiratjuk az egyik elem\'et, az ahhoz tartoz\'o 
+kulcs \'ert\'eket ('cica') haszn\'alva. A sz\'ot\'arakba nagyon egyszer\H{u}en lehet \'ujabb elemet hozz\'avenni:
+
+\begin{Verbatim}[fontsize=\small]
+>>> allat['hal'] = 12
+>>> allat
+{'malac' : 2, 'cica': 3, 'kutya' : 1, 'hal' : 12}
+>>> sport = {}
+>>> sport
+{}
+>>> sport['kedvenc']='bringa'
+>>> sport
+{'kedvenc': 'bringa'}
+\end{Verbatim}
+
+Az \'uj \'ert\'ek megjelent az adatsorban, ahogyan azt a m\'asodik utas\'{\i}t\'as eredm\'e\-ny\'e\-b\H{o}l l\'atjuk. 
+A harmadik be\'{\i}rt parancs hat\'as\'ara egy \"ures sz\'ot\'ar j\"ott l\'etre, ahogyan ezt a kiirat\'as alapj\'an 
+l\'athatjuk is. Ugyan\'ugy lehet haszn\'alni, mint a kor\'abban l\'etrehozottat. Nem fogjuk a sz\'ot\'arakkal 
+kapcsolatos ismeretet b\H{o}vebben bemutatni, els\H{o}sorban az\'ert, mert nem szeretn\'enk ezt a bevezet\'est 
+elbnyol\'{\i}tani. Programok \'es scriptek \'{\i}r\'asa szempontj\'ab\'ol azonban van egyetlen fontos dolog, amit 
+\'erdemesnek tartunk le\'{\i}rni. Van a Python programoz\'asi nyelvben egy sz\'ot\'ar-met\'odus, amely a kulcsok 
+list\'aj\'at el\H{o} tudja all\'{\i}tani, ez pedig a {\tt keys} f\"uggv\'eny. N\'ezz\"uk meg az al\'abbi scriptet:
+
+\begin{Verbatim}[fontsize=\small]
+# keys.py
+
+allat = {'malac' : 2, 'cica': 3, 'kutya' : 1, 'hangya' : -2}
+
+for elem in list(allat.keys()):
+   print(elem)
+   print(allat[elem])
+
+print('Vege')   
+\end{Verbatim}
+
+Kipr\'ob\'al\'as ut\'an l\'atszik, hogy a {\tt for} ciklus t\'enyleg el\H{o}veszi a kulcs minden \'ert\'ek\'et, \'es ezzel 
+le tudtunk k\'erdezni az \'ert\'ekeket.
+
+\subsection{Adatok bedobozol\'asa}
+
+Kor\'abban l\'attunk m\'ar arra p\'eld\'et, hogy egy list\'aba ak\'ar vegyesen is elhelyezhet\"unk  adatokat. A Python 
+programoz\'asi nyelv az\'ert enn\'el t\"obb lehet\H{o}s\'eget bocs\'ajt a rendelkez\'es\"unkre. Szeml\'eletesen az\'ert 
+nevezt\"uk el "bedobozol\'asnak", mert teljesen olyan, mintha egy nagyobb dobozba kisebbeket rakn\'ank be. Azt m\'ar 
+kor\'abbr\'ol tudjuk, hogy egy sz\'ot (bet\H{u}sorozatot) bel\"ul a futtat\'orendszer list\'aban t\'arol, ez\'ert 
+szavak list\'aja tulajdonk\'eppen egy list\'akb\'ol k\'esz\'{\i}tett lista. L\'assuk a p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+>>> szavak = ['test','labda']
+>>> szavak
+['test', 'labda']
+>>> szavak[0][2]
+'s'
+>>> 
+\end{Verbatim}
+
+Ehhez b\H{o}vebb magyar\'azatot nem is kell szerint\"unk f\H{u}zni, j\'ol l\'athat\'o ugyanis, hogy a m\'asodik index 
+a bels\H{o} lista egy elem\'et veszi el\H{o}. \'elesebb szem\H{u} olvas\'oink viszont azonnal \'eszrevehetnek egy 
+fontos dolgot, a let\'arolt szavak nem egyenl\H{o} hossz\'uak. Ez a sz\'am\'{\i}t\'og\'epnek nem okoz gondot, de a 
+programok meg\'{\i}r\'asakor erre az\'ert figyelni kell. 
+
+A gyakorlatban nagyon sokszor el\H{o}fordul, hogy a feldolgozand\'o adatokat t\'abl\'azatos form\'aban kell 
+t\'arolni, hogy az azt feldolgoz\'o program k\"onnyen meg\'erthet\H{o} legyen. Erre egyszer\H{u} esetet mutatunk:
+
+\begin{Verbatim}[fontsize=\small]
+>>> sor1 = [1,3]
+>>> sor2 = [2,4]
+>>> tabla = []
+>>> tabla.append(sor1)
+>>> tabla.append(sor2)
+>>> tabla 
+[[1, 3], [2, 4]]
+>>>
+\end{Verbatim}
+
+L\'atszik, hogy a t\'abl\'azat k\'et sorb\'ol, \'es a sorok mindegyike k\'et elemb\H{o}l \'all. A k\'erny\H{o}n 
+megjelen\H{o} adatok nem el\'egg\'e szeml\'eletesek, de tudjuk, a 3-as sz\'am a 4-es sz\'am "felett" van az 
+adatsorban.
+
+Ahogyan m\'ar kor\'abban is \'{\i}rtunk r\'ola, a Python megengedi, hogy egy list\'aba tetsz\H{o}leges 
+t\'{\i}pus\'u elemeket tegy\"unk bele. 
+
+%% TODO teszt es printout
+
+\begin{Verbatim}[fontsize=\small]
+csapatok = []
+csapat = {'Nev' : 'Oldtimer' , 'Pontszam' : 23}
+csapatok.append(csapat)
+csapat = {}
+csapat = {'Nev' : 'Motorok' , 'Pontszam' : 17}
+csapatok.append(csapat)
+\end{Verbatim}
+
+A fenti peld\'aban azt l\'atjuk, hogyan is lehet sz\'ot\'arakb\'ol list\'at szervezni. Ez nagyon hat\'ekony 
+seg\'{\i}ts\'eg lehet egy program megtervez\'ese \'es meg\'{\i}r\'asa sor\'an, de az\'ert nagyon figyelni kell 
+k\"ozben, mert sajnos nagyon k\"onnyen el is lehet rontani.
+
+L\'epj\"unk tov\'abb, \'es n\'ezz\"unk meg egy kor\'abban m\'ar megmutatott defin\'{\i}ci\'ot, amelyet most 
+kieg\'esz\'{\i}t\"unk:
+
+\begin{Verbatim}[fontsize=\small]
+class Jatekos:
+   def __init__(self, pNev, pMezSzam):
+      self.nev = pNev
+      self.mezSzam = pMezSzam
+
+class Csapat:
+   def __init__(self, pNev, pKapNev, pMezSzam):
+      self.csapatNev = pNev
+      kapitany = Jatekos(pKapNev, pMezSzam)
+      self.csapatKapitany = kapitany
+      self.jatekosok = []
+      self.cserek = []
+
+   def ujJatekos(self, pJatekos):
+      self.jatekosok.append(pJatekos)
+   ...
+\end{Verbatim}
+
+Term\'eszetesen mer\"ul fel a fenti k\'odr\'eszlettel kapcsolatban, hogy az objektumban a csapatkapit\'anyt 
+t\'arol\'o v\'altoz\'o maga is egy objektum, a Jatekos oszt\'aly egy p\'eld\'anya. S\H{o}t, a j\'at\'ekosok 
+\'es a cser\'ek list\'aja is a Jatekos oszt\'aly p\'eld\'anyaib\'ol \'all, ahogyan az a met\'odus alapj\'an 
+l\'athat\'o. Ezzel megmutattuk, hogy milyen t\'ag lehet\H{o}s\'efgeket k\'{\i}n\'al a Python az adatok 
+egym\'asba\'agyaz\'as\'ara, b\H{o}vebben most nem fogjuk taglalni. 
+
+Befejez\'es\"ul szeretn\'enk m\'eg egyszer felh\'{\i}vni az olvas\'ok figyelm\'et, hogy  a lehet\H{o}s\'egek 
+az\'ert \'ovayoss\'agra kell hogy intsenek a programok meg\'{\i}r\'asa sor\'an. Arra mindenk\'eppen sz\"uks\'eg 
+van, hogy el\H{o}zetes alaposan \'atgondljuk, megtervezz\"uk, hogy az adatokat milyen m\'odon rakjuk \"ossze. 
+Emellett fontos az is, hogy a Python k\'od a lehet\H{o} legegyszer\H{u}bben \'es \'attekinthet\H{o}bben legyen 
+meg\'{\i}rva, ne feledkezz\"unk el a megfelel\H{o} megjegyz\'esek elhelyez\'es\'er\H{o}l sem.
+
+
+\section{M\'eg egy kis kiv\'eteles hibakezel\'es}
+
+Kor\'abban megismerkedt\"unk a Python hibakezel\'es egyszer\H{u}bb eseteivel, \'es az objektumokkal, azok haszn\'alat\'aval 
+a programoz\'as sor\'an. Ebben a fejezetben kicsit b\H{o}vebben is fogunk a kiv\'etelekkel, azok elfog\'as\'aval \'es 
+kelt\'es\'evel foglalkozni. A kiv\'etelek ugyanis maguk is oszt\'alyok. Megismerj\"uk a Python be\'ep\'{\i}tett legfontosabb 
+kiv\'eteleit. 
+
+\subsection{Except \'es egyebek}
+
+Kor\'abban m\'ar l\'attuk az utas\'{\i}t\'asokat, amelyekkel k\"ul\"onb\"oz\H{o} kiv\'etekhez elt\'er\H{o} kezel\H{o} 
+\'agakat tudunk defini\'alni. Id\'ezz\"uk fel az eml\'ekeinket:
+
+\begin{Verbatim}[fontsize=\small]
+try:
+    .....
+
+except ZeroDivisionError:
+    print ('0 hiba')
+except NameError:
+    print ('Valtozo hiba')
+\end{Verbatim}
+
+A programoz\'asi feladatok eset\'en sokszor szokott az is el\H{o}fordulni, hogy k\"ul\"onb\"oz\H{o} hib\'akhoz ugyanazt 
+az utas\'{\i}t\'ascsoportot kell hozz\'arendelni. Szerencs\'enkre van megold\'asa erre is a Python-nak:
+
+\begin{Verbatim}[fontsize=\small]    
+try:
+    ....
+
+except ( NameError, ZeroDivisionError):
+    print ('Vegyes hiba')
+\end{Verbatim}
+
+Az ut\'obbi esetben egy\'ertelm\H{u} l\'atszik, hogy a k\'et felsorolt kiv\'etel eset\'en ugyanaz az \'ag fogja lekezelni 
+a hib\'at. A kor\'abbi p\'eldaprogram \'at\'{\i}r\'as\'at \'es a kipr\'ob\'al\'as\'at az olvas\'okra hagyjuk. 
+
+K\'epzelj\"uk el azt az esetet, hogy a kiv\'etel kezel\'ese eset\'en akadnak olyan utas\'{\i}t\'a\-sok, amelyeket akkor 
+is szeretn\'enk v\'egrehajtatni, ha kiv\'etelt dob valamlyik utas\'{\i}t\'as. Ism\'et vegy\"uk el\H{o} kor\'abbi 
+egyik p\'eld\'ankat, amelyet ezzel az alkalommal hib\'atlann\'a alak\'{\i}tottunk \'at:
+
+\begin{Verbatim}[fontsize=\small]
+# exc1.py
+
+j = 12 
+i = 2.2
+
+try:
+    print (j / i)
+    #    a = j + ret
+    
+except ZeroDivisionError:
+    print ('0 hiba')
+except NameError:
+    print ('Valtozo hiba')
+else:
+    print ('Nem volt hiba')
+print('Vege')
+\end{Verbatim}
+
+Lefuttatva a scriptet, l\'atjuk, t\'enylegesen megjelenik az {\tt else} \'agban kiiratott sz\"oveg, Ha azonban \'ugy 
+\'{\i}rjuk \'at, hogy hiba legyen, akkor nem fut le. Felmer\"ul a k\'erd\'es, mi\'ert is nem tett\"uk a az {\tt else} 
+\'ag utas\'{\i}t\'asait egyszer\H{u}en a {\tt try} blokkba. A v\'alasz egyszer\H{u}: az {\tt else} csoportba l\'ev\H{o} 
+utas\'{\i}t\'asok el vannak v\'alasztva a {\tt try - except} blokkt\'ol, teh\'at a benne esetleg fell\'ep\H{o} hib\'ak 
+kiv\'etelei nem lesznek lekezelve. Ha be lene \'agyazva a {\tt try} blokkba, akkor kiv\'etelek eset\'en azonnal a 
+felsorolt kezel\H{o}\'agakat pr\'ob\'aln\'a v\'egig.
+
+Ha nagyobb programot \'{\i}runk, akkor elk\'epzelhet\H{o} olyan eset, amikor mindenk\'eppen biztosnak kell lenn\"unk 
+abban, hogy egy utas\'{\i}t\'ascsoport akkor is v\'egig lefut, ha kiv\'etelek keletkezek k\"ozben. Erre szolg\'al a 
+Python programoz\'asi nyelvben a {\tt finally}, melynek alkalmaz\'as\'ara 
+
+\begin{Verbatim}[fontsize=\small]
+def divide(x, y):
+     try:
+         result = x / y
+     except ZeroDivisionError:
+	 print("0 osztas")
+     else:
+         print("eredmeny = ", result)
+     finally:
+         print("vege")
+
+divide(2, 1)
+
+divide(2, 0)
+
+divide("2", "1")
+\end{Verbatim}
+
+Lefuttatva a fenti scriptet, az al\'abbi kimenetet kapjuk:
+
+\begin{Verbatim}[fontsize=\small]	 
+eredmeny =  2.0
+vege
+
+0 osztas
+vege
+
+vege
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+  File "<stdin>", line 3, in divide
+TypeError: unsupported operand type(s) for /: 'str' and 'str'
+\end{Verbatim}
+
+Sok magyar\'azatot nem k\'{\i}v\'anunk hozz\'af\H{u}zni a parancsok kimenet\'ehez, elegend\H{o} most annyit 
+megjegyezni, hogy l\'athat\'olag a {\tt finally} \'ag t\'enyleg minden esetben lefut, akkor is, ha olyan hiba 
+l\'ep fel, amelyet nem kaptunk el.
+
+\subsection{Python legfontosabb szabv\'anyos kiv\'etelei}
+
+A Python programoz\'asi nyelvben sok be\'ep\'{\i}tett kiv\'etelt tal\'alunk, amelyek seg\'{\i}ts\'eg\'evel a programok 
+tervez\'ese sor\'an pontosan le lehet kezelni a probl\'em\'akat, amelyek a futtat\'as sor\'an el\H{o}fordulhatnak. Nem c\'elunk 
+az \"osszes bemutat\'asa, de alapvet\H{o}nek tartjuk, hogy a legfontosabbakat megismertess\"uk. Ennek megfelel\H{o}en a lista 
+nem lesz teljes, de a gyakorlat azt mutatja, hogy a legt\"obb hibat\'{\i}pus, amelyet itt nem eml\'{\i}t\"unk meg, de azok csak 
+nagyon nagy rendszerek meg\'{\i}r\'asakor ker\"ulnek el\H{o}.
+
+\begin{center}
+   \begin{tabular}{ll}
+      {\bf Kiv\'etel} & {\bf Magyar\'azat} \\
+	 IndexError & List\'aban (sorozatban) nem l\'etez\H{o} elem haszn\'alata. \\      
+	 NameError & L\'etre nem hozott v\'altoz\'o haszn\'alata. \\
+	 SyntaxError & Python nyelvi hiba, form\'alis. \\
+	 TypeError & T\'{\i}puskever\'esi hiba, az adott m\H{u}velet nem alkalmazhat\'o ebben az esetben. \\
+	 ZeroDivisionError & Oszt\'as $0$ \'ert\'ekkel.\\
+   \end{tabular}
+\end{center}
+
+A Python nyelvben a szabv\'anyos kiv\'etelek el\'egg\'e bonyolult szerekezet\H{u} csoportot alkotnak, ennek r\'eszleteivel 
+nem k\'{\i}v\'anunk r\'eszletesebben foglalkozni. Egyetlen eml\'{\i}t\'esre m\'elt\'o szempontot emeln\'enk most ki: a 
+csoport minden egyes eleme ugyan\'ugy kezel\H{o}dik a futtat\'orendszerben.
+
+\subsection{Saj\'at kiv\'etelek \'es kezel\'es\"uk}
+
+Az alfejezet c\'{\i}me alapj\'an az olvas\'ok sejthetik, hogy ki lehet b\H{o}v\'{\i}teni a Python programoz\'asi nyelvben 
+a rendelkez\'esre \'all\'o kiv\'etelek list\'aj\'at. Ez m\'as sz\'oval azt jeletni, hogy saj\'at kiv\'etelt tudunk \'{\i}rni, 
+amelyekkel olyan eseteket tudunk lekezelni, amelyeket egy\'ebk\'ent nagyon k\"or\"ulm\'enyesen oldahtn\'ank meg. Minden 
+bizonyyal az sem meglep\H{o}, hogy ehhez oszt\'alyokat \'es az \"or\"okl\'est fogjuk haszn\'alni. L\'assunk erre egy 
+egyszer\H{u} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+import exceptions
+
+class SajatHiba(exceptions.Exception):
+    pass
+
+\end{Verbatim}
+
+Az els\H{o} sorban a m\'ar ismert {\tt import} utas\'{\i}t\'assal megmondjuk a Python rendszernek, hogy t\"oltse be \'es 
+haszn\'alja az {\tt exceptions} nev\H{u} szabv\'anyos modult. Ennek seg\'{\i}ts\'eg\'evel l\'etrehozunk egy saj\'at 
+kiv\'etelt {\tt SajatHiba} n\'evvel. Ennek b\'azisoszt\'alya a modulban szerepl\H{o} {\tt Exception} oszt\'aly, ami nem 
+meglep\H{o} m\'odon minden szabv\'anyos kiv\'etelnek is b\'azisoszt\'alya. Ezek ut\'an logikusan mer\"ul fel a k\'erd\'es, 
+mik\'ent is lehet egy ilyet \'utj\'ara ind\'{\i}tani, erre szolg\'al a {\tt raise} utas\'{\i}t\'as:
+
+\begin{Verbatim}[fontsize=\small]
+raise SajatHiba
+\end{Verbatim}
+
+A fenti utas\'{\i}t\'as hat\'as\'ara a kor\'abban \'alatalunk megalkotott saj\'at hibat\'{\i}pust fogja k\"uldeni a 
+futtat\'rendszernek, amelyet a m\'ar ismert {\tt try - except} p\'arossal a szok\'as szerint tudunk lekezelni. Lehets\'eges 
+az is, hogy a hib\'ahoz valamilyen megjeguz\'est f\H{u}zz\"unk:
+
+\begin{Verbatim}[fontsize=\small]
+raise SajatHiba('Baj van')
+\end{Verbatim}
+
+Kiadva a fenti parancsot a lekezeletlen kiv\'etel eset\'en a z\'ar\'ojelbe \'{\i}rt sz\"oveg is megjelenik a k\'eperby\H{o}n.
+Programoz\'asi feladatij megold\'asakor elk\'epzelhet\H{o}, hogy az utol\'o kiv\'etelt kell ism\'eteltene elk\"uldeni, erre 
+szolg\'al az al\'abbi megold\'as:
+
+\begin{Verbatim}[fontsize=\small]
+raise
+\end{Verbatim}
+
+Ez akkor szokott k\"ul\"on\"osen hasznos lenni, ha egy {\tt try - except} szerkezetben elkapunk egy kiv\'etelt, de bizonyos 
+esetekben m\'egis sz\"uks\'eg van arra, hogy a k\'odban m\'ashol kezelj\"uk le.
+
+\setcounter{section}{5}
+\section{Feladatok megold\'asa}
+
+Ebben a fejezetben a kit\H{u}z\"ott feladatok egy lehets\'eges megold\'as\'at fogjuk bemutatni. Nagyon rem\'elem, hogy az 
+olvas\'ok t\'enylegesen megpr\'ob\'alkoztak a scriptek meg\'{\i}r\'as\'aval, egy\'ebk\'ent nem lenne nagyon hasznos azonnal 
+az itteni k\'odokat elolvasni. Itt tartjuk fontosnak a megjegyz\'est, hogy nem csup\'an az j\'o, amit itt bemutatunk. Az 
+igazi programoz\'oi munka sor\'an is el\H{o} szokott fordulni az, hogy ugyanarra a probl\'em\'ara m\'as - m\'as utakon is 
+tal\'alhatunk megold\'ast. Ez\'ert t\'enyleg \'erdemes megpr\'ob\'alni a k\'odokat egyed\"ul meg\'{\i}rni. Ezen k\'{\i}v\"ul 
+tartjuk, hogy a meg\'{\i}rt k\'odokat (amit az olvas\'ok \'{\i}rtak, vagy mi itt tessz"uk k\"ozz\'e) t\"obbf\'ele bemeneti 
+adatokkal is kipr\'ob\'aljuk.
+
+\themegold
+
+A feladat megold\'asa meglehet\H{o}sen egyszer\H{u}, a szok\'asos m\'odon egy f\"uggv\'enyt fogunk \'{\i}rni. Mivel c\'elunk 
+a lehet\H{o} leg\'altal\'anosabb algoritmus lek\'odol\'asa, az\'ert a magass\'agi hat\'art is param\'eterk\'ent fogjuk 
+\'atadni:
+
+\begin{Verbatim}[fontsize=\small]
+# megold1.py
+
+def csucs(lista, pHatar):
+   it = -1
+   for idx in range(len(lista)):
+      if lista[idx] > pHatar:
+      	 it = idx
+      	 break
+
+   return it
+
+# teszt
+
+magassag = [ 2, 44, 12, 3.5, 654, 9, -2, 89.9, 230, 23, 252]
+
+csucsIdx = csucs(magassag, 500)
+
+print(csucsIdx)
+\end{Verbatim}
+
+Olyan egyszer\H{u} a fenti k\'od, hogy nem k\'{\i}v\'anom az olvas\'oimat magyar\'azatokkal megs\'erteni.
+
+\themegold
+
+Ez a feladat sem sokkal nehezebb, l\'enyeg\'eben az el\H{o}z\H{o} k\'od csak csek\'ely m\'odos\'{\i}t\'as 
+ut\'an haszn\'alhat\'o. Egyetlen dologra kell odafigyelni, most ugyanis a k\'et egym\'ast k\"ovet\H{o} 
+magass\'ag k\"ul\"onbs\'eg\'et kell felhaszn\'alni, ez\'ert a ciklusnak $1$-el r\"ovidebb. A t\'enyleges 
+hat\'ar\'ert\'eket most is a f\"uggv\'eny param\'eterek\'ent fogjuk \'atadni.
+
+\begin{Verbatim}[fontsize=\small]
+# megold2.py
+
+def emelkedo(lista, pHatar):
+   it = -1
+   for idx in range( len(lista) - 1 ):
+      if ( lista[idx+1] - lista[idx] ) > pHatar:
+      	 it = idx
+      	 break
+
+   return it
+
+# teszt
+
+magassag = [ 2, 44, 12, 3.5, 654, 9, -2, 89.9, 230, 23, 252]
+
+emIdx = emelkedo(magassag, 50)
+
+print(emIdx)
+\end{Verbatim}
+
+Most sem fogunk sokat magyar\'azni, a scrip mag\'a\'ert besz\'el. \'Erdemes a megmutatott f\"uggv\'enyt 
+m\'as-m\'as adatiokkal kipr\'ob\'elni.
+
+\themegold
+
+Ez a script is el\'egge egyszer\H{u}, egyetlen apr\'os\'ag, hogy haszn\'alni kell a szavak hossz\'at
+visszaad\'o be\'ep\'{\i}tett f\"uggv\'enyt:
+
+\begin{Verbatim}[fontsize=\small]
+# megold3.py
+
+def szohossz(lista, pHatar):
+   it = -1
+   for idx in range(len(lista)):
+      if len(lista[idx]) > pHatar:
+      	 it = idx
+      	 break
+
+   return it
+
+# teszt
+
+szavak = [ 'Papucs', 'Kalitka', 'adatszerkezet', 'Balatonaliga', 'csirke']
+
+emIdx = szohossz(szavak, 10)
+
+print(emIdx)
+\end{Verbatim}
+
+Magyar\'azatot most sem f\H{u}z\"unk a bemutatott k\'odhoz, de javasoljuk, hogy az olvas\'ok most is k\'{\i}s\'erletezzenek 
+a futtat\'as sor\'an.
+
+TODO
+
+\themegold
+
+Ennek a feladatnak a k\'odj\'at kiv\'alogat\'o 
+
+\begin{Verbatim}[fontsize=\small]
+# megold4.py
+
+def osszead(lista, pHatar):
+   ret = 0
+   num = len(lista)
+   for i in range(num):
+      if lista[i] > pHatar:
+         ret = ret + lista[i] 
+
+   return ret
+
+sor1 = [2, 72, -170, 155, -2, 81, 5, -7, 26, 333, 36, 21]
+sum = osszead(sor1,100)
+print sum
+
+print('Vege')  
+\end{Verbatim}
+
+A fenti k\'od a kor\'abbiak alapj\'an k\"onnyen meg\'ertheth\H{o}, ezt sem fogjuk b\H{o}vebben magyar\'azni.
+
+\themegold
+
+Ez a feladat kicscit bonyolultabb a kor\'abbiakn\'al, a keres\'es szempontja \"osszetetteb, mint eddig. A ciklusban 
+ugyanis ny\'{\i}lv\'an kell tartani, hogy vajon bel\'epett-e a script az els\H{o} szigetre. \'Ovatosnak kell lenni, mert 
+elk\'epzelhet\H{o}, hogy m\'ar az els\H{o} adat is tenger szint feletti magass\'agot jelent, ekkor azt kell sziget 
+kezdet\'enek tekinteni. Most pedig j\"ojj\"on a k\'od:
+
+\begin{Verbatim}[fontsize=\small]
+# megold5.py
+
+def sziget(lista):
+   kezd = -1
+   vege = -1
+   num = len(lista)
+   for i in range(num):
+      if i = 0:
+         if lista[i] > 0:
+	    kezd = i
+      else:
+         if lista[i-1] < 0 and 0 < lista[i] and kezd > -1:
+	    kezd = i
+         if lista[i-1] > 0 and 0 > lista[i] and kezd > -1
+	    and kezd > -1:
+	    kezd vege = i - 1
+   return (kezd, vege)
+
+# todo adatok??
+sor1 = [2, 72, -170, 155, -2, 81, 5, -7, 26, 333, 36, 21]
+(kezdet, vege) = sziget(sor1)
+print(kezdet)
+print(vege)
+
+print('Vege')  
+\end{Verbatim}
+
+A fenti k\'od is el\'egg\'e egyszer\H{u}, sok megjegyz\'est nem is k\'{\i}v\'anunk hozz\'af\H{u}zni, \'erdemes 
+viszont a bemeneti adatokat egy kicsit megv\'altoztatni, k\'{\i}s\'erletezni a futtat\'assal.
+
+\themegold
+
+Ebben a feladatban a neh\'ezs\'eg abban van, hogy a megfelel\H{o} sziget megtal\'al\'asahoz egym\'asba 
+\'agyazott ciklusokat kellene haszn\'alnunk:
+
+\begin{Verbatim}[fontsize=\small]
+## 6. feladat
+
+def szigetVeg(pStart, pLista, pMeret):
+    vissza = pMeret - pStart 
+    megvan = -1
+    kovetkezo = pStart + 1
+    while pLista[kovetkezo] > 0 and pLista[kovetkezo+1] > 0 and vissza - 1 > 0:
+        kovetkezo += 1
+        vissza -= 1
+        if kovetkezo == pMeret - 1:
+            megvan = -2
+            break
+    if kovetkezo != pMeret - 1:
+        if pLista[kovetkezo] > 0 and pLista[kovetkezo+1] < 0:
+            megvan = kovetkezo
+    return(megvan)
+
+def sziget(pMeresek, pHatar):
+    sziget_kezd = -1
+    sziget_veg = -1
+    vege = 0
+    hossz = 0
+    idx = 0
+    meret = len(pMeresek)
+    for poz in range(meret):
+        if poz == 0:
+            if pMeresek[poz] > 0:
+                idx = poz
+                vege = szigetVeg(idx, pMeresek, meret)
+        else:
+            if pMeresek[poz] > 0 and pMeresek[poz - 1] < 0:
+               idx = poz
+               vege = szigetVeg(idx, pMeresek, meret)
+        if vege > 0:
+            hossz = vege - idx
+            if hossz >= pHatar:
+                sziget_kezd = idx
+                sziget_veg = vege
+                break
+    return(sziget_kezd, sziget_veg)
+
+sor2 = [2, 72, 12, -170, 155, -2, 81, 5, -7, 26, 333, 36, 21, 1, -2, -3]
+
+size = len(sor2)
+
+print('Meret = %d'%size)
+
+(start, end) = sziget(sor2,6)
+
+print('Kezd = %d'%start)
+
+print('Vege = %d'%end)
+
+\end{Verbatim}
+
+A k\'od olvashat\'os\'aga, \'es tesztelhet\H{o}s\'ege miatt c\'elszer\H{u} volt a sziget v\'eg\'et a 
+bels\H{o} f\"uggv\'enyben megtal\'alni.
+
+\themegold
+
+Ennek a feladatnak megold\'asa sem bonyoult, minden sz\"uks\'eges ismeretet alkalmaztuk m\'ar k\"ul\"onf\'ele 
+scriptekben. Most a tervez\'es sor\'an az egyszer\H{u}s\'eg kedv\'e\'ert eld\"ontj\"uk, hogy a meg\'{\i}rand\'o 
+f\"uggv\'eny mag\'at a megtal\'alt sz\'ot fogja visszaadni.
+
+\begin{Verbatim}[fontsize=\small]
+# megold7.py
+
+def szokeres(szoLista):
+   szo = ''
+   num = len(szoLista)
+   for i in range(num):
+      if len(szoLista[i]) > len(szo):
+         szo = szoLista[i]
+   return szo
+
+szavak = ['Boci', 'csirke', 'csapatokkal', 'alma', 'lista', 'Pista', 'kard', 'barack' ]
+
+maxi = szokeres(szavak)
+
+print(' Megvan = %s'%maxi)
+
+print('Vege')  
+\end{Verbatim}
+
+A k\'od lefuttat\'asa ut\'an nem sz\"uks\'eges magyar\'azatot f\H{u}zni a fenti forr\'ask\'odhoz.
+
+\themegold
+
+Ez a feladat ugyan a k\"ozepesen neh\'ez jelet kapta, de legink\'abb csak a bonyolult megfogalmaz\'asa 
+miatt. Nek\"unk csak a legjobb pontsz\'amot el\'er\H{o} di\'akot kell megtal\'alnunk, es tudjuk a k\'et 
+lista egym\'asnak megfelel\H{o}en van adatokkal felt\"ltve. Ez\'ert el\'eg csak a pontok list\'aj'at 
+\'atadni a keres\H{o} f\"uggv\'enynek, \'es a legnagyobb elem index\'et visszaadni. Ezzel a k\'od:
+
+\begin{Verbatim}[fontsize=\small]
+## 8. feladat
+
+def csucsDiak(pPontokLista):
+    meret = len(pPontokLista)
+    eredmeny = -1
+    maxpont = 0
+    for index in range(meret):
+        if pPontokLista[index] > maxpont:
+            maxpont = pPontokLista[index]
+            eredmeny = index
+    return(eredmeny)
+
+nevek = ['Kati', 'Ati', 'Zoli', 'Vica', 'Anna', 'Sanyi', 'Tibor' ]
+
+pontok = [23, 34.2, 10, 35, 28, 31, 19]
+
+legjobb = csucsDiak(pontok)
+
+print('A legjobb = ' + nevek[legjobb])
+print('A pontszam = %f'%pontok[legjobb])
+
+\end{Verbatim}
+
+\noindent {\it Megjegyz\'es}: b\'ar a feladat \'eppen az egyszer\H{u}s\'ege miatt lett \'ugy megfogalmazva, 
+hogy a nevek \'es a pontsz\'amok k\"ul\"on list\'aban vannak, de a f\"uggel\'ek m\'asodik fejezet\'eben 
+m\'ar besz\'elt\"unk kiss\'e b\H{o}vebben a t\"obbsz\"or\"os adatszerkezetekr\H{o}l. TODO
+
+\themegold
+
+A feladatot elolvasva gyan\'{\i}tjuk, hogy l\'enyeg\'eben fel lehet haszn\'ni az egyik kor\'abbi 
+megold\'asunkat, amelyik az els\H{o} szigetet megtal\'alja nek\"unk. Egy kicsit az\'ert \'at kell ak\'odot
+\'{\i}rni term\'eszetesen, de ezut\'an m\'ar egyszer\H{u} lesz:
+
+\begin{Verbatim}[fontsize=\small]
+# megold9.py
+
+def elsoSziget(plista):
+    kezd = -1
+    vege = -1
+    num = len(plista)
+    for i in range(num):
+        if i == 0:
+            if plista[i] > 0:
+                kezd = i
+        else:
+            if plista[i-1] < 0 and 0 < plista[i] and kezd == -1:
+                kezd = i
+            elif plista[i-1] > 0 and 0 > plista[i] and kezd > -1:
+                vege = i - 1
+        if kezd != -1 and vege != -1:
+            break
+    return (kezd, vege)
+
+def elsoCsucs(pAdatok):
+    (start, vege) = elsoSziget(pAdatok)
+    elem = start
+    helye = -1
+    meret = 0
+    while elem <= vege:
+        if meret < pAdatok[elem]:
+            meret = pAdatok[elem]
+            helye = elem
+        elem += 1
+    return(helye, meret)
+
+sor = [-2, -12, -10, 15, 19, 2,  -2, 81, 5, -7, 26, 333, 36, 21] 
+
+(csucs, magassag) = elsoCsucs(sor)
+
+print(csucs)
+
+print(magassag)
+\end{Verbatim}
+
+\noindent Javasoljuk megint, hogy a futtat\'as sor\'an pr\'ob\'alkozzunk az adatot \'at\'{\i}r\'as\'aval.
+
+\themegold
+
+Az el\H{o}z\H{o} feladat megold\'asa alapj\'an nem t\H{u}nik az al\'abbi k\'od k\"ul\"on\"osebben 
+bonyolultnak, elegend[ volt szigetet megkeres\H{o} f\"uggv\'enyt \'ugy \'atdolgozni, hogy ne csak az 
+   els\H{o}t tudja megtal\'alni. Most is javasoljuk az adatokkal val\'o k\'{\i}s\'erletez\'est.
+
+\begin{Verbatim}[fontsize=\small]
+# megold10.py
+
+def kovSziget(plista, pStart):
+    kezd = -1
+    vege = -1
+    num = len(plista)
+    for i in range(pStart,num):
+        if i == pStart:
+            if plista[i] > 0:
+                kezd = i
+        else:
+            if plista[i-1] < 0 and 0 < plista[i] and kezd == -1:
+                kezd = i
+            elif plista[i-1] > 0 and 0 > plista[i] and kezd > -1:
+                vege = i - 1
+        if kezd != -1 and vege != -1:
+            break
+    return (kezd, vege)
+
+def leghosszabb(pAdatok):
+    start = 0
+    hanyadik = -1
+    sziget = 0
+    max_hossz = 0
+    s_kezd = -1
+    s_vege = -1
+    sziget_start = -1
+    sziget_vege = -1
+    (s_kezd, s_vege) = kovSziget(pAdatok, start)
+    while s_kezd != -1 and s_vege != -1:
+        sziget += 1
+        hossz = s_vege - s_kezd
+        start = s_vege + 1
+        if hossz > max_hossz:
+            max_hossz = hossz
+            hanyadik = sziget
+            sziget_start = s_kezd
+            sziget_vege = s_vege
+        (s_kezd, s_vege) = kovSziget(pAdatok, start)
+
+    return(hanyadik, max_hossz, sziget_start, sziget_vege)
+
+sor = [-2, -12, -10, 15, 19, 2,  -2, 81, 5, -7, 26, 333, 36, 21, -2, -3, -4] 
+
+t = leghosszabb(sor)
+
+print(t)
+
+\end{Verbatim}
+
+\themegold
+
+A feladat szerint a {\tt rendez3.py} k\'odj\'at kell kieg\'esz\'{\i}teni, hogy a kiirat\'as 
+szebben t\"ort\'enjen. K\"ul\"on\"osebb magyar\'azat n\'elk\"ul \'alljon most itt k\'od:
+
+\begin{Verbatim}[fontsize=\small]
+# megold11.py
+
+## Kiiro Python kod
+
+def Listazo(pCsapat, pPontszam):
+    meret = len(pCsapat)
+    for idx in range(num):
+        sor = 'Csapat: ' + pCsapat[idx] + ', pontszam = ' + str(pPontszam[idx])
+        print sor
+
+\end{Verbatim}
+
+\noindent A t\'enyleges \"osszedolgoz\'ast az olvas\'okra hagyjuk.
+
+\themegold
+
+Ehhez a megold\'ashoz sem szeretn\'enk sok magyar\'azatot f\H{u}zni, a feledat kit\H{u}z\'esekor 
+adott \"otletnek el\'egnek kell lennie.
+
+\begin{Verbatim}[fontsize=\small]
+# megold12.py
+
+def maxKeres(plista, kesz_lista):
+    num = len(plista)
+    maxind = -1
+    for idx in range(num):
+        if idx not in kesz_lista:
+            if maxind == -1:
+                maxind = idx
+            else:
+                if plista[idx] > plista[maxind]:
+                    maxind = idx
+    return(maxind)
+
+
+def csucsKeres(lista, pDarab):
+    ujLista = []
+    keszLista = []
+    meret = len(lista)
+    darab = 0
+    for sorszam in range(meret):
+        minIdx = maxKeres(lista, keszLista)
+        if minIdx != -1:
+            ujLista.append(lista[minIdx])
+            keszLista.append(minIdx)
+            darab += 1
+        if darab == pDarab:
+            break
+    return(ujLista)
+
+sor1 = [2, 7, -170, 55, -2, 5, -7, 26, 33, 6, 21]
+sor2 = csucsKeres(sor1, 4)
+print(sor2)
+
+print('Vege')   
+\end{Verbatim}
+
+Ennek ellen\'ere javasoljuk a fenti k\'od kipr\'ob\'as\'at, a bemeneti adatok tetsz\'es szerinti 
+megv\'altoztat\'as\'at.
+
+\themegold
+
+Z
+
+\themegold
+
+X
+
+\setcounter{section}{10}
+\section{Kimaradt t\'emak\"or\"ok}
+
+Ebben a fejezetben csak v\'azlatosan megeml\'itj\"uk azokat a t\'emak\"or\"oket, amelyeket ebben a bevezet\'esben 
+nem k\'{\i}v\'antunk le\'{\i}rni. Els\H{o}sorban az\'ert nem, mert c\'elunk az volt, hogy olyan ismereteket 
+adjunk, amivel m\'ar \'ertelmes feladatokat is megoldani a sz\'am\'{\i}t\'og\'eppel. Azt gondoltuk, nem 
+bonyol\'{\i}tan\'ank el t\'uls\'agosan az ismerked\'est a Python nyelvvel. 
+
+\begin{itemize}
+   \item{sz\'ot\'arakkal kapcsolatos tov\'abbi f\"uggv\'enyek,}
+   \item{list\'akkal kapcsolatos tov\'abbi f\"uggv\'enyek,}      
+   \item{\'allom\'anyok kezel\'ese,}
+   \item{adatok beolv\'asa lemezr\H{o}l \'es ki\'{\i}r\'asa lemezre,}      
+   \item{az algoritmus, illetve a k\'od hat\'ekonys\'ag\'aval kapcsolatos \"otletek,}
+   \item{scriptek / modulok dokument\'aci\'oja Python m\'odra,}
+   \item{modulok haszn\'alat\'aval kapcsolatos tov\'abbi r\'eszletek,}
+   \item{f\"uggv\'enyek, oszt\'alyhoz tartoz\'o met\'odusok automatikus tesztel\'ese Python m\'odra,}
+   \item{a Python nyomk\"ovet\H{o}, napl\'oz\'o funkci\'oi,}
+   \item{r\"ogz\'{\i}tett \'allom\'anyt\'{\i}pusok beolvas\'asa, XML, HTML, CSV, stb,} 
+   \item{grafikus felhaszn\'al\'oi fel\"ulet k\'esz\'{\i}t\'ese,}
+   \item{a dekor\'atorok haszn\'alata}
+   \item{x}
+   \item{x}       
+\end{itemize}
+
+\printindex
+
+
+\end{document}  
+

@@ -1,0 +1,1997 @@
+\documentclass[12pt]{article}
+\usepackage[magyar]{babel}
+%% \documentstyle[12pt, babel, magyar]{article}
+
+\usepackage{makeidx}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage[magyar]{babel}
+
+\usepackage{fancyvrb}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\fancyhead[R]{\today}
+\fancyfoot[C]{\thepage}
+
+%% \renewcommand{\headrulewidth}{0.4pt}
+%% \renewcommand{\footrulewidth}{0.4pt}
+
+
+\newcommand{\konnyu}{$\diamondsuit$}
+\newcommand{\kozepes}{$\diamondsuit\diamondsuit$}
+\newcommand{\nehez}{$\diamondsuit\diamondsuit\diamondsuit$}
+
+%% szamlalok
+
+\newcounter{minta}[section]
+\newcommand{\incminta}{\stepcounter{minta}}
+%% \newcommand{\theminta}{\arabic{minta}}
+\newcommand{\pelda}{\stepcounter{minta} \theminta. p\'elda \vspace{5mm}}
+
+\newcounter{feladat}
+\newcommand{\theproblem}[1]{\stepcounter{feladat}  \noindent{\bf \arabic{feladat}. feladat:} {\it #1}}
+
+\newcounter{megold}
+\renewcommand{\themegold}{\stepcounter{megold}  \noindent{\bf \arabic{megold}. megold\'as:}}
+
+\setlength\paperheight {297mm}
+\setlength\paperwidth  {210mm} 
+
+\setlength{\baselineskip}{8mm}
+\setlength{\parskip}{+3pt}
+\setlength{\topmargin}{-2cm}
+\setlength{\textheight}{23cm}
+%% \setlength{\textwidth}{15cm}
+\setlength{\textwidth}{14cm}
+\setlength{\hoffset}{-1.5cm}
+
+\title{S\'eta a Python-al \\ II}
+
+%% \author{Urb\'an G\'abor}
+
+\makeindex
+
+\begin{document}
+
+\maketitle
+
+\thispagestyle{fancy}
+
+\begin{abstract}
+Aki az el\H{o}z\H{o} f\"uzetet \'atolvasta, \'es a feladatokat meg is oldotta, a Python 
+programoz\'asi nyelv alapjaival m\'ar tiszt\'aban kell legyen. Ebben a folytat\'asban ez\'ert 
+m\'ar nem a nyelv elemeire fogunk els\H{o}sorban figyelni, hanem a kieg\'esz\'{\i}t\H{o} 
+eszk\"oz\"okre (modulokra). Igyekezni fogunk arra is, hogy mag\'ar\'ol a programoz\'asr\'ol 
+is b\H{o}v\'{\i}ts\"uk az olvas\'ok ismereteit. A f\"uggel\'ekben m\'elyebb t\'emak\"or\"oket
+is \'erint\"unk, valamint a vil\'agh\'al\'on megtal\'alhat\'o v\'abbi dokumentumokat is 
+javaslunk az \'erdekl\H{o}d\H{o}knek.
+\end{abstract}
+
+\tableofcontents
+
+\section{Bevezet\H{o} gondolatok}
+
+A kor\'abbi s\'et\'ank alapj\'an az olvas\'oink m\'ar meg\'{\i}rtak egy-k\'et 
+egyszer\H{u}bb programot, pontosabban szkriptet. Az ott bemtutatott h\'arom alapfeladat 
+megold\'as\'anak ismerete tulajdonk\'eppen elegend\H{o} nagyj\'ab\'ol egy hivat\'asos 
+programoz\'onak is. Term\'eszetesen ezen a t\'eren is van m\'eg az\'ert gyakorolni val\'o, 
+de ez csak id\H{o} k\'erd\'ese. 
+
+A programoz\'oi gondolkod\'ashoz azonban m\'eg sz\"uks\'eg van a nyelv b\H{o}vebb 
+lehet\H{o}s\'egeinek megismer\'es\'ere, illetve a programok k\'odol\'as\'aval 
+kapcsolatos technikai fog\'asok elsaj\'at\'{\i}t\'as\'ara. Ezek a m\'odszerek a 
+legt\"obb korszer\H{u} programoz\'asi nyelvben a rendelkez\'esre \'allnak, ebben 
+a le\'{\i}r\'asban az idev\'ag\'o szabv\'anyos Python modulokat \'es technik\'akat 
+fogjuk bemutatni. A bevethet\H{o} eszk\"ozt\'ar el\'egg\'e b\H{o}s\'eges, ebb\H{o}l 
+mi f\'elig-meddig \"onk\'enyesen v\'alogattunk. Azt az\'ert engedtess\'ek nek\"unkl 
+megjegyezni, hogy az itt megmutatott m\'odszerek \'es modulok az\'ert nem olyan nagy 
+programoz\'oi gyakorlattal is haszn\'alhat\'ok. A v\'alogat\'asn\'al fontos szempont 
+volt az, hogy olyan modulok szerepeljenek, amelyek mag\'at a programoz\'ast seg\'{\i}tik, 
+szerencs\'ere ilyen sok van. Itt t\'enyleg csak n\'eh\'any v\'azlatos bemutat\'as\'ara 
+volt lehet\H{o}s\'eg. A k\'{\i}v\'ancsi olvas\'oink a f\"uggel\'ekben b\H{o}vebb 
+le\'{\i}r\'asokat, az Intereneten el\'erhet\H{o} (sajnos t\"obbynire angol nyelv\H{u}) 
+dokumentumokat, \'as a m\'ar megszokott m\'odon az (ism\'et) kihagyott, fontosabb 
+t\'emak\"or\"ok list\'aj\'at tal\'alj\'ak.
+
+Az itt szerepl\H{o} fejezetek egym\'ast\'ol majdnem teljesen f\"uggetlenek, ez\'ert 
+ak\'ar tetsz\H{o}leges sorrendben is olvashat\'ok. Az esetleges \"osszef\"ugg\'eseket 
+\'es bels\H{o} hivatkoz\'asokat minden esetben meg fogjuk eml\'{\i}teni.
+
+\section{B\H{o}v\'{\i}tett Python formai elemek}
+
+Maga a Python nyelv is v\'altozik, fejl\H{o}dik, ahogy a felhaszn\'al\'ok megfogalmazz\'ak 
+az ig\'enyeiket. (Ez egy\'ebk\'ent \'altal\'aban jellem\H{o} a nyitott fejleszt\'es\H{u} 
+programokra.) Ennek megfelel\H{o}en id\H{o}Nk\'ent \'uj elemek is megejelnhetnek, de ezzel 
+aazonban fentart\'asokkal kell b\'anni. Nem jelent el\H{o}nyt, ha mindig azonnal alkalmazzuk 
+a frissen megjelen\H{o} \'uj\'{\i}t\'asokat, hiszen ilyenkor c\'elszer\H{u} megv\'arni a 
+visszajelz\'eseket. Most k\'et olyan viszonylag \'uj nyelvi elemet fogunk bemutatni, amely a 
+tapasztalatok alapj\'an el\'egg\'e stabilan alkalmazhat\'ok az internetes f\'orumok szerint.
+
+\subsection{Dekor\'atorok}
+\index{dekor\'ator}
+
+A dekor\'atorok (egyel\H{o}re ez csak az angol megfogalmaz\'as egyszer\H{u} ford\'{\i}t\'asa) 
+f\"uggv\'enyek defin\'{\i}ci\'oja alkalm\'aval haszn\'alhat\'ok, amellyel annak \'ertelmez\'es\'et 
+pontos\'{\i}tjuk, illetve m\'odos\'{\i}tjuk. A Python programoz\'asi nyelvben van ugyanerre m\'as 
+szintaktikai lehet\H{o}s\'eg is, ahogyan az a k\"ovetkez\H{o} p\'eld\'an is l\'atszik: 
+
+\begin{Verbatim}[fontsize=\small]
+def f(...):
+    ...
+
+f = staticmethod(f)
+
+    ...
+    ...
+
+@staticmethod
+def f(...):
+    ...
+\end{Verbatim}
+
+\noindent A fenti minta ugyanarra tartalmazza mind a k\'et lehet\H{o}s\'eget, \'es megmutatja a 
+dekor\'atorok haszn\'alat\'at. Mind a k\'et r\'esz az {\tt f} f\"uggv\'enyt \'ugy hat\'arozza meg, 
+hogy az els\H{o} argumentuma nem lehet alap\'ertelmezett. (Ezt jelenti ugyanis a {\tt staticmethod})
+kulcssz\'o. Dekor\'atorokra van m\'eg p\'elda, tal\'an a leghasznosabbat a \pageref{skiptest}. oldalon 
+tal\'alhatjuk.
+
+\subsection{K\"ornyezet-kezel\H{o}k}
+\index{with}
+
+Ahogyan a fentebb mutatott dekor\'atorok is els\H{o}rban a k\'enyelmes k\'odol\'asban jelentenek 
+\'ujdons\'agot, ugyanez \'erv\'enyes most ter\'{\i}t\'ekre nyelvi elemekre is. (M\'eg ehhez sem 
+tal\'altunk bevett magyar fogalmat, ez szint\'en csak az angol kifeje\'es ford\'{\i}t\'asa.) Sok 
+esetben van arra sz\"uks\'eg bizonyos felt\'etelek ellen\H{o}rz\'es\'ere a k\'od tov\'abbi sikeres 
+fut\'as\'ahoz, erre a kor\'abban megismer kiv\'etelek \'es az {\tt if -- else } utas\'{\i}t\'as 
+t\"ok\'eletesen alkalmas. Az \'uj {\tt with} elem ezt ugyanakkor leegyszer\H{u}s\'{\i}ti:
+
+\begin{Verbatim}[fontsize=\small]
+with open('adat.txt','r') as text:
+    ...
+\end{Verbatim}
+
+\noindent Ebben a k\'odr\'eszletben kicsit el\H{o}reszaladunk, mert tal\'an a legk\'ezenfekv\H{o}bben 
+mutatja meg a m\H{u}k\"od\'es\'et. A sz\'am\'{\i}t\'og\'ep v\'egrehajtja a {\tt with} ut\'an 
+k\"ozvetlen\"ul \'all\'o utas\'{\i}t\'ast, \'es csak abban az esetben ugrik be blokkba, ha az 
+sikeres volt. Ebben a blokkban \'atmenetileg \'elni fog a {\tt text} nev\H{u} v\'altoz\'o. 
+(Az {\tt open} h\'{\i}v\'as r\'eszleteir\H{o}l a k\"ovetkez\H{o} fejezetben fogunk t\"obbet \'{\i}rni.)
+
+\subsection{Gener\'atorok iter\'atorok \'es {\tt yield}}
+\index{gener\'ator}
+\index{yield}
+\index{iter\'ator}
+
+Ebben a r\'eszben ugyan meg fogunk ismerni egy-k\'et \'uj Python nyelvi elemet, de maga a kindul\'o 
+\"otlet egyr\'eszt ismer\H{o}segyszer\H{u}, m\'asr\'eszt pedig m\'ar ismer\H{o}s kell legyen azoknak 
+az olvas\'oknak, akik az els\H{o} f\"uzet\"unket \'atn\'ezt\'ek. Vegy\"unk most onnan egy j\'ol 
+\'erteht\H{o} p\'eld\'at:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+# for1.py
+
+lista = ['Isti', 'Peti', 'Joci'] 
+
+for elem in lista:
+   print( ' > ' + elem)
+
+print('Vege')
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Most m\'ar nem is kell ezt lefuttatni, tudjuk hogy az {\tt elem} v\'altoz\'o sorra 
+egym\'as ut\'an felveszi a lista elemeinek \'ert\'eket. Hasonl\'oan vil\'agos, a:
+
+\begin{Verbatim}[fontsize=\small]
+for i in range(12):
+   .... 
+\end{Verbatim}
+
+\noindent ahol az {\tt i} \'ert\'eke sorra felveszi 0-t\'ol 11-ig a sz\'amokat, {\bf mintha} azt 
+is egy list\'ab\'ol venn\'e. (Val\'oj\'ab\'ol a bels\H{o} m\H{u}k\"od\'es szempontj\'ab\'ol 
+t\'enyleg egy lista.) A k\'et {\tt for} ciklusban az a k\"oz\"os, hogy valamilyen sorrendben 
+v\'egigmegy egy halmaz minden elem\'en, programoz\'oi \'es matematikai szakkifejez\'essel 
+{\sl iter\'al}. Vagyis a {\tt for} utas\'{\i}t\'as egy {\sl iter\'ator.}
+
+A Python egyik hasznos nyelvi eleme, hogy iter\'atorokat saj\'at magunk is tudunk k\'esz\'{\i}teni, 
+pontosabban l\'etezik egy \'altal\'anos iter\'ator t\'{\i}pus, amelyet fel tudunk haszn\'alni. 
+(Tulajdonk\'eppen ezt haszn\'alja a {\tt for} ciklus is, amikor egy lista elemein megy v\'egig.) 
+Terjedelmi megfontol\'asok miatt ennek a r\'eszleteibe most nem fogunk belemenni. A tov\'abbi 
+ismerked\'es\"unkat a {\tt yield} utas\'{\i}t\'assal fogjuk folytatni. Erre egy p\'elda:
+
+\begin{Verbatim}[fontsize=\small]
+def echo(value=None):
+    print(" Start, ha 'next()' eloszor lesz meghivva.")
+    try:
+        while True:
+            try:
+                value = (yield value)
+            except Exception as e:
+                value = e
+    finally:
+                print("Tisztitas, ha 'close()' meg lett hivva.")
+
+print('-- 1 --\n')
+generator = echo(1)
+print('-- 2 --\n')
+print(next(generator))
+print('-- 3 --\n')
+print(next(generator))
+print('-- 4 --\n')
+print(generator.send(2))
+print('-- 5 --\n')
+generator.throw(TypeError, "spam")
+print('-- 6 --\n')
+generator.close()
+\end{Verbatim}
+
+\noindent A fenti szkript lefuttat\'asa sor\'an a k\"ovetkez\H{o} eredm\'enyt kapjuk:
+
+\begin{Verbatim}[fontsize=\small]
+-- 1 --
+
+-- 2 --
+
+ Start, ha 'next()' eloszor lesz meghivva.
+1
+-- 3 --
+
+None
+-- 4 --
+
+2
+-- 5 --
+
+-- 6 --
+
+Tisztitas, ha 'close()' meg lett hivva.
+\end{Verbatim}
+
+\noindent Ehhez a kimenethez egy-k\'et sz\'ot az\'ert sz\'olni. A legels\H{o} f\"uggv\'enyh\'{\i}v\'askor 
+nem t\"ort\'enik semmi, ha f\"uggv\'eny eredm\'eny\'et tartalmaz\'o v\'alto\'ot ki\'{\i}rnn\'ank a 
+k\'eperny\H{o}re, akkor egy t\'arhely hivatkoy\'ast l\'atn\'ank. A {\tt next} f\"uggv\'enyh\'{\i}v\'as 
+viszont elind\'{\i}tja a gener\'al\'ast, amint az l\'atszik. Teh\'at a {\tt yield} utas\'{\i}t\'assal 
+egy gener\'atort hoztunk l\'etre. A Python keretrendszer automatikusan hozz\'aillesztett egy {\tt send} 
+\'es egy {\tt throw} met\'odust, az els\H{o} a gner\'atoron kereszt\"ul \'ert\'eket ad vissza, a m\'asodik 
+pedig egy kiv\'etelt dob. Ez ut\'obbi most nem t\"ort\'ent meg, amikor a k\'odot egyben, szkriptk\'ent futtattuk 
+le. Ha ezzel szemben egy Python parancs\'ertelmez\H{o}be soronk\'ent m\'asoljuk be a k\'odot, \'es \'{\i}gy 
+``k\'ezzel'' hajtjuk v\'egre, akkor \'erdekes m\'odon a hiba\"uzenet megjelenik. A gener\'atort a v\'eg\'en 
+a {\tt close} met\'odussal z\'arjuk le.
+
+\section{\'Allom\'anyok kezel\'ese}
+\label{file}
+
+\subsection{\'Alltal\'anos megjegyz\'esek}
+
+Miel\H{o}tt bele\'asn\'ank magunkat a az \'allom\'anykezel\'es r\'eszleteibe, 
+fontosnak tartunk n\'eh\'any \'altal\'anos megjegyz\'est. A Python ezeket az 
+adatsorokat mindig objektumk\'ent kezeli, de ezek a konstruktorral \index{open}
+k\"ozvetlen\"ul nem p\'el\-d\'a\-nyos\'{\i}that\'ok. Erre minden esetben a szabv\'anyos 
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+   allomany = open( <nev>, <mod>)
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent f\"uggv\'enyh\'{\i}v\'as \'all a rendelkez\'es\"unkre. A f\"uggv\'eny mind 
+a k\'et param\'etere karakterl\'anc (string), \'es a jelent\'es\"uk a r\"oviden a 
+k\"ovetkez\H{o}:
+
+\begin{itemize}
+   \item{{\tt <nev>} a megnyitand\'o \'allom\'any neve}
+   \item{{\tt <mmod>} a haszn\'alat m\'odja}   
+\end{itemize} 
+
+\noindent Ezekr\H{o}l, f\H{o}leg a m\'asodikr\'ol majd b\H{o}vebben is fogunk ebben a 
+f\"uzetben olvasni.
+
+Gondoljuk, azt minden olvas\'onk tudja, hogy az \'allom\'anyok a sz\'am\'{\i}t\'og\'ep 
+lemezegys\'eg\'en j\"onnek l\'etre, illetve onnan lesznek besolvasva. Err\H{o}l a 
+k\'erd\'esr\H{o}l is lesz b\H{o}vebben sz\'o, itt el\'egedj\"unk meg azzal az 
+egyszer\H{u}s\'{\i}t\'essel, hogy minden esetben abban a k\"onyvt\'arban (mapp\'aban) 
+lesznek az \'allom\'anyaink, ahol a Python szkript van, \'es ahol futtatjuk. A tov\'abbiakban 
+ezt term\'eszetesen majd \'arnyaljuk. Most csak fut\'olag eml\'{\i}tj\"uk meg, hogy mindez 
+nagy m\'ert\'ekben f\"ugg att\'ol is (a kor\'abbiakkal ellent\'etben), hogy milyen g\'epen 
+dolgozunk, vagyis az {\sl oper\'aci\'os rendszert\H{o}}l, \index{oper\'aci\'os rendszer} 
+illetve az az \'altal haszn\'alt {\sl f\'ajlrendszert\H{o}l}. \index{f\'ajlrendszer}
+
+Miel\H{o}tt gyorsan menn\'enk tov\'abb, egyetlen dolgot m\'eg el kell \'arulnunk az 
+Olvas\'oinknak.A m\'ar ismertett f\"uggv\'ennyel meg tudunk nyitni egy \'allom\'anyt, 
+de a programban azt id\H{o}nk\'ent le is kell z\'arni. Erre val\'o a \index{close}
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+   allomany.close()
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent h\'{i}v\'as, ami a lez\'ar\'as mellett meg is semmis\'{\i}ti az \'allom\'any-objektumot. 
+Ha tetszik, ez\'ert tekinthetj\"uk ak\'ar destruktornak is, de p\'eld\'anyos\'{\i}tani sem a 
+konstruktorral p\'eld\'anyos\'{\i}tottuk. Beolvas\'askor ez nem annyira fontos, de amikor 
+adatokat \'{\i}runk ki, akkor nem szabad r\'ola elfeledkezni, mert kellemetlen meglepet\'esekkel 
+j\'arhat. Err\H{o}l a k\"ovetkez\H{o} r\'eszen m\'eg \'{\i}runk. 
+
+\subsection{\'Allom\'anyok \'{\i}r\'asa}
+
+Kezdj\"uk is mindj\'art az egyszer\H{u}bb t\'em\'aval, az \'allom\'anyok \'{\i}r\'as\'aval. 
+Az elej\'en azonban m\'aris van egy k\'erd\'es, amit el kell d\"onten\"unk, vagyis \'uj 
+adatsort akarunk-e l\'etrehozni, vagy egy kor\'abbit kieg\'esz\'{\i}teni. Mind a k\'et 
+esetben a megnyit\'askor a m\'od param\'etert kell megfelel\H{o}en be\'all\'{\i}tni:
+
+\begin{itemize}
+   \item{{\tt "w"}, ha az \'allomanyt \'{\i}rni akarjuk}
+   \item{{\tt "a"}, ha az adatokhoz hozz\'af\H{u}z\"unk.}   
+\end{itemize} 
+
+\noindent A megadott n\'even  neml\'etez\H{o} \'allom\'any eset\'en mind a kett\H{o} egyszer\H{u}en 
+l\'et\-re\-hoz\-za azt \"uresen, \'es m\'aris mehetnek bele az adatok. Gy\"okeresen m\'as a helyzet 
+azonban akkor, ha ilyen nev\H{u} f\'ajl m\'ar l\'etezik. Ekkor {\tt "w"} haszn\'alata eset\'en a 
+kor\'abbi tartalma teljesen {\bf t\"orl\H{o}dik}, hiszen a param\'eter azt jelezte, \'uj adatsor fog 
+k\'esz\"ulni. Ha viszont az \'atadott param\'eter {\tt "a"}, akkor az adott \'allom\'any kor\'abbi 
+tartalma megmarad, hiszen hozz\'a akarunk f\H{u}zni.  Ha a megnyit\'as valamilyen okn\'al fogva 
+m\'egse siker\"ul, akkor a Python a szok\'asos m\'odon kiv\'etelt dob, ezzel jelzi a hib\'at. 
+L\'assunk az\'ert k\'et egyszer\H{u} p\'eld\'at:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+adat = open("teszt.txt", "w")
+sor = open("proba.3", "a")
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Ha a megnyit\'as \'{\i}gy, vagy \'ugy sikeres volt, akkor m\'ar k\"uldhetj\"uk az \'allom\'anyba 
+az adatokat, p\'eld\'aul:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+   adat.write("Ez egy sor")
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Az utas\'{\i}t\'as hat\'as\'ara az \'atadott string ki\'{\i}r\'odik az \'allom\'anyba, de 
+sz\"ovegr\H{o}l l\'ev\'en sz\'o, fontos eml\'ekezn\"unk arra, hogy a soremel\'es nem ad\'odik hozz\'a, 
+az a programoz\'o feladata. Mondjuk: 
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+   adat.write("Ez egy sor\n")
+\end{Verbatim}
+\theminta. p\'elda
+
+T\'etelezz\"uk fel azt az esetet, amikor egyszerre t\"obb sort szeretn\'enk az \'allom\'anyba kiiratni. 
+Szerencs\'ere nem kell nek\"unk ilyenkor ciklust \'{\i}rni, a Python programoz\'asi nyelv ad egy eleg\'ans 
+megold\'ast:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+   adat.writelines(sorok)
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Term\'eszetesen a soremel\'esekr\H{o}l itt is a nek\"nk kell k\"ul\"on gondoskodnunk. Gyakorlott 
+programoz\'ok m\'ar a list\'at is ennek megfelel\H{o}en rakj\'ak \"ossze.
+
+Az \'allom\'anyok \'{\i}r\'asakor a lez\'ar\'asnak k\"ul\"onleges szerepe van. Az adatok ugyanis nem 
+azonnal ker\"ulnek ki a lemezre, hanem el\H{o}sz\"or egy \'atmeneti t\'arol\'oba (\'ugynevezett 
+{\sl pufferbe} t\"olt\H{o}dnek be, \index{puffer} \'es csak akkor \'{\i}r\'odnak ki, ha a puffer megtelik. 
+A {\tt close} \index{close} viszont azonnal elkezni a puffer lement\'es\'et.Ez\'ert az a legbiztons\'agosabb, 
+ha minden {\tt write} \'es {\tt writelines} ut\'an az \'allom\'anyt lez\'arjuk, majd ut\'ana \'ujranyitjuk.
+
+\subsection{\'Allom\'anyok beolvas\'asa}
+
+Ha fel akarunk dolgozni egy \'allom\'anyt a megnyit\'asi m\'od:
+
+\begin{itemize}
+   \item{{\tt "r"}, ebben az esetben}   
+\end{itemize} 
+
+\noindent Teh\'at a teljes megnyit\'as:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+adat = open("teszt.txt", "r")
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Mivel most csak egyetlen m\'od \'all a rendelkez\'es\"unkre, el is kezdhetj\"uk a beolvas\'ast:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+sor = adat.readline()
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Els\H{o} beolvas\'askor az elej\'et\H{o}l szedi be lemezr\H{o}l az adatokat a program, ut\'ana 
+pedig a f\'ajl-mutat\'o pillanatnyi helyzet\'et\'et\H{o}l. Az esetek t\"obbs\'eg\'eben nem haszn\'alunk 
+semmif\'ele param\'etert, de err\H{o}l kicsit k\'es\H{o}bb m\'eg lesz sz\'o.  
+
+Van a Pythonban arra is lehet\H{o}s\'eg, hogy egyszerre t\"obb sort olvassunk be az \'allom\'anyb\'ol 
+(az \"osszeset, vagy a marad\'ekot), erre szolg\'al a m\'asik utas\'{\i}t\'as:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+sorok = adat.readlines()
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent A f\"uggv\'enyben itt sem haszn\'altunk egyel\H{o}re param\'etert. Fel kell h\'{\i}vni mindenkinek 
+a figyelm\'et arra, hogy esetleg nagyon sok adatot fogunk ilyenkor beolvasni. 
+
+TODO SOREMEL?????
+
+Eddig sorokr\'ol besz\'elt\"unk, de az \'allom\'anyok egy nagy r\'esze nem sz\"oveges, illetve nem 
+tagol\'odik sorokra. Sz\"uks\'eg van teh\'at egy olyan f\"uggv\'enyre is, amelynek meg tudjuk mondani, 
+hogy az \'allom\'anyb\'el mennyit akarunk beolvasni:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+import os
+adatok = os.read(adat,<darab>)
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Ahogyan a p\'eld\'abol l\'atjuk, ehhez sz\"uks\'eg volt az {\tt os} modul import\'al\'as\'ara 
+is. Ez azokat a f\"uggv\'enyeket tartalmazza, amelyek a lemezegys\'eggel kapcsolatos m\H{u}veleteket 
+val\'os\'{\i}tja meg, k\'es\H{o}bb m\'eg b\H{o}vebben is ismerets\'eget k\"ot\"unk vele.
+
+A kor\'abbi \'{\i}g\'erethez h\'{\i}ven t\'erj\"unk most vissza a beolvas\'o met\'odusok param\'etereihez. 
+L\'assuk most az els\H{o} p\'eld\'at:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+sor = adat.readline(<darab>)
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Az utas\'{\i}t\'as a kor\'abbihoz hasonl\'oan beolvas egy sort, ha a karakterek sz\'ama nem nagyob, 
+mint a megadott darabsz\'am. Abban az esetben, ha a sor t\'eny\-le\-ge\-sen hosszabb, akkor legfelejebb a megadott 
+sz\'am\'u karaktert olvassa be. Ilyenkor a sor tov\'abbi r\'esz\'et ism\'etelt h\'{\i}v\'assal tudjuk beolvasni.
+Hasonl\'o a helyzet a 
+
+\begin{Verbatim}[fontsize=\small]
+sorok = adat.readlines(<darab>)
+\end{Verbatim}
+
+\noindent Ilyenkor a megadott darabsz\'am a sorok \"ooszes hossz\'at jelenti.
+
+TODO utols\'o sor??
+
+\subsection{Tov\'abbi megjegyz\'esek az \'allom\'anyokhoz}
+
+Az el\H{o}z\H{o} k\'et r\'eszben a legfontosabb dolgokat megimsert\"uk, de ez sajnos nem jelenti azt, 
+hogy eleget tudunk nyakatekertebb feladatok megold\'as\'ahoz. Mindenekel\H{o}tt l\'enyeges annak 
+be\'all\'{\i}\'asa, hogy az \'allom\'anyokat melyik k\"onyvt\'arba (mapp\'aba) hozza l\'etre, 
+illetve melyik k\"onyvt\'arban (mapp\'aban) keresse olvas\'askor a sz\'am\'{\i}t\'og\'ep. Tov\'abb\'a 
+id\H{o}nk\'ent le kell ellen\H{o}rizni, hogy a feldolgozand\'o f\'ajl, illetve a haszn\'aland\'o mappa 
+t\'enylegesen l\'etezik-e. Mindehhez egy kicsit meg kell ismern\"unk az \'allom\'anyokat t\'arol\'o 
+\index{f\'ajlrendszer} {\sl f\'ajlrendszer} kezel\'es\'enek r\'eszleteit.\footnote{\'Erdekess\'egk\'ent 
+jegyezz\"uk, meg, hogy egyes oper\'aci\'os rendszerek, p\'eld\'aul a Linux t\"obbf\'ele f\'ajlrendszert 
+is tud kezelni.} Els\H{o}sorban olvas\'as eset\'en van arra lehet\H{o}s\'eg, hogy ne csak sorban dolgozzuk 
+fel az adatokat, hanem tudjunk a f\'ajokban el\H{o}re \'es h\'arta mozogni. A megnyit\'asi m'odokr\'ol is 
+kell m\'eg b\H{o}vebben mondanunk valamit, hiszen ezen a t\'eren is sok lehet\H{o}s\'eget biztos\'{\i}t 
+sz\'amunkra a Python programoz\'asi nyelv.
+
+\subsubsection{Kapcsolat a f\'ajlrendszerrel}
+
+Minden f\'ajlrendszer (\'es minden oper\'aci\'os rendszer) m\'as \'es m\'as, de szeren\-cs\'enk\-re ezt 
+a programoz\'asi nyelv el\H{o}l\"unk eltakarja, elegend\H{o} csak a m\'ar emlegetett {\tt os} modult 
+import\'alni. Ez lehet\H{o}v\'e teszi, hogy a programot a fejleszt\'es befejez\'ese ut\'an egy m\'asik 
+sz\'am\'{\i}t\'og\'epen haszn\'aljuk, ha csak a szabv\'anyos f\"uggv\'enyeket alkalmazzuk, akkor elvileg 
+nem \'erhet minket meglepet\'es. Az alap\'ertelme\'es szerint a munkak\"onyvt\'ar az, ahol a szkriptet 
+elind\'{\i}tuttuk, (\'altal\'aban, ahol tal\'alhat\'o). Err\H{o}l viszont meg is tudunk bizonyosodni:
+
+\begin{Verbatim}[fontsize=\small]
+import os
+print(os.getcwd())
+\end{Verbatim}
+
+\noindent Ennek a k\'odnak hat\'as\'ara val\'oban az aa k\"onyvt\'ar \'{\i}r\'odik ki, ahol ezt 
+lefuttattuk. Ha kipr\'ob\'aljuk, akkor l\'atjuk, hogy ez megadja a teljes el\'er\'esi \'utvonolat. 
+A k\"onyvt\'ar v\'alt\'asra a {\tt chdir} f\"uggv\'eny haszn\'aland\'o:
+
+\begin{Verbatim}[fontsize=\small]
+import os
+print(os.getcwd())
+os.chdir('test')
+print(os.getcwd())
+\end{Verbatim}
+
+\noindent A r\"ovid szkript lefuttat\'asa ut\'an l\'atjuk, hogy a mappa\'alt\'as t\'enylegesen 
+meg is t\"ort\'ent. Gondoljuk, nem kell arra felh\'{\i}vni a figyelmet, ha a {\tt 'test'} 
+k\"onyvt\'ar nem l\'etezik, akkor a Python kiv\'etelt fog dobni. K\"onyvt\'arat is tudunk 
+l\'etrehozni az {\tt mkdir()} f\"uggv\'ennyel:
+
+\begin{Verbatim}[fontsize=\small]
+import os
+os.mkdir('uj_mappa')
+\end{Verbatim}
+
+\noindent A pr\'obafuttat\'as sor\'an l\'eltrej\"on az \'uj k\"onyvt\'ar, kiv\'eve akkor, ha 
+m\'ar l\'etezik. Ez ut\'obbi esetben kiv\'etelt fog a rendszer dobni.
+
+M\'ar eml\'{\i}tett\"uk, hogy a most bemutatott f\"uggv\'enyek hib\'ara tudnank futni, ennek 
+kezel\'es\'ere a Python nyelvben k\'et lehet\H{o}s\'eg \'all a rendelkez\'es\"unkre. Az 
+egyik, a legt\"obb Python felhaszn\'al\'o ezt szokta haszn\'alni, hogy a k\'erd\'eses 
+utas\'{\i}t\'ast bez\'arjuk m\'ar ismert m\'odon egy {\tt try ... except} szerekezetbe, 
+\'es az \'{\i}gy elkapott {\tt PermissionError} kiv\'etelt lekezelj\"uk. A m\'asik megold\'as, 
+hogy a "k\'enyes" m\H{u}veletek el\H{o}tt leellen\H{o}rizz\"uk, hogy a megfelelel\H{o} elem 
+l\'etezik-e a f\'ajlerndszerben, erre val\'o az {\tt os.access()} f\"uggv\'eny:
+
+\begin{Verbatim}[fontsize=\small]
+import os
+teszt = os.access("myfile", os.R_OK)
+\end{Verbatim}
+
+\noindent A h\'{\i}v\'as eredm\'enyek\'ent logikai igaz ({\tt True}), vagy hamis ({\tt False}) 
+\'ert\'eket ad vissza. Az els\H{o} param\'eter az ellen\H{o}rzend\H{o} elem neve (pontosabban 
+a teljes el\'er\'esi \'utja), a m\'asodik pedig az olvashat\'os\'agot jelenti. Ez a m\'od 
+\'ert\'ek szint\'an az import\'alt modulban vand defini\'alva. Ha csak az elem l\'etez\'es\'et 
+akarjuk tesztelni, akkor a m\'od param\'eter os.F\_OK. T\"obb \'ert\'ert\'eket mag\'aban 
+a modulban tal\'alhatunk.
+
+\subsubsection{\'Allom\'anyok \'{\i}r\'as\'ar\'ol \'es olvas\'as\'ar\'ol b\H{o}vebben}
+
+A kor\'abbiakban megmutattuk az \'allom\'anyok megnyit\'asakor haszn\'alt legfontosabb m\'odokat, 
+de a Python programoz\'asi nyelven ann\'aol azonban t\"obb lehet\H{o}s\'eg van. Az egyik leg\'erdekesebb, 
+hogy meg lehet mondani, milyen jelleg\H{u} az \'allom\'any. Ha tudjuk el\H{o}re, hogy nem sz\"oveges 
+adatokat tartalmaz, akkor {\sl bin\'aris} adatk\'ent kell megnyitni, p\'eld\'ul ilyen lehet egy 
+k\'epf\'ajl, vagy hangsor. Erre az al\'abbi m\'odok \'allnak a rendelkez\'es\"unlre:
+
+\begin{center}
+   \begin{tabular}{cl}
+   {\bf M\'od} & {\bf Jelent\'es} \\
+   {\tt rb} & Az \'allom\'anyt olvas\'asra nyitja meg bin\'arisan. \\
+   {\tt wb} & Az \'allom\'anyt \'{\i}r\'asra nyitja meg bin\'arisan. \\
+   {\tt ab} & Az \'allom\'anyt hozz\'af\H{u}z\'esre nyitja meg bin\'arisan. \\
+   \end {tabular}
+\end{center}
+
+Fontos azonban megjegyezni, hogy ezt nem minden oper\'aci\'os rendszer eset\'en kell elkelmazni, 
+ugyanis van olyan, amely minden esetben a bin\'aris tekinti alap\'ertelmez\'esnek. 
+
+Elk\'epzelhet\H{o} a programoz\'oi gyakorlatban, hogy a megynit\'as sor\'an egyszerre van 
+sz\"uks\'eg\"nk arra, hogy valamilyen m\'odon \'{\i}rni \'es olvasni is tudjuk az adatsort. 
+Erre kombin\'alt megnyit\'asi m\'odok vannak:
+
+\begin{center}
+   \begin{tabular}{cl}
+   {\bf M\'od} & {\bf Jelent\'es} \\
+   {\tt r+} & Az \'allom\'anyt olvas\'asra \'es \'{\i}r\'asra nyitja meg. \\
+   {\tt w+} & Az \'allom\'anyt \'{\i}r\'asra \'es olvas\'asra nyitja meg. \\
+   {\tt a+} & Az \'allom\'anyt hozz\'af\H{u}z\'esre \'es olvas\'asra nyitja meg. \\
+   \end {tabular}
+\end{center}
+
+\noindent Hogy az olvas\'oinkat a lehet\H{o} legteljesebb m\'ert\'ekben megzavarjuk, megeml\'{\i}tj\"uk, 
+a most le\'{\i}rt m\'oddal szabadon keverhet\H{o} a bin\'aris megnyit\'as.
+
+\subsubsection{Mozg\'as az \'allom\'anyokban}
+
+N\'eha el\H{o} szokott fordulni, hogy egy-egy f\'ajl  eset\'eben nem egym\'as ut\'an kell az adatokat 
+feldolgozni, hanem valamilyen m\'odon \'at kell r\'eszleteket ugrani. Ahogyan m\'as a {\tt read} \'es 
+{\tt readline} met\'odusok eset\'eben is eml\'{\i}tett\"uk, az minden esetben az \'allom\'anymutat\'o 
+pillanatnyi helyzet\'et\H{o} olvassa be az adatokat. Felmer\"ul teh\'at egy\'ertelm\H{u}en a k\'erd\'es, 
+van-e lehet\H{o}s\'eg a mutat\'o \'ert\'ek\'et lek\'erdezni, illetve megv\'altoztatni. A Python 
+f\'ajlkezel\H{o} met\'odusai mind a kett\H{o}t megoldj\'ak a sz\'amunkra. Az els\H{o} {\tt tell}, a 
+m\'asodikra pedig a {\tt seek} f\"uggv\'eny alkalmazhat\'o. L\'assuk a gyakorlatban:
+
+\begin{Verbatim}[fontsize=\small]
+with open('tell.tst','r') as inp:
+   pos = inp.tell()
+   print('1-- %d'%pos)
+   sor = inp.readline()
+   print(sor)
+   pos = inp.tell()
+   print('2-- %d'%pos)
+   inp.seek(24,0)
+   pos = inp.tell()
+   print('3-- %d'%pos)
+   sor = inp.readline()
+   print('teszt')
+   print(sor)
+\end{Verbatim}
+
+\noindent A fenti k\'odot lefuttattuk (a bemeneti adatf\'ajl sz\a'msorokat tartalmaz egym\'as alatt) .Az eredm\'eny:
+
+\begin{Verbatim}[fontsize=\small]
+python telltest.py
+1-- 0
+1234
+
+2-- 6
+3-- 24
+teszt
+432
+\end{Verbatim}
+
+\noindent A kimenet \'ertelmez\'ese nem olyan neh\'ez, a megnyit\'as ut\'an az \'allomy\'anymutat\'o az elej\'ere 
+\'allt be, majd az els\H{o} sor beolvas\'asa ut\'an a m\'asodik sor elej\'ere. A {\tt seek} f\"uggv\'eny 
+megh\'{\i}v\'asa az \'allom\'anymutat\'ot k\"ozvetlen\"ul m\'odos\'{\i}tja, az azt k\"ovet\H{o} kiirat\'as 
+tanuls\'aga alapj\'an t\'enyleg a megadott poz\'{\i}ci\'ora \'all\'{\i}tja. M\'elyedj\"unk el kiss\'e ennek a 
+f\"uggv\'enynek a m\H{u}k\"od\'es\'ebe. Az els\H{o} argumentum a k\'{\i}v\'ant poz\'{\i}ci\'ot jelenti, de 
+ennek helyes \'ertelmez\'ese a m\'asodik param\'etert\H{o}l f\"ugg. Az al\'abbi t\'abl\'azat ebben seg\'{\i}t:
+
+\begin{center}
+   \begin{tabular}{cll}
+      {\bf M\'asodik param\'eter} & {\bf Els\H{o} \'ert\'ek} & {\bf Jelent\'es} \\
+      {\tt 0, SEEK\_SET} & Csak pozit\'{\i}v & Az \'allom\'any elej\'et\H{o}l sz\'am\'{\i}tva \\
+      {\tt 1, SEEK\_CUR} & Minden lehet & Az aktu\'asli helyhez k\'epest kell megandi \\
+      {\tt 2, SEEK\_END} & Csak negat\'{\i}v & Az \'allom\'any v\'eg\'et\H{o}l sz\'am\'{\i}tva \\      
+   \end {tabular}
+\end{center}
+
+
+\section{Dokument\'aci\'o Python m\'odra}
+\label{dokument}
+
+Az esetek t\"obbs\'eg\'eben nem elegend\H{o}, ha egy programk\'od j\'ol olvashat\'o, 
+a m\H{u}k\"od\'es\'enek meg\'ert\'es\'ehez sz\"uks\'eg van valamif\'ele dokument\'ac\'ora. 
+A kor\'abbiak alapj\'an tudunk a Python k\'odba megjegyz\'eseket \'irni, de szerencs\'ere 
+a Python programoz\'asi nyelv enn\'el jobb lehet\H{o}s\'eget tud ny\'ujtani. Lehet olyan 
+le\'{\i}r\'ast mell\'ekelni a programokhoz \'es mdulokhoz, amelyet ak\'ar egy HTML 
+b\"ong\'esz\H{o}vel is tudunk olvasni. Mindez a k\'odb\'ol automatikusan el\H{o} is 
+\'all\'{\i}that\'o.
+
+\subsection{A dokument\'aci\'os string}
+
+Minden szkripthez, defini\'alt f\"uggv\'enyhez \'es oszt\'alyhoz lehet dokument\'aci\'ot 
+mell\'ekelni a {\sl dokument\'aci\'os stringek} \index{doc string} seg\'{\i}ts\'eg\'evel. Ennek 
+szabv\'anyos helye a defini\'al\'o fej ut\'an van. L\'assunk egy egyszer\H{u} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+def fugvveny(....):
+"""
+Az lesz a doksi, amit itt van.
+"""
+   ...
+\end{Verbatim}
+
+\noindent A fenti p\'elda tulajdonk\'eppen csak a m\'odszert igyekszik bemutatni, k\"ul\"on\"osebb 
+magyar\'azatot nem k\'{\i}v\'anunk hozza\'af\H{u}zni. A Python \'ertelmez\H{o} sz\'am\'ara a 
+h\'arom id\'ez\H{o}jel murtatja az ilyen megjegyz\'esek kezdet\'et \'es v\'eg\'et. Vil\'agos, 
+hogy ezekre a sorokra nem fog r\'afutni a vez\'erl\'es.
+
+\begin{Verbatim}[fontsize=\small]
+todo
+\end{Verbatim}
+
+\subsection{A pydoc szkript}
+\label{pydoc}
+
+A szkript r\'esze a szabv\'anyos Python rendszernek (neve {\tt python.py}), arra 
+lett kifejlesztve, hogy a k\'odba elhelyezett dokument\'aci\'os stringek alapj\'an k\'epes 
+legyen valamif\'ele j\'ol olsvashat\'o dokument\'ac\'ot el\H{o}\'all\'{\i}tani. 
+Egyr\'eszt egyszer\H{u} sz\"oveges inform\'ac\'ot, m\'asr\'eszt pedig b\"ong\'eszhet\H{o} HTML 
+dokumentumot tud gener\'alni. Ezen k\'{\i}v\"ul lehet\H{o}s\'eg van arra, hogy a b\"ong\'esz\H{o}  
+sz\'am\'ara ezeket az adatokat ig\'eny eset\'en el\H{o}\'all\'{\i}tsa valamilyen inform\'aci\'os 
+szerveren. Pontosabban megfogalmazva egy WEB szerveren futtatva az legy\'artott dokumentumot 
+egyb\H{o}l le tudja t\"olteni a t\'avoli g\'epen fut\'o b\"ong\'esz\H{o}re/.
+
+Az aj\'anl\'asok szerint \'erdemes a dokument\'aci\'os stringbe alapvet\H{o} adatokat belevenni. 
+L\'assunk erre egy mint\'at:
+
+\begin{Verbatim}[fontsize=\small]
+__author__ = "szerzo email"
+__date__ = "2020.10.03"
+__version__ = "0.1.0" 
+
+\end{Verbatim}
+
+\noindent Ezek az inform\'aci\'ok meg fognak jelenni a legener\'alt dokument\'aci\'oban is. 
+(Term\'eszetes a t\'enyleges adatokat kell be\'{\i}rni.) K\'es\H{o}bb m\'as c\'elra is 
+azonos\'{\i}tj\'ak a modult, erre majd mutatunk m\'eg p\'eld\'at.
+
+Amikor futtatjuk a {\tt pydoc} szkriptet, akkor minden esetben teljesen \'ertel\-me\-zi azt 
+a Python k\'odot, amelyiknek a dokument\'aci\'oj\'at el\H{o} akarjuk vele \'all\'{\i}tani. Ez 
+azt is jelenti, hogy legal\'abb is formailag helyesek kell lennie. Magyar\'an egyszer\H{u}en 
+arra is haszn\'alhatjuk, hogy kijav\'{\i}tsuk a szintaiktikai hib\'akat. 
+
+Most v\'egre l\'assuk a haszn\'alat\'at, parancsorban kell kiadni:
+
+\begin{Verbatim}[fontsize=\small]
+pydoc.py modulom
+\end{Verbatim}
+
+\noindent Nem bonyolult, de k\'et megjegyz\'est az\'ert szeretn\'enk hozz\'af\H{u}zni. A 
+{\tt pydoc.py} szkriptnek a megfelel\H{o} mapp\'ab\'ol el\'erhet\H{o}nek kell lenni, ezt 
+esetleg \'ugy is megoldhatjuk, hogy sim\'an odam\'asoljuk. (MS Windows k\"ornyezetben 
+tal\'an \'{\i}gy a legegyszer\H{u}bb.) A m\'asik, hogy a feldolgozand\'o Python szkript 
+nev\'et elegend\H{o} a kiterjeszt\'es (t\'{\i}pus) n\'elk\"ul megadni. A fenti kiadott 
+parancs hat\'as\'ara az el\H{o}\'all\'{\i}tott dokument\'aci\'o sz\"oveges form\'aban 
+megjelenik a k\'eperny\H{o}n. Ha hosszabb, akor egyszerre annyi r\'esz \'{\i}r\'odik 
+ki, amennyi egyszerre kif\'er, \'es lapozni kell el\H{o}re.
+
+\begin{Verbatim}[fontsize=\small]
+pydoc.py -w modulom
+\end{Verbatim}
+
+\noindent Ez ut\'obbi utas\'{\i}t\'as az, amely seg\'{\i}ts\'eg\'evel a b\"ong\'eszhet\H{o} 
+HTML \'allom\'anyba \'{\i}r\'odik ki a dokument\'aci\'o, ennek neve {\tt modulom.html}. 
+A b\"ong\'esz\H{o}ben a le\'{\i}r\'as szinesen jelenik meg, az alap\'ertelmezett 
+sz\'ink\'odokat a szkript \'all\'{\i}tja be.
+
+\section{Modulokr\'ol b\H{o}vebben}
+
+A bevezet\H{o} f\"uzetben m\'ar volt arr\'ol sz\'o, hogy a f\"uggv\'enyek \'es 
+oszt\'alyok defin\'{\i}ci\'oj\'at ak\'ar k\"ul\"on Python forr\'as\'allom\'anyba 
+is tehetj\"uk, \'es sz\"uks\'eg eset\'en a szkript\"unkbe import\'alhatjuk. Ez 
+a m\'odszer nem csak r\"ovidebb\'e teheti a programunkat, hanem abban is seg\'{\i}t, 
+hogy olvashat\'obb \'es \'attekinthet\H{o}bb k\'odott tudjunk \'{\i}rni. A 
+programoz\'oi hasznos gyakorlat szerint az a legjobb, ha egy modulba a szorosabban 
+\"osszetartoz\'o f\"uggv\'enyek \'es oszt\'alyok defin\'{\i}ci\'oi vannak \"osszeszedve. 
+Ez az olvashat\'os\'ag mellett abban is seg\'{\i}ts\'eg\"unkre lehet, hogy a modulba 
+szervezett k\'odot ak\'ar k\"ul\"on is tesztelhess\"unk. Ezt egy k\"ul\"on fejezetben (\ref{teszt}.) 
+fogjuk le\'{\i}rni.
+
+Miel\H{o}tt alaposabban ism\'et bele\'asn\'ank magunkat a modulok haszn\'alat\'anak a 
+m\'elys\'egeibe, mindenk\'eppen fontos, hogy l\'assuk, hogyan is kezeli a Python ezeket 
+az inform\'aci\'okat. Legyen az egyszer\H{u}s\'eg kedv\'e\'ert a modulunk k\'odja:
+
+\begin{Verbatim}[fontsize=\small]
+# Modul A
+
+text = "Haho"
+
+def foo(...)
+   pass
+\end{Verbatim}
+
+\noindent Egyszer\H{u} import\'alas eset\'en (vagyis az {\tt import A} utas\'{\i}t\'as 
+kiad\'asa ut\'an) a Python \'ertelmez\H{o} az abban l\'etrehozott elemeket k\"ul\"on 
+t\'arter\"uletre rakja be, ezt szakkifejez\'essel {\sl n\'evt\'ernek} \index{n\'evt\'er} 
+nevezz\"uk. A modul saj\'at n\'evtere teljesen elv\'alik a progam (szkript) saj\'at 
+n\'evter\'et\H{o}l. Ez nagyon leegyszer\H{u}s\'{\i}tve k\'et dolgot jelent. Az egyik, hogy 
+a fenti p\'eld\'at alapul v\'eve a f\H{o}programban is bevezethet\"unk egy {\tt text} 
+v\'altoz\'ot, javaslatunk szerint csak indokolt esetben, mert nehezen felder\'{\i}thet\H{o} 
+hib\'ak oka lehet.)
+
+A m\'asik k\"ovetkezm\'enye, hogy a moduk egyes elemeire a n\'evt\'er sg\'{\i}ts\'eg\'evel 
+tudunk hivatkozni, vagyis p\'eld\'aul:
+
+\begin{Verbatim}[fontsize=\small]
+print(A.text)"
+
+i = A.foo(....)
+\end{Verbatim}
+
+\noindent Az ilyen neveket {\sl min\H{o}s\'{\i}tett neveknek} nevezz\"uk szakkifejez\'esel 
+\index{min\H{o}s\'{\i}tett n\'ev}, hiszen ezzel tudjuk egy\'ertelm\H{u}en megmondani, mire 
+gondolunk. P\'eld\'aul egy\'altal\'aban nem okoz gondot, ha k\'et k\"ol\"onb\"oz\H{o} modulban 
+ugyanolyan nev\H{u} v\'altoz\'o van, mert ebben az esetben egyszer\H{u}en a {\tt A.text} \'es 
+{\tt B.text} hivatkoz\'assal, a n\'evterek haszn\'alat\'avol pontosan a megfelel\H{o}t tudjuk 
+el\'erni. (Programoz\'oi szemmel ez ugyanakkor teljesen rossz megk\"ozel\'{\i}t\'es a m\'asik 
+f\'ele import\'alas miatt.)
+
+A Python azonban lehet\H{o}v\'e teszi az import\'al\'as egy kiss\'e bonyolultabb, ugyanakkor a 
+programoz\'o sz\'am\'ara nagyobb ellen\H{o}rz\'est ad\'o m\'odszer\'enek alkalmaz\'as\'at is.
+
+\begin{Verbatim}[fontsize=\small]
+
+from A import text
+
+print(text)
+
+\end{Verbatim}
+
+\noindent A p\'elda alapj\'an egyb\H{o}l l\'atszik a k\'et legfontosabb k\"ul\"onbs\'eg. 
+Az egyik, hogy az {\tt A} modulb\'ol csak egyetlen elem, a v\'altoz\'o lett import\'alva. 
+A m\'asik, hogy ilyenkor nem haszn\'aljuk a min\H{o}s\'{\i}tett nevet, mintha a modul 
+v\'altoz\'oja k\"ozvetlen\"ul a f\H{o}program n\'evter\'eben lett volna l\'etrehozva. Ez 
+term\'eszetesen igaz lenne a f\"uggv\'enyekre \'es az oszt\'alyokra is.
+
+Van ennek a k\'enyelmes el\'er\'esnek egy kellemetlen k\"ovetkezm\'enye is. Mivel (l\'atsz\'olag) 
+nem j\"on l\'ere a moduloknak saj\'at n\'evtere, ez\'ert az azonos nev\H{u} elemek ugyan nem 
+fognak \"ossze\"utk\"ozni egym\'assal de a programjaink olvashat\'os\'agat nagym\'ertekben rontj\'a 
+az ilyen megold\'as. Esetlegesen az \'{\i}gy el\H{o}\'all\'o hib\'akat szint\'en nagyon neh\'ez 
+elkapni \'es jav\'{\i}tani.
+
+TODO teszt
+
+-- Minta
+
+Bonzolultabb programok, pontosabba szkriptek eset\'en nem mindegy, hogy a megold\'as sor\'an az 
+azonos nev\H{u} modulok k\"oz\"ul melyik v\'alatoztot haszn\'aljuk. Ez f\H{o}leg akkor okozhat 
+nem kis probl\'em\'at, ha nem egyed\"ul programozunk, ahogyan azt a f\"uggel\'ekben is olvasatjuk. 
+Ez\'ert fontos lenne nyomon k\"ovetni azt, hogz a modulb\'ol milyen verzi\'ot haszn\'alunk, ehhez 
+az al\'abbi \"otlet alkalmazhatjuk:
+
+\begin{Verbatim}[fontsize=\small]
+__version__ = "0.1.0" 
+\end{Verbatim}
+
+\subsection{Csak import\'aland\'o modulok}
+
+A legalapvet\H{o}bb dolgokat a kor\'abbiak alapj\'an elsaj\'at\'{\i}tottuk, de nem 
+\'art azokat ism\'etelve rendszerezni, illetve kiss\'e b\H{o}v\'{\i}teni. Ha egy 
+modul kiz\'ar\'olag nem k\"ozvetlen\"ul v\'egrehajthat\'o utas\'{\i}t\'asokat tartalmaz, 
+akkor azokat csak import\'al\'as ut\'an haszn\'alhatjuk.
+
+Itt meg kell \'allnunk egy pillanatra, mert r\'eszletesebb \'ertelem\'esre szorul a "nem 
+k\"ozvetlen\"ul v\'egrehajthat\'o utas\'{\i}t\'as" megfogalmaz\'as. A f\"uggv\'enyeket \'es 
+oszt\'alyokat a Python t\'enylegesen l\'erehozza a mem\'ori\'aban, teh\'at azokat valamilyen 
+szinten m\'egis v\'egrehajtja. Ugyanakkor l\'enyegesen m\'ashogy, mint ahogyan mondjuk egy 
+\'ert\'ekad\'ast, vagy p\'eld\'aul egy {\tt print} f\"uggv\'enyh\'{\i}v\'ast. Ezek ugyanis 
+haszn\'alj\'ak, esetleg meg is v\'altoztat\'ak az addig l\'etrehozott v\'altoz\'ok pilllanatnyi 
+\'ert\'ek\'et, m\'{\i}g a f\"uggv\'enyek \'es oszt\'elyok k\'odj\'anak \'ertelmez\'ese nem. 
+Ez\'ert a sz\'ohaszn\'alat tulajdonk\'eppen jogos \'es helyes. A programoz\'oi gyakorlatban 
+mindezek ellen\'ere szoktak ilyenkor is haszn\'alni \'ert\'ekd\'asokat is, p\'eld\'aul:
+
+\begin{Verbatim}[fontsize=\small]
+# Modul Grafika.py
+
+modul  = "Grafika"
+verzio = "1.0.2.1"
+datum  = "2020.07.12"	 
+
+...
+
+\end{Verbatim}
+
+\noindent A fenti sorok egyszer\H{u}ek \'es j\'ol \'erthet\H{o}ek, m\'egis felmer\"ulhet az 
+olvas\'okban, hogy mire is j\'o ez az eg\'esz. A v\'alasz el\'egg\'e k\'ezenfekv\H{o}, adott 
+esetben seg\'{\i}t a modult (m\'eg import\'al\'as ut\'an is) azonos\'{\i}tani, mondjuk \'eppen 
+nyomk\"ovet\'es c\'elj\'ab\'ol, amelyet a \ref{teszt}. fejezetben \'{\i}runk le r\'eszletesebben. 
+Hasznos lehet m\'eg ezen k\'{\i}v\"ul dokument\'al\'asi c\'elb\'ol is, ak\'ar ig\'enybe vessz\"uk, 
+ak\'at nem akarjuk ig\'enybe venni a \ref{dokument} fejezetben le\'{\i}rt Pythonos megold\'ast.
+
+A r\'esz v\'eg\'en lenne m\'eg egy \'altal\'anosabb megjegyz\'es\"unk. Azt m\'ar minden olvas\'onk 
+tudja a kor\'abbiak alapj\'an, hogy modulok alkalmaz\'as\'aval nem csak a programjainkat tudjuk 
+olvashat\'obb\'a tenni, hanem egy-egy k\'odot m\'as szkriptekhez is fel tudunk haszn\'alni. Ez 
+alapj\'an felmer\"ulhet a k\"ovetke\H{o} k\'erde\'es: mi va, ha a modulok importja egym\'asba 
+   van \'agyazva. Legyen k\'et modulunk, {\tt A} \'es {\tt B}, \'es {\tt B} modul haszn\'alja a 
+m\'asikat. Ha egy szkript import\'alja {\tt B}-t:
+
+\begin{Verbatim}[fontsize=\small]
+import B
+\end{Verbatim}
+
+\noindent akkor l\'etrej\"on a B n\'evt\'er a programban, a szok\'asos m\'odon min\H{o}s\'{\i}tett 
+n\'evvel el\'erhet\H{o}, de A modul elemei nem \'erhet\H{o}k el k\"ozvetlen\"ul. Ugyanakkor a 
+min\H{o}s\'{\i}tett n\'evvel meg tudunk h\'{\i}vni mondjuk egy A-beli f\"uggv\'enyt:
+
+\begin{Verbatim}[fontsize=\small]
+adat = B.A.fv(x)
+\end{Verbatim}
+
+\noindent Term\'eszetesen elk\'epzelhet\H{o}, hogy sz\"uks\'eg\"unk lenne az A modulra is, ilyenkor 
+k\"ul\"on is beemelhetj\"uk.
+
+\begin{Verbatim}[fontsize=\small]
+import B
+import A
+\end{Verbatim}
+
+\noindent Nem meglep\H{o}, ilyenkor mind a k\'et n\'evt\'er l\'etrej\"on, \'es valamilyen m\'odon 
+B tartalmazza a teljes A modult.
+
+%% Az import nem tranzitiv teljesen
+
+TODO Teszt
+
+\subsection{Import\'alhat\'o \'es v\'egrehajthat\'o modulok}
+
+A programoz\'oi gyakorlat sor\'an nagyon sokszor kell olyan modult \'{\i}rnunk, amelyet ak\'ar 
+mag\'aban is lehet ind\'{\i}tani, p\'eld\'ul tesztel\'esi c\'elb\'ol. Valamilyen m\'odon a 
+Python \'ertelmez\H{o}nek tudnia kell, hogy a modult \'eppen import\'aljuk, vagy v\'egrehajtjuk. 
+Erre a bels\H{o} \_\_name\_\_ v\'altoz\'o szolg\'al. Alkalmaz\'as\'ar\'ol l\'assunk egy 
+egyszer\H{u} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+if __name__ == "__main__":
+   # program
+\end{Verbatim}
+
+Abban az esetben, ha a modult k\"ozvetlen\"ul ind\'{\i}tjuk el, akkor a \_\_name\_\_ felveszi  
+a "\_\_main\_\_" \'ert\'eket. Ilyen m\'odon az el\'agaz\'as \'atadja a vez\'erl\'est a modulban 
+l\'ev\H{o} f\H{o}programnak. 
+
+\section{A modulok \'es programok tesztel\'ese}
+\label{teszt}
+
+Az els\H{o} f\"uzetben m\'ar emlegett\"uk a k\'odok pr\'ob\'algat\'as\'at, hogy meg 
+tudjuk vizsg\'alni egyszer\H{u}bb esetekben a m\H{u}k\"od\'es\"uket. Ez m\'eg nem 
+jelent {\sl tesztel\'est}, ugyanis az minden esetben m\'odszeres elj\'ar\'as. Az 
+alapvet\H{o}en azt jelenti, hogy a k\'od \'es a feladat ismeret\'eben el\H{o}zetesen 
+\'atgondoljuk, hogy milyen esetekben fogjuk ellen\H{o}rizni az eredm\'enyeket. Nagyobb 
+\'es bonyolultabb programok eset\'en nem csak a programot kell alaposan megtervezni, hanem 
+mag\'at a tesztel\'est is. \index{teszt} Ennek ugyanis nem csak a feladata, hogy igazoljuk 
+a k\'od helyes m\H{u}k\"od\'es\'et, hanem az esetleges hib\'ak ok\'at \'es felt\'etelezhet\H{o} 
+hely\'et a k\'odban is seg\'{\i}tsen megtal\'alni.
+
+Gondoljuk, hogy mindenki sz\'am\'ara vil\'agos, ehhez nagyon sok id\H{o} kell, n\'eha t\"obb 
+is, mint a k\'od t\'enyleges meg\'{\i}r\'as\'ahoz. Nem v\'eletlen teh\'at az az elv\'ar\'as, hogy 
+lehet\H{o}leg minn\'el nagyobb r\'esz\'et lehessen automatiz\'alni, \'{\i}gy azt r\'ab\'{\i}zhatjuk 
+a sz\'am\'at\'og\'epre. Nem csup\'an id\H{o}t lehet ezzel megtakar\'{\i}tani, hanem alaposabb 
+ellen\H{o}rz\'esnek is vethetj\"uk al\'a a programot. Ebben a fejezetben ezzel fogunk foglalkozni.
+
+Sok-sok \'eves programoz\'oi tapasztalat alapj\'an tudjuk, hogy b\'armennyire is alaposan van egy 
+szkript tesztelve, a sikeres teszt m\'eg nem jelenti azt, hogy nem maradtak benne hib\'ak. Csak 
+arr'\'ol van sz\'o, hogy a fejleszt\'es sor\'an \'atgondolt esetekben a program helyesen m\H{u}k\"odik, 
+\'es az \"onmag\'aban sem lebecs\"ulend\H{o} eredm\'eny. Senkinek a kedv\'et nem akarjuk elvenni, de 
+a hib\'ak az al\'abiak lehetnek:
+
+\begin{itemize}
+   \item{a feladat nem lett eg\'eszen pontosan megfogalmazva}
+   \item{a tesztel\'eskor kimaradtak ellen\H{o}rz\'esek}
+   \item{a fejleszt\'eskor \'es tesztel\'eskor haszn\'alt k\"ornyezet elt\'er a futtat\'askor 
+      haszn\'alt \'eles k\"ornyezett\H{o}l}
+   \item{a programot nem teljesen arra haszn\'alj\'ak (haszn\'aljuk), amit a feladat tartalmaz.}
+\end{itemize}
+
+\noindent L\'atszik, hogy a programoz\'oi munka nem \'er v\'eget akkor, amikor a tesztel\'essel 
+is k\'eszen vagyunk, \'es mindent hib\'atlannak tal\'alunk. Mint ahogyan a "puding pr\'ob\'aja az 
+ev\'es", a haszn'\'alat sor\'an alaposabb tapasztalatot tudunk szerezni. Neh\'any h\'et, vagy h\'onap 
+alatt nagy es\'ellyel j\"onnek el\H{o} az addig elb\'uj\'o probl\'em\'ak. Ilyenkor hozz\'a kell a 
+k\'odhoz ny\'ulnunk, de mindig b\H{o}v\'{\i}teni kell a tesztesetek sz\'am\'at is.
+
+\subsection{Alapoz\'as}
+
+Bevezet\'esk\'ent sz\"uks\'eg van arra, hogy n\'eh\'any fogalmat a t\'enyleges 
+tanulnival\'o el\H{o}tt le\'{\i}rjunk, ugyanis \'{\i}gy azt jobban fogjuk tudni 
+meg\'erteni. Szint\'ugy fontosnak tartjuk, hogy az alapvet\H{o} elveket \'es 
+m\'odszereket bemutassuk, lehet\H{o}v\'e t\'eve olvas\'oinknak az adott esetben 
+a leghat\'ekonyabb megold\'asok kiv\'alaszt\'as\'at.
+
+\subsubsection{Az alapfogalmak}
+
+\noindent{\sl Teszt eset}: egy adott program-elem ellen\H{o}rz\'ese egy adott bemenet eset\'en. 
+Fontos, hogy \"onmag\'aban is v\'egrehajthat\'o legyen. \index{teszt eset}
+
+{\it Megjegyz\'es}: a tesztel\'esi folyamat legkisebb r\'esze.
+
+\noindent{\sl Elv\'art eredm\'eny}: az adott teszt esetben az elfogadhat\'o esem\'eny, vagy kimeneti 
+adat. Ha nem ez a tesztel\'es eredm\'enye, akkor az eset sikertelen. \index{elv\'art eredm\'eny}
+
+\noindent{\sl Lefedetts\'eg}: annak m\'ert\'eke, hogy a program-elemek / k\'od / r\'eszfeladatok 
+milyen r\'esze van teszttel ellen\H{o}rizve.
+
+{\it Megjegyz\'es}: teljes lefedetts\'eg \'altal\'aban nem lehets\'eges, de t\"orekedni arra 
+sz\"uks\'eges.
+
+\subsubsection{Az alapelvek}
+
+B\'armilyen m\'odon is tesztel\"unk az al\'abbi alapelveket mindenk\'eppen \'erdemes betartani:
+
+\noindent{\sl Az egy\'ertelm\H{u}s\'eg elve}:
+
+Alapvet\H{o}en fontos, hogy a teszt eset kimenetet / eredm\'enye egy\'ertelm\H{u}en mutassa, 
+hogy sikeres volt-e, vagy sikertelen. 
+
+{\it Megjegyz\'es}: ez akkor is \'erv\'enyes, ha nem automatikusan tesztel\"unk.
+
+\noindent{\sl A megism\'etelhet\H{o}s\'eg elve}:
+
+Eszerint az elv szerint ugyananaz a program-elem ism\'etelt teszt eset\'en ugyan\'ugy kell, 
+hogy viselkedjen, ha id\H{o}kozben az a k\'od nem v\'altozott meg.
+
+{\it Megjegyz\'es}: ez az elv is minden esetben \'erv\'enyes.
+
+\noindent{\sl A teszt esetek f\"uggetlens\'eg\'enek elve}:
+
+Egy program-elem tesztel\'ese sor\'an az esetek legyenek egym\'ast\'ol f\"uggetlenek, eredm\'eny\"uk 
+ne f\"uggj\"on att\'ol, hogy milyen sorrendben hajtjuk \H{o}ket v\'egre. 
+
+{\it Megjegyz\'es}: ez lehet\H{o}v\'e teszi, hogy esetleges hiba eset\'en annak ok\'at pontosabban 
+meg lehessen \'allap\'{\i}tani. Indokoltan az\'ert ett\H{o}l el lehet tekinetni, b\'ar a hiba 
+behat\'arol\'as\'at megnehez\'{\i}ti.
+
+\noindent{\sl A biztons\'agos alkot\'oelemek elve}:
+
+Ha a tesztelend\H{o} program-elem (legyen A) h\'{\i}v egy m\'asikat (B), akkor a B elemet kell el\H{o}bb 
+tesztelni. 
+
+{\it Magyar\'azat}: A tesztel\'esnek az is c\'elja, ahogyan m\'ar meg\'{\i}rtuk, hogy a hib\'ak hely\'et 
+\'es ok\'at egyszer\H{u}bben megtal\'aljuk. Mivel a B alkot\'oelemet m\'ar kor\'abban letesztelj\"uk 
+(\'es az esetleges hib\'akat kijav\'{\i}tjuk), ez\'ert az biztosan j\'ol m\H{u}k\"odik. Ez\'ert, ha 
+hib\'at tal\'alunk, az csak A-ban lehet.
+
+{\it Megjegyz\'es}: Nagyon gyakorlott tesztel\H{o}k ilyenkor a B elemet le szokt\'ak a tesztek idej\'ere 
+cser\'elni mindig j\'ol "m\H{u}k\"od\H{o}" k\'odr\'eszletre.
+
+\subsubsection{Az alapvet\H{o} m\'odszerek}
+
+A tesztel\'es sor\'an a teszt eseteket a feladat (r\'eszfeladat) \'es a programk\'od alapj\'an kell 
+meghat\'arozni. Ezt a kett\H{o}t nem egyforma ar\'anyban kell figyelembe venni, ilyen m\'odon alapvet\H{o}en 
+k\'etf\'ele m\'odszert tudunk meghat\'arozni. Ezek a m\'odszerek att\'ol teljesen f\"uggetlenek, hogy a 
+tesztel\'est k\'ezzel, vagy esetleg a sz\'am\'{\i}t\'og\'epre b\'{\i}zva automatiz\'altan csin\'aljuk.
+
+\noindent{\sl A feh\'er doboz tesztel\'es}:
+\index{feh\'er doboz teszt}
+
+Minden esetet a tesztelend\H{o} k\'od alapos ismerete alapj\'an kell kital\'alni \'es meg\'{\i}rni. 
+Biztos\'{\i}tani kell, hogy (lehet\H{o}leg) minden el\'agaz\'as minden \'ag\'ara r\'afusson legal\'abb 
+egyszer a vez\'erl\'es. Minden ciklus eset\'eben legyen letesztelve mind a ciklusba val\'o bel\'ep\'es, 
+mind pedig a ciklusb\'ol val\'o kil\'esp\'es. Ellen\H{o}rizni kell minden kiv\'etel eset\'et, amelyet 
+az adott program-elemben helyileg lekezel a k\'od.
+
+\noindent{\sl A fekete doboz tesztel\'es}:
+\index{fekete dobboz teszt}
+
+Kiindul\'asi pont alapvet\H{o}en a feladat, illetve r\'eszfeladat. Enn\'el a m\'odszern\'el nem kell 
+ismerni a k\'odot. Az egyes teszt esetekn\'el a bemeneti adatokat a le\'{\i}r\'esnak megfelel\H{o}en 
+kell \"ossze\'all\'{\i}tani. Sz\'amszer\H{u} adatok eset\'en mindenk\'eppen fel kell haszn\'alni a 
+legkisebb \'es legnagyobb lehets\'eges \'ert\'ekeket. Figyelni kell arra, hogy a lehet\H{o} "legfurcs\'abb" 
+bemeneti adatokat is haszn\'aljuk.
+
+A k\'et bemutatott m\'odszer term\'eszetesen ide\'alis, a gyakorlatban sokszor hasznosabb a kett\H{o}t 
+valamif\'ele m\'odon keverni. Ez azt jelenti, hogy alapvet\H{o}en az k\'od elv\'art viselked\'es\'et 
+igyeksz\"unk ellen\H{o}rizni, de a megval\'os\'{\i}t\'o programk\'od ismeret\'eben. Iyenkor nem is 
+szokott szempont lenni, hogy minden el\'agaz\'ast letesztelj\"unk, de a bonyultabb r\'eszekre 
+mindenk\'eppen r\'a kell ker\"lnie a vez\'erl\'esnek. Sokszor a k\'odot \'es a teszteket nem ugyanaz a 
+programoz\'o \'{\i}rja, ilyenkor j\'o, ha \H{o}k hat\'ekonyan \"ossze tudnak dolgozni.
+
+\noindent{\sl Teszt vez\'erelt fejleszt\'es}:
+
+L\'enyeg\'eben a feketedoboz m\'odszerhez hasonl\'{\i} egyetlen fontos k\"ul\"onbs\'eggel. El\H{o}sz\"or 
+a fejleszt\'es sor\'an a teszteket kell a feladat le\'{\i}r\'asa alapj\'an meg\'{\i}rni, majd a k\'od 
+elk\'sz\'{\i}t\'ese sor\'an arra figyelni, hogy az esetek egyre nagyobb sz\'amban fussanak hib\'atlanul. 
+Ha net\'an a haszn\'alat sor\'an m\'egis tal\'alunk probl\'em\'at, akkor azt el\H{o}sz\"or a tesztekkel 
+kell ism\'et el\H{o}\'all\'{\i}tani. \'Igy garant\'alhat\'o a pontos jav\'{\i}t\'as.
+
+\subsection{A {\tt unittest} keretrendszer}
+\index{unittest}
+
+A Python programoz\'asi nyelv mostani nagy n\'epszer\H{u}s\'eg\'enek egyik oka \'eppen a be\'ep\'{\i}tett 
+{\tt unittest} keretrendszer, amely nagym\'ert\'ekben megk\"onny\'{\i}ti az automatiz\'alt tesztek 
+\'{\i}r\'as\'at. El\H{o}nye a f\"uggel\'ekben ismertetett {\tt doctest} modullal szemben az, hogy lehet\H{o}v\'e 
+teszi egy-egy kisebb teszt ut\'olagos nagyobb egys\'egbe szervez\'es\'et. Az ellen\H{o}rz\H{o} utas\'{\i}t\'asok 
+sz\'eles k\"or\'et bocs\'ajtja a programoz\'ok rendelkez\'es\'ere, ez\'ert bonyolultabb helyzetekben is j\'ol 
+haszn\'alhat\'o. A r\'eszletesebb bemutat\'as \'es magyar\'azat el\H{o}tt l\'assunk egy egyszer\H{u} p\'eld\'at, 
+m\'egpedig a kor\'abban m\'ar j\'ol ismert f\"uggv\'eny\"unkat:
+
+\begin{Verbatim}[fontsize=\small]
+# utest.py
+import unittest
+
+def paros(n):
+   maradek = n % 2
+
+   if maradek == 0:
+      ki = 'I'
+   else:
+      ki = 'N'
+
+   return(ki)
+
+class TestFuggveny(unittest.TestCase):
+
+    def testParos(self):
+        res = paros(4)
+        self.assertEqual(res, 'I', 'Nem paros')
+
+    def testParatlan(self):
+        res = paros(9)
+        self.assertEqual(res, 'N', 'Nem paros')
+
+if __name__ == "__main__":
+   unittest.main()
+
+\end{Verbatim}
+
+\noindent A fenti k\'od el\'egg\'e egyszer\H{u} ahhoz, hogy a legfontosabb elemeket megismerj\"uk. De 
+el\H{o}sz\"or n\'ezz\"uk meg, hogy mi t\"ort\'enik a fut\'askor:
+
+\begin{Verbatim}[fontsize=\small]
+python utest.py
+..
+----------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+\end{Verbatim}
+
+\noindent A v\'egrahajt\'as sor\'an a keretrendszer automatikusan lefuttatja az eseteket, \'es mind a 
+kett\H{o} sikeres volt. Kicsit t\"obbet tudunk meg, ha most is bekapcsoljuk "b\H{o}besz\'ed\H{u} 
+\H{u}zemm\'odot":
+
+\begin{Verbatim}[fontsize=\small]
+python utest.py -v
+testParatlan (__main__.TestFuggveny) ... ok
+testParos (__main__.TestFuggveny) ... ok
+
+----------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+OK
+\end{Verbatim}
+
+\noindent A fut\'as sor\'an most pontosan nyomon tudjuk k\"ovetni, hogy milyen sorrendben 
+hajtja v\'egre az eseteket. Tanuls\'agos lesz most a sz\'amunkra, hogy az egyik teszt esetet 
+csak pr\'eba kedv\'e\'ert elrontjuk (a t\"obbi r\'eszlet teljesen megegyezik az el\H{o}z\H{o} 
+p\'eld\'aval): 
+
+\begin{Verbatim}[fontsize=\small]
+class TestFuggveny(unittest.TestCase):
+
+    def testParos(self):
+        res = paros(4)
+        self.assertEqual(res, 'I', 'Nem paros')
+
+    def testParatlan(self):
+        res = paros(9)
+        self.assertEqual(res, 'N', 'Nem paros')
+\end{Verbatim}
+
+\noindent A szkriptet mind sim\'an, mind pedig sz\'osz\'aty\'ar m\'odban lefuttatjuk:
+
+\begin{Verbatim}[fontsize=\small]
+
+python utest_a.py
+F.
+================================================================
+FAIL: testParatlan (__main__.TestFuggveny)
+----------------------------------------------------------------
+Traceback (most recent call last):
+  File "utest_a.py", line 26, in testParatlan
+    self.assertEqual(res, 'T', 'Nem paros')
+AssertionError: 'N' != 'T'
+- N
++ T
+ : Nem paros
+
+----------------------------------------------------------------
+Ran 2 tests in 0.010s
+
+FAILED (failures=1)
+
+python utest_a.py -v
+testParatlan (__main__.TestFuggveny) ... FAIL
+testParos (__main__.TestFuggveny) ... ok
+
+================================================================
+FAIL: testParatlan (__main__.TestFuggveny)
+----------------------------------------------------------------
+Traceback (most recent call last):
+  File "utest_a.py", line 26, in testParatlan
+    self.assertEqual(res, 'T', 'Nem paros')
+AssertionError: 'N' != 'T'
+- N
++ T
+ : Nem paros
+
+----------------------------------------------------------------
+Ran 2 tests in 0.010s
+
+FAILED (failures=1)
+
+\end{Verbatim}
+
+\noindent Most n\'ezz\"uk meg egy kicsit r\'eszletesebben mag\'at a k\'odot. Ahhoz, hogy a keretrendszert az 
+import\'al\'as ut\'an haszn\'alni tudjuk, az abban defini\'alt TestCase oszt\'alyb\'ol \"or\"okl\'essel 
+l\'etre kell hoznunk egy saj\'at oszt\'alyt, \'es abban meg kell \'{\i}rni az ellen\H{o}rzend\H{o} 
+eseteket met\'odusk\'ent, amelyeknek neve {\tt test}-el kell kezd\H{o}dj\"on. A keretrendszer ezeket 
+fogja teszt eseteknek venni, \'es egym\'as ut\'an v\'egrehajtani. Az eredm\'eny ellen\H{o}rz\'es\'ere 
+meg\"or\"ok\"olt\"unk n\'eh\'any met\'odust, most csak az {\tt assertEqual} nev\H{u}t haszn\'altuk. 
+R\'oluk m\'eszletesebben is fogunk besz\'elni. A sikeres \'es sikertelen esetek k\"oz\"oti k\"ul\"onbs\'eg, 
+hogy az ut\'obiakn\'al az ellen\H{o}rz\'es kiv\'etelt dob. Ezt nagyon \'erdemes megjegyezn\"unk, hiszen 
+a teszt met\'odusok futtat\'asa sor\'an {\bf b\'armilyen} kiv\'etel hib\'anak sz\'am\'{\i}t. Az {\tt assertEqual}
+met\'odus harmadik param\'etere t\'aj\'ekoztat\'o megjegyz\'es a tesztel\'esi hib\'ar\'ol, ak\'ar el is agyhat\'o.
+
+Most az el\H{o}z\H{o} fejezethez hasonl\'oan n\'e\"zzuk meg, ha a tesztelend\H{o} modul tartalmaz egy egyszer\H{u} 
+objektumot:
+
+\begin{Verbatim}[fontsize=\small]
+# utest1.py
+import unittest
+
+class Pont:
+    def __init__(self, pX=0.0, pY = 0.0):
+        self.x = pX
+        self.y = pY
+
+    def getX(self):
+        return(self.x)
+
+    def getY(self):
+        return(self.y)
+
+    def Mozgat(self, dX, dY):
+        self.x += dX
+        self.y += dY
+
+class TestPontClass(unittest.TestCase):
+
+    def setUp(self):
+        self.egyik = Pont()
+        self.masik = Pont(1,2.5)
+
+    def tearDown(self):
+        del self.egyik 
+        del self.masik 
+
+    def testAlap(self):
+        adat = self.egyik.getX()
+        self.assertEqual(adat,0.0)
+        adat = self.egyik.getY()
+        self.assertEqual(adat,0.0)
+
+    def testMozgas(self):
+        self.egyik.Mozgat(1.2,2.3)
+        adat = self.egyik.getX()
+        self.assertEqual(adat,1.2)
+        adat = self.egyik.getY()
+        self.assertEqual(adat,2.3)
+
+
+    def testVegyes(self):
+        adat = self.masik.getX()
+        self.assertEqual(adat,1)
+        adat = self.masik.getY()
+        self.assertEqual(adat,2.5)
+
+
+if __name__ == "__main__":
+   unittest.main()
+
+\end{Verbatim}
+
+\noindent A futtat\'as sor\'an meggy\H{o}z\H{o}dhet\"unk arr\'ol, hogy a tesztek sikeresek. Alaposabban 
+megn\'ezve ezt a k\'odot, azonnal tal\'alunk egy \'ujdons\'agot, a {\tt setUp} \'es a {\tt tearDown} 
+met\'odusokat. Mind a kett\H{o} az \H{o}s {\tt unittest.TestCase} oszt\'alyban van eredetileg 
+l\'etrehozva, de sz\"uks\'eg eset\'en a lesz\'armazott oszt\'alyunkban fel\"ul kell defini\'alni. Az 
+elsíH{o} \"ossze\'all\'{\i}tja, a m\'asodik pedig lebontja a tesztel\'eshez haszn\'alt k\"ornyezetet.
+A {\tt setUp} lefut minden egyes teszt eset el\H{o}tt lefut, \'es a {\tt tearDown} minden egyes teszt 
+eset ut\'an, m\'eg abban az esetben is, ha a teszt eset sor\'an valami kiv\'etel keletkezett. Ez azt 
+is jelenti, hogy egy {\tt TestCase} oszt\'alyba azokat az eseteket kell egym\'assal  \"osszerakni, 
+amelyek pontosan ugyanazt az el\H{o}k\'esz\'{\i}t\'est ig\'enylik.
+
+\begin{figure}[h]
+\setlength{\unitlength}{0.12in} % selecting unit length
+\centering % used for centering Figure
+\begin{picture}(32,24) % picture environment with the size (dimensions)
+% 32 length units wide, and 15 units high.
+\put(3,4){\framebox(6,3){tearDown}}
+\put(4,7){\framebox(8,3){testMet\'odus2}}
+\put(3,10){\framebox(6,3){setUp}}
+\put(3,13){\framebox(6,3){tearDown}}
+\put(4,16){\framebox(8,3){testMet\'odus1}}
+\put(3,19){\framebox(6,3){setUp}}
+\end{picture}
+\caption{An LNL Block Oriented Model Structure} % title of the Figure
+\label{fig:lnlblock} % label to refer figure in text
+\end{figure}
+
+A keretrendszer j\'o n\'eh\'any ellen\H{o}rz\H{o} met\'odust bocs\'ajt a rendelke\'es"unkre, itt most 
+csak a legfontosabbakat fogjuk ismertetni. Sz\"uks\'eg eset\' mi magunk is tudunk ilyet \'rni. L\'assuk 
+a met\'odusokat:
+
+\begin{center}
+   \begin{tabular}{ll}
+   {\bf Met\'odus} & {\bf Mit tesztel} \\
+      {\tt assertEqual} & A k\'et elem egyenl\H{o}. \\
+      {\tt assertNotEqual} & A k\'et elem egyenl\H{o}. \\
+      {\tt assertTrue} & A logikai kifejez\'es igaz. \\
+      {\tt assertFalse} & A logikai kifejez\'es hamis. \\
+      {\tt assertIn} & Az elem benne van a list\'aban. \\      
+   \end {tabular}
+\end{center}
+
+\noindent Term\'eszetes, a magyar\'az\'o sz\"oveg param\'etert a ahiba jelleg\'er\H{o}l b\'armelyik 
+eset\'eben alkalmalmazhatjuk.
+
+M\'eg a k\'es\H{o}bbiekben m\'elyebbre ia fogunk hatolni a {\tt unittest} keretrendszer haszn\'alat\'anak 
+rejt\'elmeibe, most k\'et r\"ovid megjegyz\'est szeretn\'enk itt tenni. Az egyik, hogy szkriptben t\"obb 
+{\tt TestCae} lesz\'armazott is lehet, mindegyik teszt eseteit le fogja a Python futtatni. A m\'asik, 
+hogy sz\"ks\'eg eset\'en be is tudjuk "\'egetni" a szkriptbe (modulba), hogy minden futtat\'as eset\'en 
+   r\'eszletes inform\'aci\'ot kapjunk, csak a f\H{o}program r\'eszt kell egy kicsit \'at\'{\i}rni:
+
+\begin{Verbatim}[fontsize=\small]
+if __name__ == "__main__":
+   unittest.main(verbosity=2)
+\end{Verbatim}
+
+\noindent Ez pontosan olyan, mintha a futtat\'asn\'al haszn\'altuk volna a {-v} kapcsol\'ot.
+
+Term\'eszetesen egy oszt\'aly komolyabb tesztel\'ese eset\'en k\"onnyen elk\'epzelhet\H{o}, hogy nem 
+csak egyetlen {\tt TestCase} lesz\'armazott lehet egy szkriptbben, hanem t\"obb is. Mivel a {\tt setUp} 
+\'es a {\tt tearDown} met\'odusok minden egyes teszt eset el\H{o}tt \'es ut\'an k\"ul\"o lefutnak, oda 
+kell figyelni arra, hogy egy oszt\'alyba olyan teszt met\'odusokat rakjunk, amelyeket ugyan\'ugy kell 
+el\H{o}k\'esz\'{\i}teni. Ezeket a met\'odusokat a keretrendszer minden alkalommal ugyanolyan sorrendben 
+fogja lefuttatni. A k\'es\H{o}bbiekben be fogjuk mutatni, hogy mik\'ent is lehet ezt megv\'altoztatni. 
+
+\subsection{Tesztel\'es magasfokon}
+
+Az alapok megismer\'ese ut\'an itt az ideje, hogy kicsit bonyolultabb eseteket is megn\'ezz\"unk, 
+egy-k\'et \'erdekesebb megold\'ast is megismerj\"unk. A hely hi\'any\'aban most sem fogunk minden 
+r\'eszletre kit\'erni, n\'eh\'any j\'ol \'es rugalmasan alkalmazhat\'o \"otletet megmutatunk. 
+Ha valaki enn\'el m\'elyebb ismeretkre v\'agyik, akkor a f\"uggel\'ekben tal\'unk utal\'ast 
+olvasnival\'okkal kapcsolatban.
+
+Az egyik feljebb le\'{\i}rt p\'eld\'an l\'atjuk, hogy a tesztelend\H{o} k\'od \'es az automatikus 
+teszt esetek egyetlen f\'ajlban vannak. Bonyolultabb programok eset\'eben ez egyr\'eszt teljesen 
+\'attekinthetetlenn\'e teszi az eg\'esz k\'odot, m\'asr\'eszt pedig nem is biztos, hpgy szerencs\'es 
+az "\'eses" futtat\'as k\"ornyezet\'et a teszt esetekkel \"ossekusz\'alni. T\'etelezz\"uk fel, hogy 
+teszteln\"unk kell a {\tt modulA.py} \'allom\'anyban tal\'alhat\'o f\"uggv\'enyeket, illetve 
+obejktumokat. Ilyenkor szok\'asos megold\'as, hogy ehhez meg\'{\i}runk a {\tt testA.py} tesztel\H{o} 
+szkriptet, amely legal\'abb az al\'abbiakat tartalmazza:
+
+\begin{Verbatim}[fontsize=\small]
+import unittest
+
+import modulA
+
+....
+\end{Verbatim}
+
+\noindent Ha sz\"uks\'eg van egy\'eb modulokra is, akkor term\'eszetesen azokat is bele kell \'{\i}rni. 
+Ennek a megold\'asnak az az el\H{o}nye, hogy csin\'alhatunk egy k\"ul\"on k\"onyvt\'arat a fejleszt\'es 
+\'es tesztel\'es c\'elj\'ara, egy m\'asikat pedig a haszn\'atnak. (Az import\'assal kapcsolatos b\H{o}vebb 
+ismereteket egy kor\'abbi fejezetben tal\'aljuk.) 
+
+A programoz\'oi gyakorlatban id\H{o}nk\'ent el\H{o}fordul az, hogy az automatiz\'alt tesztel\'es sor\'an 
+egy-egy teszt esetet \'eppen ne hajtsunk v\'egre, de ugyanakkor nem lenne hasznos a k\'odb\'ol kivenni. 
+Szerencs\'ere erre van egyszer\H{u} megold\'as, a {\tt unittest} keretrendszerben meg tudjuk jel\"olni az 
+\'atmenetileg felesleges eseteket. L\'assuk a p\'eld\'at: \label{skiptest}
+
+\begin{Verbatim}[fontsize=\small]
+# skiptest.py
+import unittest
+
+def paros(n):
+   maradek = n % 2
+
+   if maradek == 0:
+      ki = 'I'
+   else:
+      ki = 'N'
+
+   return(ki)
+
+class TestFuggveny(unittest.TestCase):
+
+    def testParos(self):
+        res = paros(4)
+        self.assertEqual(res, 'I', 'Nem paros')
+
+    def testParatlan(self):
+        res = paros(9)
+        self.assertEqual(res, 'N', 'Nem paros')
+
+    @unittest.skip("Ugorjunk")
+    def testTort(self):
+        res = paros(4)
+        self.assertEqual(res, 'I', 'Nem paros')
+
+if __name__ == "__main__":
+   unittest.main()
+\end{Verbatim}
+
+\noindent A fenti k\'od alapj\'an l\'atszik, elegend\H{o} volt nem sz\"uks\'eges {\tt test... } met\'odust 
+a megel\H{o}z\H{o} {\sl dekor\'atorral} megjelel\"olni. Futtat\'as eset\'en:
+
+\begin{Verbatim}[fontsize=\small]
+python skiptest.py
+..s
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK (skipped=1)
+\end{Verbatim}
+ 
+\noindent L\'atjuk, az \"osszefoglal\'oban csak annyi jelent meg, hogy az eset \'at lett ugorva. R\'eszletesebb 
+kimenet a szok\'as szerint:
+
+\begin{Verbatim}[fontsize=\small]
+python skiptest.py -v
+testParatlan (__main__.TestFuggveny) ... ok
+testParos (__main__.TestFuggveny) ... ok
+testTort (__main__.TestFuggveny) ... skipped 'Ugorjunk'
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK (skipped=1)
+\end{Verbatim}
+
+\noindent Ebben a list\'aban nem csup\'an azt vehetj\"uk \'eszre, hogy az esetet \'atugrottuk, hanem ennek az oka is 
+j\'ol l\'atszik. Van lehet\H{o}s\'eg arra is, hogy az egyes eseteket felt\'etelesen is \'atugorhassuk, de ennek a 
+le\'{\i}r\'asnak a keret\'eben ezzel tarjedelmi okokb\'ol ezzel nem foglalkozunk. 
+
+Bonyolultabb, t\"obb mudult is haszn\'al\'o szkriptek eset\'eben el\H{o} szokott fordulni, hogy a teszt eseteket nem 
+egy \'allom\'anyban vannak meg\'{\i}rva. Ilyenkor ezeket mindig k\'ezzel kell elind\'{\i}tani, de szerencs\'ere a 
+Python nyelven lehets\'eges, hogy ezeket egybefoglaljuk. Erre szolg\'al a keretrendszer {\tt TestLoader} oszt\'aly. 
+Ennek seg\'{\i}ts\'eg\'evel be tudjuk t\"olteni a k\"ul\"on meg\'{\i}rt forr\'asokb\'ol a teszteket.
+
+TODO
+
+
+-- MOCK ??
+
+Kor\'abban m\'ar eml\'{\i}tett\"uk, hogy a tesztel\'es sor\'an el\H{o}sz\"or a legink\'abb be\'agyazott 
+alkot\'oelemet kell ellen\H{o}rizni, hogy egy\'ertelm\H{u}bben lehesen az esetleges hib\'akat behat\'arolni. 
+
+
+\section{Nyomk\"ovet\'es Python m\'odra}
+\label{trace}
+
+Az el\H{o}z\H{o} f\"uzetben m\'ar volt arr\'ol sz\'o, hogy id\H{o}nk\'ent sz\"uks\'eg lehet a programok (szkriptek) 
+fut\'as\'anak k\"ovet\'es\'ere. Erre ott a {\tt print} utas\'{\i}t\'ast hasn\'altuk, ami a k\'erny\H{o}re \'{\i}rta 
+ki az \"uzeneteket. Ez akkor elegend\H{o} is volt a sz\'amunkra, mert viszonylag egyszer\H{u} \'es el\'egg\'e r\"ovid 
+programok eset\'eben alkalmaztuk. Hosszabb \'es bonyolultabb programokn\'al azonban nem megfelel\H{o}, mert a sok 
+kimenet \'{\i}gy teljesen \'attekinthetetlen. A szok\'asos programoz\'oi \"otlet ilyenkor, hogy ezeket a sorokat 
+egy \'allom\'anyba iratjuk ki, ezt {\sl napl\'o \'allom\'anynak}, vagy szakkifejez\'essel {\sl lognak} nevezz\"uk. 
+\index{napl\'o} \index{log} 
+
+Ebben a fejeztben t\"obb m\'odszert is be fogunk mutatni, hogyan lehet ezt a probl\'em\'at megoldani. Annak 
+ellen\'ere, hogy a Python-nak van egy szabv\'anyos napl\'oz\'o modulja, fontosnak tartjuk, hogy az olvas\'oink 
+t\'enylegesen kipr\'ob\'alj\'ak a t\"obbf\'ele \"otletet is. A be\'ep\'{\i}tett modul ugyanis nagyon rugalmasan 
+alkalmazhat\'o, de bizonyos esetekben t\'uls\'agosan is k\"or\"ulm\'enyes lehet. Nem minden feladat eset\'en 
+kell alkalmaznunk azt a sokoldal\'u modult, n\'eha elegend\H{o} ann\'al egyszer\H{u}bbb is. Nem mellesleg a t\"obbi 
+m\'odszer meg\'{\i}r\'asa j\'o programoz\'asi gyakorlatot is jelenthet mindenkinek.
+
+Miel\H{o}tt azonban ismertetn\'enk a lehets\'eges m\'odszereket, szeretn\'enk a nyom\-k\"o\-ve\-t\'es\-sel 
+kapcsolatosan 
+a legfontosabb szempontokat tiszt\'azni. Ahhoz, hogy ki tudjuk v\'alasztani az adott esetben alkalmazand\'o 
+legjobb megold\'ast, vil\'agosan tudnunk kell, hogy a napl\'o \'allom\'anyt mire is akarjuk haszn\'alni, 
+mi a {\bf c\'elja}. A programoz\'oi gyakorlatban alapvet\H{o}en k\'etf\'ele ok miatt kellheth a log. Ha a 
+{\bf hib\'ak } megtal\'al\'as\'ara, az okai kider\'{\i}t\'es\'ere akarjuk haszn\'alni, azt els\H{o}sorban 
+a {\bf fejleszt\'es}, illetve a {\bf tesztel\'es} alkalm\'aval vessz\"uk ig\'enybe. A fontos esem\'enyek 
+(hib\'ak) t\'arol\'as\'ara viszont akkor van m\'ar sz\"uks\'eg, amikor a programot m\'ar {\bf "\'eles"} 
+esetekben futtatjuk. A k\'etfele c\'el m\'as-m\'as k\"ovetelm\'enyeket jelent.\footnote{Ezek a szempontok 
+m\'as programoz\'asi nyelv eset\''eben is ugyan\'ugy \'erv\'enyesek, \'erdemes teh\'at mejegyezni.}
+
+\noindent{\sl Fejleszt\'esi / tesztel\'esi szakasz}:
+
+A fejlesztes \'es \'es tesztel\'es sor\'an a legfontosabb, hogy a log alapj\'an r\'eszletesen is ellen\H{o}rizni 
+tudjuk a fut\'as menet\'et. Ehhez az al\'abbiakra van sz\"uks\'eg, hogy a napl\'o:
+
+\begin{itemize}
+   \item{{\tt --} tartalmazzon b\H{o}s\'eges inform\'aci\'ot,}
+   \item{{\tt --} az esetek t\"obbs\'eg\'eben elegend\H{o}, ha az utols\'o fut\'as adatait tartalmazza,} 
+   \item{{\tt --} legyen nagy felbont\'as\'u, vagyis sokszor irassunk bele adatokat,} 
+   \item{{\tt --} mutassa vil\'agosan a v\'egrehajt\'as menet\'et, vagyis minden el\'agaz\'as \'es ciklus eset\'en 
+      a fontos v\'altoz\'ok \'ert\'eke ker\"ulj\"on bele.}
+\end{itemize} 
+
+\noindent A fentiek alapj\'an szerint\"unk minden olvas\'onk sz\'am\'ara vil\'agos, hogy ezekkel 
+a felt\'etelekkel r\"ovid id\H{o} alatt is el\'egg\'e sok sor ker\"ulhet be a nyomk\"ovet\'esre 
+haszn\'alter \'allom\'anyba. Ez term\'eszetes velej\'ar\'oja az ilyen logol\'asnak, hiszen a 
+legfontosabb dolog, hogy a lehet\H{o} legpontosabban be lehessen hat\'arolni az esetleg hib\'ak 
+hely\'et \'es ok\'at. Ugyanakkor \'eppen ez az, amit miatt az igazi, "\'eles", haszn\'alatban 
+nem alkalmaz. Mivel ez ut\'obbi esetben az adatok t\'arol\'al\'asa hosszabb id\H{o}n kereszt\"ul 
+a legfontosabb szempont. Term\'eszetesen felmerer\"ulhet, hogy a k\'esz programban a megfelel\H{o} 
+"b\H{o}besz\'ed\H{o}" sorokat ki\'{\i}r\'o utas\'{\i}t\'asok kit\"or\"olhet\H{o}k, de sajnos ez 
+el\'egg\'e macer\'as munka, \'es okozhat v\'aratlan hib\'akat. Vannak persze gyakorlatiasab megold\'asok 
+is, de azok el\H{o}zetes tertve\'est, \'es programoz\'o munk\'at ig\'enyelnek. N\'eh\'any ilyen \"otletet 
+be is fogunk mutatni.
+
+\noindent{\sl Haszn\'alati szakasz}:
+
+Ebben az \"uzemm\'odban sok\'aig, ak\'ar hetekig is kell gy\H{u}jteni az adatokat, ez\'ert:
+
+\begin{itemize}
+   \item{{\tt --} a napl\'o legyen t\"om\"or,}
+   \item{{\tt --} a napl\'o minden esetben a kor\'abbi adatokhoz f\H{u}zz\"on hozz\'a}
+   \item{{\tt --} a napl\'o csak a legfontosabb adatokat tartalmazza,}
+   \item{{\tt --} a futtat\'as kimenete, illetve eredm\'enyess\'ege a napl\'o alapj\'an 
+      egy\'ertel\-m\H{u}\-en \'ertekelhet\H{o} legyen, ak\'ar ut\'olag is}
+   \item{{\tt --} a logb\'ol minden esetben der\"ulj\"on ki az esetlegesen el\H{o}fordul\'o hib\'ak 
+      s\'ulyoss\'aga}
+\end{itemize} 
+
+\noindent Gondoljuk, hogy nagyj\'ab\'ol mindenki l\'atja, ez a lista szinte pontosan ellent\'ete az 
+el\H{o}z\H{o}nek. Ugyanakkor b\'armikor lehet olyan hiba, amely miatt a program k\'odj\'ahoz hozz\'a 
+kell k\'es\H{o}bb ny\'ulni. Ilyenkor viszont a log nem fog el\'eg seg\'{\i}ts\'eget ny\'ujtani a 
+hiba hely\'enek \'es ok\'anak meghat\'aroz\'as\'ahoz. A kor\'abbi megjegyz\'es alapj\'an azonban egy 
+kis tov\'abbi programoz\'oi munk\'aval b\'armikor ki- \'es bekapcsolhatjuk a r\'eszletesebb napl\'oz\'ast. 
+
+\subsection{Napl\'o \'allom\'any \'{\i}r\'asa}
+
+Most kezdj\"uk el a kor\'abban meghat\'arozott feladat, pontosabban feladatok megold\'as\'ahoz vezet\H{o} 
+legegyszer\H{u}bb utat kitaposni, vagyis a futtat\'as sor\'an k\'esz\'{\i}ts\"unk egy napl\'o \'allom\'any.
+Ehhez nagym\'ert\'ekben sz\"uks\'eg\"unk lesz a \ref{file}. fejezetben olvasottakra, hiszen egyenesen egy 
+\'allom\'anyba fogjuk k\"uldeni az adatokat. Vagyis azt az \'allom\'anyt meg is kell nyitni. A kor\'abbi 
+ismereteknek megfelel\H{o}en k\'etf\'ele m\'odon tudjuk ezt megtenni, \'{\i}r\'asra, vagy hozz\'af\H{u}z\'esre. 
+A kett\H{o} k\"oz\"otti k\"ul\"onbs\'eg kicsinek t\H{u}nik, de val\'oj\'aban nem az. A napl\'oz\'as 
+szempontj\'ab\'ol az elt\'er\'est az al\'abbi t\'abl\'azatban tudjuk \"osszefoglalni:
+
+\begin{center}
+   \begin{tabular}{cl}
+   {\bf M\'od} & {\bf Jelent\'es} \\
+   {\tt w} & A napl\'o \'allom\'any kor\'abbi tartalma t\"orl\H{o}dni fog. \\
+   {\tt a} & A napl\'o kor\'abbi tartalma megmarad. \\
+   \end {tabular}
+\end{center}
+
+Ahogyan az \'altal\'anos bevezet\H{o}ben eml\'{\i}tett\"uk, az els\H{o} esetet els\H{o}sorban a tesztel\'es, 
+illetve fejleszt\'es sor\'an alkalmazhatjuk. A m\'asodik pedig seg\'{\i}t abban, hogy a napl\'o tartalm\'at 
+ak\'ar hosszabb ideig is megtarthassuk. De ez csak a program elej\'en t\"ort\'en\H{o} megnyit\'as alkalm\'aval 
+fontos, ugyanis kor\'abban a file-ok haszn\'alat\'aval foglalkoz\'o fejezetben bemutatottakkal \"osszhangban 
+azt kell mondanunk, hogy nem biztons\'agos egy \'allom\'anyt \'{\i}r\'askor hosszabb ideig nyitva tartani. 
+Teh\'at minden egyes sor ut\'an c\'elszer\H{u} a kimenetet minden alkalommal azonnal lez\'arni. L\'assunk erre 
+egy egyszer\H{u} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# elso alkaloma
+naplo = open("futas.txt", "w")
+naplo.write('Start\n')
+naplo.close()
+
+ ......
+
+# sokadik alkaloma
+naplo = open("futas.txt", "a")
+naplo.write('Itt van.\n')
+naplo.close()
+\end{Verbatim}
+
+\noindent A r\"ovid p\'elda egyszer\H{u}en magyar\'azza az \"otletet. Minden egyes sor ki\'{\i}r\'asa 
+ut\'an az adatveszt\'es elker\"ul\'ese \'erdek\'eben lez\'arni a file-t. Logikus, hogy a m\'asodik 
+sort\'ol kezdve mindig hozz\'af\H{u}z\'esre kell nyitni az \'allom\'anyt. 
+
+Ezen a ponton sz\"uks\'eg van arra, hogy n\'eh\'any tov\'abbi megjegyz\'est tegy\"unk. Egy nagyobb programn\'al 
+A fenti m\'odon sok felesleges k\'odsort kellene \'{\i}rni, c\'elszer\H{u}nek l\'atszik, hogy a nagyobb 
+k\'enyelem kedv\'e\'ert egy k\"ul\"on f\"uggv\'enybe tegy\"uk a napl\'oz\'ast:
+
+\begin{Verbatim}[fontsize=\small]
+def Log(naploFile, text, kezdet = 0):
+   if kezdet != 0:
+      trc = open(naplo,"w")
+   else:
+      trc = open(naplo,"a")
+   trc.write('%s\n'%text)
+   trc.close()
+\end{Verbatim}
+
+\noindent Azt gondoljuk, hogy a fenti k\'odhoz sok magyar\'azatot nem kell f\H{u}zni, a meg\'ert\'es\'ehez 
+sz\"uks\'eges ismeretek a kor\'abbi f\"uzet\"unkben benne vanna. K\'et dolgot azonban szertn\'enk megjegyezni. 
+Az egyik, hogy a kezdeti kiirat\'ast, \'es a t\"obbit "begy\'urtuk" ebbe a f\"uggv\'enybe, erre szolg\'al 
+a bevezettett {\tt kezdet} nev\H{u} patam\'eter. A m\'asik, hogy a napl\'o nev\'et nem "huzaloztuk" be a 
+f\"uggv\'enybe, \'{\i}gy sokkal rugalmasabban haszn\'alhat\'o. Esetleg m\'eg k\"ul\"on modulba is tehetj\"uk, 
+t\"obb programban is haszn\'alhatjuk. Ez egys\'egess\'e teszi a logokat, ez a programoz\'oi tapasztalatunk 
+alapj\'an nagyon meg tudja k\"onny\'{\i}teni fut\'asok ellen\H{o}r\'es\'et. Haszn\'alata p\'eld\'aul:
+
+\begin{Verbatim}[fontsize=\small]
+# elso alkaloma
+Log("futas.txt",'Start', kezdet=1)
+ ......
+
+# sokadik alkaloma
+
+Log("futas.txt",'Itt van.')
+\end{Verbatim}
+
+\noindent A k\'enyelem kedv\'e\'ert m\'eg a k\"otelez\H{o} soremel\'est is beillesztett\"uk a f\"uggv\'enybe. 
+Ahogyan a k\'et legut\'obbi k\'odot n\'ezz\"uk, vil\'agos a napl\'o \'allom\'any nevet minden esetben meg 
+kell adnunk, de erre k\"onnyen felhaszn\'alhatunk egy v\'altoz\'ot:
+
+\begin{Verbatim}[fontsize=\small]
+logf = "futas.txt"
+# elso alkaloma
+Log(logf,'Start', kezdet=1)
+ ......
+\end{Verbatim}
+
+\noindent Ez r\'eszben tov\'abb egyszer\H{u}s\'{\i}ti a helyzet\"unket, ugyanakkor azonban az \'allom\'any 
+nev\'et a programban szerepl\H{o} \"osszes f\"uggv\'enynek \'es \"osszes oszt\'alynak \'at kell adni. A 
+napl\'oz\'o f\"uggv\'eny\"unket ki lehetne b\H{o}v\'{\i}teni sok mindennel, az al\'abbi felsorol\'assal 
+adunk n\'eh\'any \"otletet:
+
+\begin{itemize}
+   \item{{\tt -} d\'atumot \'es a pontos id\H{o}t,}
+   \item{{\tt -} a Python forr\'as \'allom\'any nev\'et,}
+   \item{{\tt -} a Python forr\'as sorsz\'am\'at.}      
+\end{itemize} 
+
+\noindent Mindegyikre val szabv\'anyos lehet\H{o}s\'eg a Python programoz\'asi nyelven. Arra is felh\'{\i}vjuk 
+a figyelmet, hogy ugyan nagyon sokat tanulhatunk a Python programoz\'as titkaib\'ol, viszont tudunk enn\'el 
+k\'enyelmesen haszn\'alhat\'o logol\'ast is.
+
+\subsection{Napl\'oz\'o oszt\'aly \'{\i}r\'asa}
+
+Folytatva az el\H{o} r\'esz utols\'o gondolat\'at, term\'eszetesen mer\"ul f\"ol az emberben, hogy a napl\'oz\'asra 
+is haszn\'alhatunk objektumot, \'es nem is kell sokat dolgozni egy rugalmasan \'es k\'enyelmes haszn\'alhat\'o 
+oszt\'aly\'ert. Az eg\'esz megold\'as nem lesz tulajdonk\'eppen m\'as, mint be\'agyazni a f\"uggv\'enyt egy 
+oszt\'alyba, term\'eszetesen a megfelel\H{o} k\"or\'{\i}t\'essel. Az egy\'ertelm\H{u}, hogy a k\'odol\'as 
+megked\'ese el\H{o}tt \'at kell gondolni, hogy mi mindent szeretn\'enk az oszt\'allyal elv\'egeztetni. N\'ah\'any 
+szempont:
+
+\begin{itemize}
+   \item{{\tt -} a napl\'o \'allom\'any nev\'et a konstruktorban kell megadni,}
+   \item{{\tt -} a pontos id\H{o}t mindenk\'eppen ki kell \'{\i}rni,}
+   \item{{\tt -} a logol\'ast lehessen ki- \-es bekapcsolni k\'enyelmesen.}      
+\end{itemize} 
+
+\noindent Term\'eszetesen mer\"ulnek fel tov\'abbi \"otletek is, azok egy r\'esz\'et fokozatosan fogjuk 
+be\'ep\'{\i}teni a k\'odba. Most l\'assunk egy egyszer\H{u}, lehet\H{o} legminim\'alisabb megold\'ast 
+a probl\'em\'ara:
+
+\begin{Verbatim}[fontsize=\small]
+## 1. valtozat
+
+class Naplo:
+    def __init__(self, pNeve, pMeret, pMode = 'a'):
+        self.logNev = pNeve
+        self.meret = pMeret
+        self.startMode = pMode
+        self.mode = 'a'
+        self.sor = 0
+        self.puffer = []
+        self.start = True
+
+    def Lezar(self):
+        if self.sor != 0:
+            if self.start:
+                trc = open(self.logNev,self.startMode)
+            else:
+                trc = open(self.logNev,self.mode)
+            for idx in range(self.sor):
+                trc.write(self.puffer[idx])
+            trc.close()
+
+    def Kiir(self, txt):
+        msg = '%s\n'%txt
+        self.puffer.append(msg)
+        self.sor += 1
+        if self.sor == self.meret:
+            print(' .. logName = %s'%self.logNev)
+            if self.start:
+                trc = open(self.logNev,self.startMode)
+            else:
+                trc = open(self.logNev,self.mode)
+            for idx in range(self.sor):
+                trc.write(self.puffer[idx])
+            trc.close()
+            self.start = False
+            self.puffer = []
+            self.sor = 0
+\end{Verbatim}
+
+\noindent A fenti k\'od nem olyan bonyolult, de egy-k\'et megjegyz\'est az\'ert szeretn\'enk 
+hozz\'af\H{u}zni. A legfontosabb k\'erd\'es, hogy az el\H{o}z\H{o} r\'eszben l\'atott  
+f\"uggv\'ennyel ellent\'etben az itt bemutatott met\'odus mi\'ert nem \'{\i}rja ki azonnal 
+a logba a sort. Erre a v\'alasz egy kicsit a futtat\'as r\'eszleteiben rejlik, hiszen a 
+t\'enyleges \'allom\'any-m\H{u}veletek az esetek t\"obbs\'eg\'eben el\'egg\'e lass\'uak a 
+t\"obbi m\H{u}velethez k\'epest. Ez\'ert id\H{o}ben hat\'ekonyabb lesz a k\'od, ha n\'eh\'any 
+sort a t\'enyleges ki\'{\i}r\'as el\H{o}tt egy pufferben \"osszegy\H{u}jt\"unk, \'es egyszerre 
+tessz\"uk ki az f\'ajlba. Ennek a bels\H{o} t\'arol\'onak a m\'eret\'et a konstruktorban 
+\'all\'{\i}tjuk be, k\"ozvetlen\"ul a log \'allom\'any megad\'asa ut\'an. (Gyakorlatban nem 
+c\'elszer\H{u} nagym\'eret\H{u} puffert v\'alasztani, 30-40 sor elegend\H{o} kell legyen.) A 
+haszn\'alat sor\'an viszont k\"onnyen elk\'epzelhet\H{o}, hogy a program v\'egrhajt\'asa 
+v\'eg\'en maradnak az objektumban ki nem \'{\i}rt adatok. Ezt a {\tt Lezar} met\'odus elint\'ezi, 
+amit a szkript v\'ege el\H{o}tt meg kell h\'{\i}vni. (Felmer\"ulhet, hogy ezt a k\'odot az 
+oszt\'aly destruktor\'aba tessz\"uk, de akkor nem egy\'ertelm\H{u} napl\'oz\'as lez\'ar\'asa. 
+Emellett a destruktorral kapcsolatoan vannak technikai neh\'ezs\'egek, ezt k\'es\H{o}, a 
+\ref{destruktor}. fejezetben r\'eszletezz\"uk.) A m\'ar kor\'abban megismert egyszer\H{u} esetben 
+n\'ezz\"uk meg a haszn\'alat\'at:
+
+\begin{Verbatim}[fontsize=\small]
+trc = Naplo('futas.txt', 10)
+
+# elso alkalom
+trc.Kiir('Start')
+ ......
+
+# sokadik alkalom
+trc.Kiir('Itt van.')
+trc.Lezar()
+\end{Verbatim}
+
+\noindent L\'atszik a k\'odb\'ol, hogy a napl\'oz\'o objektum l\'etrehoz\'asakor a konstruktorban nem 
+adtuk meg megnyit\'asi m\'odott, ez\'ert m\'ar a legels\H{o} alkalommal is hozz\'af\H{u}z\'esre nyitjuk 
+meg az \'allom\'anyt. (Ahogy ez az oszt\'aly defin\'{\i}ci\'oja alapj\'an is l\'atszik, ez az alap\'ertelmezett 
+m\H{u}k\"od\'es.) A ki\'{\i}r\'o met\'odus (\'es a destruktor is) nymon tudja k\"ovetni, hogy t\"ort\'ent-e 
+t\'enyleges \'{\i}r\'as a f\'ajlba. A puffer m\'eret\'et {\tt 10} sorban hat\'aroztuk meg, ami egy biztons\'agos 
+m\'eret, \'es nem ritk\'{\i}tja meg nagyon a sorok ment\'es\'et.
+
+Az el\H{o} r\'eszben tal\'alunk egy list\'at, hogy a logba milyen adatokat szeretn\'enk m\'eg belevenni. Most meg 
+fogjuk oldani, hogy a Python forr\'as modul neve is t\'arolva legyen a napl\'oban. Nem fogjuk a terljes k\'odot 
+megadni, csak a v\'altoz\'asokat, a megfelel\H{o} szkript \"ossze\'all\'{\i}t\'asa az ovas\'ok dolga lesz.
+
+\begin{Verbatim}[fontsize=\small]
+## tesztelni
+## 1. plussz
+
+def Kiir(self, forras, txt):
+   msg = '%s, %s\n'%(forras,txt)
+   self.puffer.append(msg)
+   self.sor += 1
+   if self.sor == self.meret:
+      if self.start:
+         trc = open(self.logNev,self.startMode)
+      else:
+         trc = open(self.logNev,self.mode)
+      for idx in xrange(self.meret):
+         trc.write(self.puffer[idx])
+         trc.close()
+         self.start = False
+         self.puffer = []
+         self.sor = 0
+
+\end{Verbatim}
+
+\noindent Ennek haszn\'alata:
+
+\begin{Verbatim}[fontsize=\small]
+trc = Naplo('futas.txt', 10)
+
+# elso alkalom
+trc.Kiir(__file__,'Start')
+ ......
+ trc.Lezar()
+\end{Verbatim}
+
+\noindent Az egyetlen apr\'onak t\H{u}n\H{o} m\'odos\'{\i}t\'as a ki\'{\i}\'o met\'odusban van, 
+a legels\H{o} t\'enyleges argumentumk\'ent (param\'eterk\'ent) belevett\"uk a forr\'asf\'ajl 
+nev\'et. A t\'enyleges h\'{\i}v\'askor a {\tt \_\_line\_\_} v\'altoz\'ot haszn\'altuk, amelyet a 
+Python automatikusan mindenkor be\'all\'{\i}t az \'eppen v\'egreajtott \'allom\'any nev\'ere. Ez 
+abba az esetben is igaz, ha import\'alter modulr\'ol van sz\'o. 
+
+Most folytassuk a kor\'abbi lista alapj\'an az oszt\'alyunk b\H{o}v\'{\i}t\'es\'et, pr\'ob\'aljuk 
+meg beilleszteni a bejegyz\'es id\H{o}pontj\'at. Ez az\'ert annyira nem lesz egyszer\H{u}, kell 
+hozz\'a egy \'ujabb modul. A Python r\'esz\'et k\'epez\H{o} {\tt time} modulr\'ol van sz\'o, 
+amelyet az oszt\'aly defin\'{\i}ci\'o el\H{o}tt import\'alni kell:
+
+\begin{Verbatim}[fontsize=\small]
+## tesztelni
+
+## tesztelni
+## 2. plussz, idopont
+
+
+import time
+
+class Naplo:
+
+    .....
+
+    def Kiir(self, forras, txt):
+        timeStmp = time.strftime("%Y-%m-%d:%H:%M:%S",time.localtime())
+        msg = '%s > %s > %s\n'%(forras,timeStmp,txt)
+        self.puffer.append(msg)
+        self.sor += 1
+        if self.sor == self.meret:
+            if self.start:
+                trc = open(self.logNev,self.startMode)
+            else:
+                trc = open(self.logNev,self.mode)
+            for idx in xrange(self.meret):
+                trc.write(self.puffer[idx])
+            trc.close()
+            self.start = False
+            self.puffer = []
+            self.sor = 0
+
+\end{Verbatim}
+
+\noindent A fenti k\'odban ism\'et csak a ki\'{\i}r\'o met\'odus m\'odosult, \'es ehhez egy 
+kis magyar\'azatot szeretn\'enk hozz\'af\H{u}zni. A Python futtat\'o rendszer le tudja k\'erdezni 
+a sz\'am\'{\i}t\'og\'ep bels\H{o} \'or\'aj\'at, erre valo a {\tt time.localtime()} f\"uggv\'eny. 
+Ennek eredm\'enye egy bels\H{o} adatszerkezetet, amelyet ut\'ana sz\"ovegg\'e kell alak\'{\i}tani 
+a megfelel\H{o}en felparam\'etezett {\tt time.strftime()} h\'{\i}v\'assal. Az els\H{o} argumentum 
+az id\H{o}pont kimeneti form\'atum\'at adja meg "{\it \'ev-h\'onap-nap:\'ora:perc:m\'asodperc}" 
+alakban, a m\'asodik pedig maga a pontos id\H{o}t szolg\'altat\'o h\'iv\'as. (A seg\'edv\'altoz\'ok 
+elker\"ul\'es\'enek ezt a m\'odj\'at nagyon sok Python programoz\'o kedveli.)
+
+Ahogyan a k\'odb\'oll\'atszik, a napl\'obejegyz\'es form\'atum\'an is v\'altoztattunk egy kiss\'e, 
+nem puszt\'an annyit, hogy beraktuk az id\H{o}pontot. A h\'arom fontos r\'eszt elv\'alasztottuk 
+egym\'ast\'ol egy jellel, hogy jobban olvashat\'o legyen. Emellett a m\'odos\'{\i}t\'as azt is 
+lehet\H{o}v\'e teszi, hogy a logot ak\'ar egy m\'asik programmal is fel tudjuk dolgozni. \'Erdemes 
+kipr\'ob\'alni ezt a m\'odos\'{\i}t\'ast is, v\'elem\'eny\"unk szerint az eddigiek alapj\'an az 
+olvas\'oink is meg tudj\'ak tenni. A kiirat\'o met\'odus param\'eterei ugyanis nem v\'altoztak.
+
+A t\'emak\"or bevezet\H{o} gondolatai k\"oz\"ott megeml\'{\i}tett\"uk, hogy m\'as-m\'as jelleg\H{o} 
+adatok kell a napl\'oba ki\'{\i}rni a tesztel\'esi \'es a haszn\'ati szakaszban. Az ut\'obbi esetben 
+csak a hib\'akat akarjuk feljegyezni. Ez lesz az utols\'o b\H{o}v\'{\i}t\'es, amelyet az oszt\'alyunkba 
+bevezet\"unk:
+
+\begin{Verbatim}[fontsize=\small]
+## tesztelni
+
+class Naplo2:
+
+    def __init__(self, pNeve, pMeret, pMode = 'a', pSzint = 2 ):
+        self.logNev = pNeve
+        self.meret = pMeret
+        self.startMode = pMode
+        self.mode = 'a'
+        self.sor = 0
+        self.puffer = []
+        self.start = True
+        self.szint = pSzint
+        self.tipus = ['INFO', 'HIBA']
+
+    def __del__(self):
+        if self.sor != 0:
+            if self.start:
+                trc = open(self.logNev,self.startMode)
+            else:
+                trc = open(self.logNev,self.mode)
+            for idx in xrange(self.meret):
+                trc.write(self.puffer[idx])
+            trc.close()
+
+    def szintAllit(self, pUjSzint):
+        self.szint = pUjSzint
+
+    def Kiir(self, forras, txt, pSzint = 2):
+        if pSzint >= self.szint:
+            timeStmp = time.strftime("%Y-%m-%d:%H:%M:%S",time.localtime())
+            szintNev = self.tipus[pSzint - 1]
+            msg = '%s > %s > %s > %s\n'%(szintnev forras,timeStmp,txt)
+            self.sor += 1
+            if self.sor == self.meret:
+                if self.start:
+                    trc = open(self.logNev,self.startMode)
+                else:
+                    trc = open(self.logNev,self.mode)
+                for idx in xrange(self.meret):
+                    trc.write(self.puffer[idx])
+                trc.close()
+                self.start = False
+                self.puffer = []
+                self.sor = 0
+
+\end{Verbatim}
+
+\noindent Ez a m\'odos\'{\i}t\'as most azonban nem volt olyan egyszer\H{u}, mint a kor\'abbiak, 
+viszont ez\'altal m\'ar t\'enyleg haszn\'alhat\'o oszt\'alyt kaptunk. A legfontosabb szempont, ami 
+vezetett minket a r\'ezletek kital\'al\'asakor, hogy a tesztelt k\'odhoz k\'epest az "\'eles" program 
+lehet\H{o}leg csak a legsz\"uks\'egesebb m\'odon v\'altozzon. Ehhez els\H{o}sorban \'es el\H{o}sz\"or 
+a napl\'obejegyz\'es form\'atum\'at v\'altoztattuk meg, bevezett\"unk egy t\'{\i}pust mind egyes 
+log sorba. Ezek \'ert\'eke n\"ovekv\H{o} "s\'ulyoss\'agi sorrendben" {\tt INFO}, illetve {\tt HIBA}. 
+Ez alapj\'a be\'all\'{\i}that\'o, hogy milyen szint\H{u} \"uzenetek ker\"uljenek bele a napl\'oba. 
+Erre szolg\'al {\tt szintAllit} met\'odus. Ha a ki\'{\i}r\'o met\'odusban megadott szint nem nagyobb, 
+vagy egyenl\H{o} a be\'all\'{\i}tottal, akkor be sem ker\"ul a logba. Ilyen m\'odon a fejleszt\H{o}i 
+k\'odban elegend\H{o} a napl\'oz\'asi szintet m\'odos\'{\i}tani, m\'aris k\'esz az "\'eles" rendszer.
+Javasoljuk az olvas\'oinknak, hogy ezt az oszt\'alyt is pr\'ob\'aljuk ki, megszerzett tud\#asuk ehhez 
+b\H{o}s\'egesen elegend\H{o}. Nem mellesleg, ezzel m\'ar egy t\'enylegesen is j\'ol haszn\'alhat\'o 
+logol\'o oszt\'alyt is siker\"ult k\"oz\"sen megalkotni. Lehetne m\'eg az oszt\'alyunkat ezzel-azzal 
+b\H{o}v\'{\i}teni, (p\'eld\'aul tov\'abbi napl\'oz\'asi szintekkel), de ezt m\'ar nem kiv\'anjuk 
+kidolgozni. A lehet\H{o}s\'eg mindenki el\H{o}tt nyitva \'all.
+
+\subsection{A Python szabv\'anyos napl\'oz\'o modulja}
+\index{logger}
+
+Az el\H{o}z\H{o}ekben \'{\i}rtunk napl\'oz\'o f\"uggv\'enyt, \'es egyszer\H{u}bb esetekben igen j\'ol 
+haszn\'alhat\'o logol\'o oszt\'alyt. Mind a k\'et esetben megjegyezt\"uk, hogy a tov\'abbi b\H{o}v\'{\i}t\'es 
+lehets\'eges ugyan, de nem gyakorlatias, mert a Python programoz\'asi nyelv rendelkezik be\'ep\'{\i}tett, 
+szabv\'anyos erre a c\'elra szolg\'al\'o modullal. Ezt a {\tt logging} modul tartalmazza, de az \'altalunk 
+meg\'{\i}rtakn\'al l\'enyegesen sokoldal\'ubb \'es rugalmasabb. Ebb\H{o} is k\"ovetkezik, hogy fel\'ep\'{\i}t\'ese 
+t\"obb r\'etegb\H{o}l \'all:
+
+\begin{itemize}
+   \item{{\tt -} form\'az\'o, amelyik a bejegyz\'est kin\'ezet\'et meghat\'arozza,}
+   \item{{\tt -} eloszt\'o, amelyik a bejegyz\'est a megfelel\H{o} napl\'oba eljuttatja,}
+   \item{{\tt -} sz\H{u}r\H{o}, meghat\'arozza, hogy milyen s\'ulyoss\'ag\'u \"uzenetek ker\"uljenek a 
+      napl\'oba,}
+   \item{{\tt -} a napl\'o k\"ozvetlen\"ul haszn\'aland\'o szintje.}      
+\end{itemize} 
+
+\noindent Ez alapj\'an mindenki azt gondolhatja, hogy nagyon neh\'ez haszn\'alni, de szerencs\'ere ez 
+az\'ert nincsn \'{\i}gy. Csak megjegyezz\"uk, hogy az eloszt\'o szint t\'enyleg nagyon sokat tud, a 
+bejegy'eseket ak\'ar email-ben is el tudja k\"uldeni, vagy egyszer\H{u}en egy t\'avoli g\'epre is ki 
+tudja \'{\i}rni. Mi csak egyszer\H{u}en \'allom\'anyba fogjuk jegyezni, ahogyan a kor\'abbiakban is. 
+Kezdj\"unk is akkor bele:
+
+%% TODO formazs??
+
+\begin{Verbatim}[fontsize=\small]
+import logging 
+
+logName = 'proba.log'
+    
+handler = logging.FileHandler(logName, 'a')    
+formatter = logging.Formatter("%(name)s %(asctime)s %(filename)s %(lineno)d %(levelname)s %(message)s")
+handler.setFormatter(formatter)
+
+\end{Verbatim}
+
+\noindent Annak \'erdek\'eben, hogy a fenti r\'eszletet pontosan meg\'erts\"uk, soronk\'ent v\'egigmegy\"unk 
+a k\'odon. Az \'allom\'any nev\'enek be\'all\'{\i}t\'asa ut\'an l\'etrehozzuk a f\'ajlkezel\H{o}t (FileHandler), 
+\'es a megnyit\'asi m\'odot hhozz\'af\H{u}z\'esre \'all\'{\i}tjjuk be. A m\'asodik sorban a form\'at adjuk 
+meg az\'altal, hogy defini\'aljuk az form\'az\'o objektumot. Ezt a form\'ay\'ot csatoljuk a f\'ajlkeze\H{o}h\"oz. 
+A bejegyz\'es most el\'egg\'e r\'eszletes inform\'aci\'ot fog tartalmazni:
+
+\begin{itemize}
+   \item{{\tt -} a napl\'o csatorna neve, amelyet majd k\'es\H{o}bb fogunk megadni (name),}
+   \item{{\tt -} a bejegyz\'es pontos ideje (ascitime),}
+   \item{{\tt -} a Python f\'ajl neve (filename),}
+   \item{{\tt -} a h\'{\i}v\'as hely\'enek sorsz\'ama a f\'ajlban (lineno),}
+   \item{{\tt -} a bejegyz\'es "\'ulyoss\'agi" szintje (level),}
+   \item{{\tt -} maga a bejegyz\'es (message)}
+\end{itemize} 
+
+\noindent A k\'odban a z\'ar\'ojelek ut\'an \'allnak a m\'ar ismert kimenetet form\'az\'o karakterek. 
+N\'ezz\"uk tov\'abb:
+
+\begin{Verbatim}[fontsize=\small]
+logger = logging.getLogger('Proba')
+logger.addHandler(handler)
+
+logger.setLevel(logging.DEBUG)
+\end{Verbatim}
+
+\noindent A {\tt getLogger} h\'{\i}v\'assal el\H{o}\'all\'{\i}tjuk mag\'at a napl\'o csatorn\'at (napl\'o), 
+majd ehhez hozz\'aadjauk a f\'ajlkezel\H{o}t (handler). Az import\'alt modul a {\tt logger} objektumban a 
+rendelkez\'es\"unkre bocs\'ajtja a {\tt setLevel} met\'odust, amellyel megsz\H{u}rherj\"uk, hogy milyen 
+\"uzenetek menjenek ki a napl\'oba. A {\tt logging.DEBUG} \'ert\'ek minden szintet enged\'elyez. 
+
+\begin{tabular}{lll}
+   {\bf N\'ev} & {\bf \'Ert\'ek} & {\bf Magyar\'ayat}\\
+   {\tt logging.NOTSET} & $0$ & Az \'ert\'ek nem lett be\'all\'{\i}tva\\
+   {\tt logging.DEBUG} & $10$ & R\'eszleetes nyomk\"ovet\'es\\
+   {\tt logging.INFO} & $20$ & Fontos inform\'aci\'o\\
+   {\tt logging.WARNING} & $30$ & Figyelmeztet\'es, a m\H{u}k\"od\'est zavar\'o esem\'eny\\
+   {\tt logging.ERROR} & $40$ & Hiba\\
+   {\tt logging.CRITICAL} & $40$ & S\'ulyos, kritikus hiba\\
+\end {tabular}
+
+\noindent Ahogyan a fenti t\'abl\'azatb\'ol l\'atszik, hogy minn\'el s\'ulyosabb egy hiba, illetve 
+fontosabb egy bejegyz\'es, ann\'al nagyobb sz\'amszer\H{u} \'ert\'ek van hozz\'arendelve. Ez a 
+sz\H{u}r\H{o} m\'odszer alapja. Most m\'ar ideje, hogy ennyi el\H{o}k\'esz\'{\i}t\'es ut\'an l\'assunk 
+egy t\'enyleges logol\'ast:
+
+\begin{Verbatim}[fontsize=\small]
+logger.info('Program indul')
+\end{Verbatim}
+
+\noindent Az \'{\i}gy \"ossze\'all\'atott program lefuttat\'asa alapj\'an a napl\'oban az al\'abbi 
+bejegyz\'es tal\'aljuk:
+
+\begin{Verbatim}[fontsize=\small]
+Proba 2020-09-27 11:57:06,629 proba.py 14 INFO Program indul
+\end{Verbatim}
+
+\noindent L\'atjuk hogy az el\H{o}z\H{o}kben r\'eszletesen le\'{\i}rt form\'atumnak teljesen megfelel 
+a logba be\'{\i}rt sor. Most n\'ezz\"uk meg, hogyan is m\H{u}k\"odik a sz\H{u}r\H{o}:
+
+\begin{Verbatim}[fontsize=\small]
+logger.setLevel(logging.WARNING)
+
+logger.info('Program indul')
+\end{Verbatim}
+
+\noindent Ha ezzel a m\'odos\'{\i}t\'assal lefuttatjak a szkriptet, akkor a napl\'oban mem fog 
+megjelenni semmi, mert a be\'all\'{\i}tott szint sz\'amszer\H{u} \'ert\'eke magasabb, mint a 
+logol\'o utas\'{\i}t\'as \'altal be\'all\'{\i}tott sz\'anszer\H{u} \'ertek. Nem meglep\H{o}, 
+hogy a t\"obbi szintet ebben a p\'eld\'aban a {\tt logger.debug()}, {\tt logger.warning()}, 
+{\tt logger.error()}, illetve a {\tt logger.critical()} met\'odusokkal irathatjuk bele a logba. 
+
+A {\tt logging} modul sok rendelkez\'es\"unkre \'all\'o lehet\H{o}s\'ege k\"oz\"ul m\'eg csak egyet 
+fogunk itt megmutatni, mert a v\'elem\'eny\"unk szerint nagyon hasznos a mindennapi gyakorlatban. 
+Ha bonyolultabb programot \'{\i}runk, amely esetleg t\"obb modulb\'ol \'all, akkor term\'eszetesen 
+mer\"ul fel az ig\'eny, hogy a k\"ul\"onb\"oz\H{o} alkot\'oelemek napl\'obejegyz\'esei ne keveredjenek 
+\"oosze. Az els\H{o} \"otlet ami ezzek kapcsolatban az esz\"unkbe juthat, hogy a bejegyz\'eseket az 
+egyes programr\'eszek k\"ul\"on \'allom\'anyba \'{\i}rj\'ak bele. Ez eddig nagyon egyszer\H{u}nek 
+t\H{u}nik, de ha ut\'olag meg kell n\'ezni, hogy mis is t\"ort\'ent a futtat\'askor, akkor el\'egg\'e 
+macer\'as feladat lenne, hogy egyn\'el t\"obb logb\'ol kellene a t\"ort\'enetet \"osszebogar\'aszni. 
+Az ide\'alis az lenne, hogy egyh helyre menn\'enek a bejegyz\'esek, de valahogyan m\'egis meg tudn\'ank 
+a komponenst k\"ul\"onb\"oztetni. Szerencs\'ere erre van m\'odszer, amelyet al\'abb mutatunk (a t\"obbi 
+k\'odr\'eszletet a kor\'abbiak alapj\'an az olvas\'ink is \"ossze tudj\'ak szedni): 
+
+\begin{Verbatim}[fontsize=\small]
+
+logger = logging.getLogger('Proba')
+logger.addHandler(handler)
+
+testlogger = logging.getLogger('Proba.test')
+
+logger.setLevel(logging.DEBUG)
+
+logger.info('Program indul')
+testlogger.debug('Test start')
+\end{Verbatim}
+
+\noindent A kimenet:
+
+\begin{Verbatim}[fontsize=\small]
+Proba 2020-09-28 09:22:00,585 proba_a.py 16 INFO Program indul
+Proba.test 2020-09-28 09:22:00,605 proba_a.py 17 DEBUG Test start
+\end{Verbatim}
+
+\noindent A napl\'oba azonos form\'atummal, de k\'et k\"ul\"un logol\'o bejegyz\'esei ker\"ultek, a 
+k\'et "csatorna" teh\'egy \"osszef\"ugg. Ebben az esetben a f\H{o} naplo a {\tt Proba}, \'es ennek 
+mintegy lesz\'armazottja a {\tt Proba.test}. A k\"ul\"onb\"oz\"o napl\'ok sz\H{u}r\'esi felt\'etelei 
+teljesen megegyeznek. 
+
+\input py2_cont
+
+\input py2_app
+
+

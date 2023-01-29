@@ -1,0 +1,1184 @@
+\section{R\"ogz\'{\i}tett fileform\'atumok felgoz\'asa}
+
+Az eddigiek alapj\'an tudunk \'allom\'anyokat el\H{o}\'all\'{\i}tani \'es beolvasni, de ez 
+nem biztos, hogy mindig elegend\H{o} lesz a sz\'amunkra. A programoz\'oi gyakorlatban sokszor 
+szokott el'H{o}fordulni, hogy programunknak m\'as programokkal kell adatot cser\'elni. Ilyenkor 
+elk\'epzelhet\H{o}, hogy a f\'ajlok form\'atum\'at nem mi, hanem a m\'asik alkalmaz\'as fogja 
+meghat\'arozni. T\"obb elterjedt, szabv\'anyosnak tekinthet\H{o} form\'atum l\'etezik, mi ebb\H{o}l 
+csak n\'eh\'anyat fogunk megeml\'{\i}teni. Tov\'abb\'a fontosnak tartjuk megjegyezni azt is, hogy 
+m\'eg ezekkel kapcsolatosan sem fogunk kimer\'{\i}teni minden lehet\H{o}s\'eget. Ebben a r\'eszben 
+ugyanis ink\'abb bevezet\'est szeretn\'enk adni, mint b\H{o}s\'eges \'es r\'eszletekbe men\H{o} 
+le\'{\i}r\'ast. \'Erdekl\H{o}d\H{o} olvas\'oink a f\"uggel\'ekben m\'eg tal\'alnak hivatkoz\'asokat.
+ 
+Az al'bbi kiv\'alasztott h\'arom f\'ele tipus r\'eszben az elterjedts\'ege miatt, r\'eszben pedig a 
+viszonylag egyszer\H{u} kezel\'ese miatt ker\"ult bele ebbe a le\'{\i}r\'asba:
+
+\begin{center}
+   \begin{tabular}{ll}
+   {\bf Form\'atum} & {\bf Magyar\'azat} \\
+   {\tt CSV} & Elv\'alaszt\'o jellel hat\'arolt t\'abl\'azatos adatf\'ajl. \\
+   {\tt HTML} &  Keresztkapcsolatokkal kib\H{o}v\'{\i}tett dokumentum (hipertext).\\
+   {\tt XML} & A HTML \'altal\'anos\'{\i}tott v\'altozata. \\
+   \end {tabular}
+\end{center}
+
+\noindent Mind a h\'arom manaps\'ag el\'egg\'e n\'epszer\H{u}, az els\H{o} haszn\'alhat\'o 
+p\'eld\'aul t\'abl\'azatkezel\H{o} ki- \'es bemeneti adatak\'ent egyar\'ant. A {\tt CVS} 
+\'allom\'anyok \'{\i}r\'as\'ar\'ol is fogunk besz\'elni a m\'asik kett\H{o} eset\'eben 
+csak \"otleteket fogunk bemutatni kiz\'ar\'olag gondolat\'ebreszt\H[o]nek.
+
+\subsection{CSV \'allom\'anyok kezel\'ese}
+\index{CSV}
+
+Az angol bet\H{u}sz\'o a {\tt Comma Separated Value}, vagyis vessz\H{o}vel elv\'alasztott 
+\'ert\'ert\'ekekb\H{o}l \'all\'o f\'ajlok tartoznak ebbe a csoportba. Az elv\'alaszt\'o 
+karakter term\'eszetesen m\'as is lehet, csak egy\'ertelm\H{u}en t\'erjen el az adatokt\'ol. 
+Tulajdonk\'eppen nem lenne olyan bonyult saj\'at magunknak meg\'{\i}rni ak\'ar a beolvas\'o, 
+ak\'ar az adatokat kiment\H{o} f\"uggv\'enyeket (tal\'an gyakorl\'asnak is j\'o lenne), 
+de legy\"unk k\'enyelmesek, \'es haszn\'aljuk a Python be\'ep\'{\i}tett modulj\'at. 
+\'Altal\'aban is felesleges lenne olyan rugalmasra tervezni, mint az a modul, amely a 
+rendelkez\'es\"unkre \'all.
+
+\subsubsection{CSV f\'ajlok beolvas\'asa}
+
+A szok\'ast\'ol elt\'er\H{o}en most el\H{o}sz\"or a beolvas\'assal fogunk foglalkozni. Az 
+els\H{o} pr\'ob\'alkoz\'asokhoz {\tt csvtest\_1.csv} n\'even az al\'abbi adatsort vessz\"uk:
+
+\begin{Verbatim}[fontsize=\small]
+Sor, ID, Desc, Val
+1, W2, test1, 34
+2, T44, proba, 92
+4, h21, anya, 54
+\end{Verbatim}
+
+\noindent Az \'elesebb szem\H{u}ek \'eszzreveszik, hogy a legels\H{o} sorban nem t\'enyleges adatok 
+vannak, hanem a k\'epzeletbeli t\'abl\'azat k\'epzeletbeli oszlopainak fejl\'ece. 
+
+A beolvas\'as els\H{o} l\'ep\'esek\'ent nem fogjuk tov\'abb feldolgozni az adatokat, csak azt akarjuk 
+bemutatni, hogy mik\'ent is jelenik meg a mem\'ori\'aban. L\'assuk a k\'odot:
+
+\begin{Verbatim}[fontsize=\small]
+## test1.py
+
+import csv
+## import os
+import sys
+
+if __name__ == '__main__':
+
+    filename = 'csvtest1.csv'
+    print('File == %s'%filename)
+
+    inp = open(filename)
+    recReader = csv.reader(inp, delimiter = ',')
+
+    line_no = 0
+
+    for row in recReader:
+        line_no = line_no + 1 
+        print('%d'%line_no)
+        print(row)
+
+        for col in row:
+            size = len(col)
+            print('>> %s meret = %d'%(col,size))
+\end{Verbatim}
+
+\noindent Az allom\'anyt el\H{o}sz\"or a szok\'asos m\'odon meg kell a t\'enyleges beolvas\'as el\H{o}tt 
+nyitni, majd a f\'ajl objektumot az import\'alt {\tt cvs.reader} oszt\'aly konstruktor\'anak \'atadni. A 
+m\'asodik param\'eter a hat\'arol\'ojel, jelen esetben term\'eszetesen a vessz\H{o}. A l\'etrej\"ott 
+objektum tulajdonk\'eppen m\'ar a beolvasott sorok list\'aja, a sorok pedig a feldolgozott oszlopok 
+list\'aj\'ab\'ol \'all. Ez\'ert tudjuk k\'et, egym\'asba \'agyazott {\tt for} ciklussal v\'egigmenni 
+az adathalmazon. A futtat\'as eredm\'enyet az al\'abbiakban l\'atjuk:
+
+\begin{Verbatim}[fontsize=\small]
+File == csvtest1.csv
+1
+['Sor', ' ID', ' Desc', ' Val']
+>> Sor meret = 3
+>>  ID meret = 3
+>>  Desc meret = 5
+>>  Val meret = 4
+2
+['1', ' W2', ' test1', ' 34']
+>> 1 meret = 1
+>>  W2 meret = 3
+>>  test1 meret = 6
+>>  34 meret = 3
+3
+['2', ' T44', ' proba', ' 92']
+>> 2 meret = 1
+>>  T44 meret = 4
+>>  proba meret = 6
+>>  92 meret = 3
+4
+['4', ' h21', ' anya', ' 54']
+>> 4 meret = 1
+>>  h21 meret = 4
+>>  anya meret = 5
+>>  54 meret = 3
+\end{Verbatim}
+
+\noindent A k\'od \'es a kimenet alapos megn\'ez\'ese ut\'an azt l\'atjuk, hogy minden adatot 
+karakteresnek, vagyis stringnek vesz a modul. Teh\'at a nek\"unk kell azt a megadott form\'atumra 
+alak\'{\i}tani, ha tov\'abb szeretn\'enk a beolvasott \'ert\'ekekkel dolgozni. (Gondoljuk, nem 
+kell magyar\'azni, hogy az egyetlen kiv\'etel a fejl\'eceket tartalmaz\'o els\H{o} sort.) 
+Gondoljuk, hogy nem kellene megeml\'{\i}tani azt a t\'enyt, hogy ebben az esetben pontosan tudnunk 
+kell, hogy az \'allom\'anyban melyik oszlop milyen t\'{\i}pus\'u adatokat tartalmaz. Az els\H{o} 
+pr\'oba legyen az al\'abbi:
+
+\begin{Verbatim}[fontsize=\small]
+## test2a.py
+import csv
+import sys
+
+def elemez(rekord):
+    sorszam = int(rekord[0])
+    azon = rekord[1]
+    leiro = rekord[2]
+    ertek = float(rekord[3])
+    return(sorszam, azon, leiro, ertek)
+
+if __name__ == '__main__':
+
+    filename = 'csvtest1.csv'
+    print('File == %s'%filename)
+
+    inp = open(filename)
+    recReader = csv.reader(inp, delimiter = ',')
+
+    line_no = 0
+
+    for row in recReader:
+        line_no = line_no + 1 
+        print('%d'%line_no)
+        print(row)
+
+        if line_no != 1:
+            lista = elemez(row)
+            print('Egesz = %d'%lista[0])
+            print('Szoveg = %s'%lista[1])
+            print('Szoveg = %s'%lista[2])
+            print('Szam = %f'%lista[3])
+\end{Verbatim}
+
+\noindent A szkript t\'enyleges futtat\'asa el\H{o}tt \'ezz\"uk meg kiss\'e a k\'odot. A beolvasott 
+sort (rekordot) egyszer\H{u}en \'atadjuk az elemz\H{o} f\"uggv\'enynek, amibe k\"ozvetlen\"ul bele 
+van \'{\i}rva az \'atalak\'{\i}t\'as. A k\'et sz\"oveges me\H{o} maradhat \'ugy, ahogyan van (a CSV 
+feldolgoz\'o ebben a form\'aban adja ki az adatokat, amint l\'attuk) de a sz\'amokat (eg\'eszeket) 
+a megfelel\H{o} m\'odon kell kezelni. A futtat\'as ut\'an az eredm\'eny:
+
+\begin{Verbatim}[fontsize=\small]
+File == csvtest1.csv
+1
+['Sor', ' ID', ' Desc', ' Val']
+2
+['1', ' W2', ' test1', ' 34']
+Egesz = 1
+Szoveg =  W2
+Szoveg =  test1
+Szam = 34
+3
+['2', ' T44', ' proba', ' 92']
+Egesz = 2
+Szoveg =  T44
+Szoveg =  proba
+Szam = 92
+4
+['4', ' h21', ' anya', ' 54']
+Egesz = 4
+Szoveg =  h21
+Szoveg =  anya
+Szam = 54
+\end{Verbatim}
+
+\noindent A CSV \'allom\'any beolvas\'asa sor\'an a {\tt reader} f\"uggv\'eny egy 
+list\'at ad vissza, amely a rekordokat tartalmazza egym\'as ut\'an. A legels\H{o}, 
+ha van oszlop fejl\'ec, akkor azokat. De ezt a feldolgoz\'o programnak 
+kell pontosan tudnia. Ellenkez\H{o} esetben ugyanis k\"onnyen veszthet\"unk adatokat. 
+A rekordot elemz\H{o} f\"uggv\'eny a megfelel\H{o} oszlopok tartalm\'at \'atalak\'{\i}tja 
+annak ismeret\'eben, hogy milyen jelleg\H{u} adatok vannak benne. A CSV form\'atum ugyan 
+val\'oban k\"ot\"ott (az elv\'alaszt\'o \'es id\'ez\H{o} karakter emellett szabadon 
+megv\'alaszthat\'o) viszont semmi sem k\'enyszer\'{\i}ti ki, hogy a bemeneti \'allom\'any 
+sorai pontosan ugyan azokat a rekordszerkezeteket tartalmazza. Ezt is a programoz\'onak 
+kell adott esetben lekezelnie. A bemeneti adatok s\'ulyos formai hib\'aja eset\'eben az 
+\'ertelmez\H{o} val\'osz\'{\i}n\H{u}leg valamilyen hib\'at fog dobni (ezt a szerz\H{o}k 
+nem tesztelt\'ek), ami a m\'ar ismert {\tt try -- except} utas\'{\i}t\'asokkal lekezelhet\H{o}.
+
+\subsubsection{CSV f\'ajlok ki\'{\i}r\'asa}
+
+Mivel a CSV \'allom\'any t\'enyleg kiv\'al\'oan alkalmas arra, hogy a Python programunk 
+\'altal el\H{o}\'all\'{\i}tott adatok ak\'ar m\'as rpogramok sz\'am\'ara is haszn\'alhat\'ok 
+legyenek, most foglalkozzunk azzal a k\'erd\'essel, mik\'ent is tudn\'ank ilyen l\'etrehozni. 
+
+\begin{Verbatim}[fontsize=\small]
+import csv
+with open('test.csv', 'a', newline='') as csvfile:
+    spamwriter = csv.writer(csvfile, delimiter=',',
+                            quotechar='@', quoting=csv.QUOTE_MINIMAL)
+    spamwriter.writerow(['T1'] * 5 + ['haho'])
+    spamwriter.writerow(['T2', 'hali', '#kakukk#'])
+\end{Verbatim}
+
+\noindent Az \'allom\'any megnyit\'asa ut\'an l\'etrehozunk egy {\tt writer} objektumot, amelyben 
+be\'all\'{\i}tjuk a mez\H{o}ket elv\'alaszt\'o karaktert, \'es azt, hogy van-e sz\"uks\'eg 
+egyes esetekben az id\'ez\H{o}jelek haszn\'alat\'ara, illetve, hogy milyen id\'ez\H{o} jeleket 
+akarunk haszn\'alni. Ha m\'ar ez az objektum l\'etrej\"ott, akkor ennek a {\tt writerow} 
+met\'odus\'aval tudunk egy-egy sor ki\'{\i}rni az f\'ajlba. Ennek egyetlen argumentuma egy 
+olyan lista, amelyik a megjelen\'{\i}tend\H{o} adatokat tartalmazza. A p\'eld\'aban a sorok 
+nem egyforma szerekezet\H{u}ek, de a val\'os haszn\'alat sor\'an ezt az\'ert c\'elszer\H{u} 
+elker\"ulni. Most minden k\"ul\"on\"osebb magyar\'azat n\'elk\"ul meg a ki\'{\i}rt CSV adatokat, 
+hiszen az teljes m\'ert\'ekben megfelel az elv\'ar\'asainknak:
+
+\begin{Verbatim}[fontsize=\small]
+T1,T1,T1,T1,T1,haho
+T2,hali,#kakukk#
+\end{Verbatim}
+
+\noindent Arra is van lehet\H{o}s\'eg, hogy a k\'od jobb olvashat\'os\'aga \'erdek\'eben egyszerre 
+t\"obb kimen\H{o} sort \'all\'{\i}tsunk el\H{o}, vagyis a list\'ak list\'aj\'at. Ilyenkor nem kell 
+nek\"unk ciklust \'{\i}rni, elegend\H{o} a {\tt writerows} met\'odust megh\'{\i}vni, az elint\'ez mindent. 
+
+\subsection{HTML \'allom\'anyok feldolgoz\'asa}
+\index{HTML}
+
+A HTML, mint tudjuk els\H{o}sorban a WEB b\"ong\'esz\H{o} nemzetk\"ozileg r\"ogz\'{\i}tett f\'ajl 
+form\'atuma, \'es id\H{o}nk\'ent nem sz\"ovegszer\H{u} adatok tov\'abb\'at\'as\'ara is alkalmazz\'ak 
+(b\'ar erre tal\'an az el\H{o}z\H{o}kben bemutatott CSV hat\'ekonyabb).  R\'eszletesen nem fogunk a 
+form\'atum le\'{\i}r\'as\'aval foglalkozni, hiszen arr\'ol az interneten magyar nyelven is b\H{o}s\'egesen 
+tal\'alunk dokument\'aci\'ot. Most elegend\H{o} azt megeml\'{\i}ten\"unk, hogy az \'allom\'anyok 
+{\sl elemekb\H{o}l} \'allnak (angolul tag), \'es ezeknek lehetnek kapcsol\'oik, illetve adat tartalmuk. 
+Az esetek t\"obbs\'eg\'eben az elemeknek an kezd\H{o} \'es lez\'ar\'o r\'esze. A HTML bemenet term\'eszetesen 
+tartalmazhat megjegyz\'est is, amelyet az elemz\'es sor\'an \'at kell ugrani.
+
+A nemzetk\"ozi szabv\'any l\'ete miatt a HTML val\'oban k\"ot\"ott form\'atum, szemben a laz\'abb CSV-vel, 
+ez\'ert nagyon fontos, hogy a bementi adatok t\'enyleg szab\'alyosak legyenek. (Ehhez m\'eg egy r\"ovid 
+megjegyz\'es, ez a sz\'amunkra megszokott \'ekezetes bet\H{u}k k\'odol\'as\'at meglehet\H{o}sem nyakatekertt\'e 
+teszi.) Ellenkez\H{o} esetben az elemz\H{o} nagyobb elt\'er\'esek eset\'en hib\'at jelez, a szerz\H{o}k 
+ezt sem pr\'ob\'alt\'ak ki. Mivel minden \'ert\'ekes adat HTML elemekben van becsomagolva, ez\'ert 
+el\'egg\'e ``b\H{o}besz\'ed\H{u}'' from\'atum. Ez m\'as sz\'oval azt is jelenti, hogy ezek az \'allom\'anyok 
+nagyon nagyok is lehetnek. (Egyes esetekben ak\'ar a 100 megabyte-os nagys\'agrendet is el\'erheti.) A 
+Python programoz\'asi nyelv HTML eszk\"oz\"ok eg\'es t\'arh\'az\'at bocs\'atja a rendelkez\'es\"unkre, 
+mi azonban ebben az ismertet\H{o}ben csak a feldolgoz\'ashoz szorosan kapcsol\'od\'o f\"uggv\'enyekkel 
+fogunk foglalkozni. Ezeket is olyan viszonylag egyszer\H{u} p\'eld\'akon fogjuk bemutatni, amelyeket 
+el\'egg\'e k\"onny\H{u} meg\'erteni. Az \'erdekl\H{o}d\H{o}k term\'eszetes az interneten ezekn\'el 
+\'eletszer\H{u}bb mintaprogramokat is tal\'alhatnak.
+
+A HTML elemz\H{o} b\'azisoszt\'alyt a {\tt html.parser} modulb\'ol import\'aljuk, \'es az alapj\'an 
+\index{html.parser} \"or\"okl\'essel l\'etrehozzuk saj\'at ``parser'' objektumunkat. L\'assuk most a 
+lehet\H{o} legegyszer\H{u}bb p\'eld\'at:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+## html1.py
+
+from html.parser import HTMLParser
+
+class SajatParser(HTMLParser):
+    def handle_starttag(self, tag, attrs):
+        print("Start elem:", tag)
+
+    def handle_endtag(self, tag):
+        print("Vege elem :", tag)
+
+    def handle_data(self, data):
+        print("Adat elem :", data)
+
+parser = SajatParser()
+parser.feed('<html><head><title>Teszt</title></head>'
+            '<body><h1>Kakukk!</h1></body></html>')
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Miel\H{o}tt futtatn\'ank, n\'ezz\"uk meg kiss\'e alaposabban a fenti programot. A 
+b\'a\-zis\-osz\-t\'aly\-b\'ol \"or\"okl\'es \'altal defini\'aljuk saj\'at elemz\H{o}nket. 
+Ebben csak h\'arom met\'odust \'{\i}runk \'ujra, a t\"obbi nem v\'altozik meg. A 
+p\'eld\'anyos\'at\'as ut\'an a HTML bemenetet egyszer\H{u}en egy sz\"oveg v\'alto\'oban 
+adjuk \'at a {\tt feed} met\'odusnak, amelyik gyakorlatban az elemz\'est v\'egzi. Most a 
+kimenet:
+
+\begin{Verbatim}[fontsize=\small]
+Start elem: html
+Start elem: head
+Start elem: title
+Adat elem : Teszt
+Vege elem : title
+Vege elem : head
+Start elem: body
+Start elem: h1
+Adat elem : Kakukk!
+Vege elem : h1
+Vege elem : body
+Vege elem : html
+\end{Verbatim}
+
+\noindent A fenti list\'ab\'ol vil\'agosan l\'atszik, a HTML elemek egym\'asba \'agyazotts\'aga, 
+hiszen az elej\'en csak kezdeteket tal\'al. J\'ol k\"ovvethet\H{o}, hogy a fejl\'ecben ({\tt head}) 
+rendben megtal\'alja a c\'{\i}met, ({title}), annak sz\"ovegszer\H{o} tartalm\'at, \'es a le\'ar\'okat 
+a helyes sorrendben. A dokumentum t\"orzs\'enek \'ertelmez\'ese ({\tt body}) szint\'en helyes. 
+Most m\'odos\'{\i}tsuk egy kicsitt a programot, pontosabban annak a v\'eg\'et:
+
+\begin{Verbatim}[fontsize=\small]
+parser = SajatParser()
+parser.feed('<html><head><title>Teszt</title></head>')
+parser.feed('<body><h1>Kakukk!</h1></body></html>')
+\end{Verbatim}
+
+\noindent A futtat\'as alapj\'an l\'atjuk (t\'enyleg \'erdemes kipr\'ob\'alni), hogy {\bf a kimenet 
+egy\'al\-ta\-l\'an nen v\'altozott meg}. Ez a Python HTML elem\H{o}j\'enek egy hasznos \'es nagyon fontos 
+tulajdons\'aga. Az alfejezet elej\'en ugyanis eml\'{\i}tett\"uk, hogy a HTML adatfolyam ak\'ar nagyon 
+nagy is lehet, nem val\'osz\'{\i}n\H{u}, egybe \'at tudn\'ank adni a parser objektumnak. Ez\'ert a 
+{\tt feed} met\'odus fel van k\'esz\'{\i}tve arra, hogy az adatokat t\"obb darabban kapja meg, 
+\'es a helyesen le nem z\'art elemeket addig ideiglenesen t\'arolja, ameddig a korrekt v\'egjel nem 
+\'erkezik meg.
+
+M\'elyedj\"unk el kicsit m\'eg a fenti teljes k\'odban, hogy tov\'abbi r\'eszletekre tudjunk 
+f\'enyt der\'iteni. H\'arom met\'odust \'{\i}rtunk \'at az\'ert, hogy a saj\'at sz\'ank \'{\i}ze 
+szerint dolgozzuk fel a beolvasott adatokat. Ezeket a {\tt feed} automatikusan megh\'{\i}vja, 
+amikor a megfelel\H{o} mint\'at a bemeneten megtal\'alja. Ezek a ``kezel\H{o}'' met\'odusok, 
+amelyeket most kicsit form\'alisabban is \"osszefoglalunk (a t\'abl\'azatban csak az 
+al\'ah\'uz\'as karakter ut\'ani r\'eszt \'{\i}rtuk be):
+
+\begin{center}
+   \begin{tabular}{ll}
+   {\bf Met\'odus} & {\bf Esem\'eny} \\
+   {\tt starttag} & Az elem kezdete meg\'erkezett \\
+   {\tt endtag} & Az elem kezdetev\'ege meg\'erkezett \\
+   {\tt data} & Az elem adata kiolvashat\'o \\
+   \end {tabular}
+\end{center}
+
+\noindent A HTML bemenet feldolgoz\'asa tulajdonk'eppen azon m\'ulik, hogy ezekben a 
+met\'odusokban megfogalmazzuk, hogy ilyenkor pontosan mit is kezd\"unk az itt kinyert 
+adatokkal. Viszont a megmutotatott bemenet m\'eg t\'uls\'agosan kev\'es elemet tartalmaz, 
+itt az ideje, hogy bonyol\'{\i}tsuk a helyzetet. Ez nem csak a bemen\H{o} adatokat \'erinti, 
+hanem a v\'egrehajtand\'o k\'odot is. Most el\H{o}sz\"or l\'assuk mag\'at az elem\H{o} oszt\'alyt:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+from html.parser import HTMLParser
+from html.entities import name2codepoint
+
+class EnParserem(HTMLParser):
+    def handle_starttag(self, tag, attrs):
+        print("Kezdo:", tag)
+        for attr in attrs:
+            print("     kapcs:", attr)
+
+    def handle_endtag(self, tag):
+        print("Vege :", tag)
+
+    def handle_data(self, data):
+        print("Data  :", data)
+
+    def handle_comment(self, data):
+        print("Comment  :", data)
+
+    def handle_entityref(self, name):
+        c = chr(name2codepoint[name])
+        print("Nevesitett:", c)
+
+    def handle_charref(self, name):
+        if name.startswith('x'):
+            c = chr(int(name[1:], 16))
+        else:
+            c = chr(int(name))
+        print("Szam  :", c)
+
+    def handle_decl(self, data):
+        print("Leir     :", data)
+
+parser = EnParserem()
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent {\bf Mivel ez az oszt\'aly lesz k\"ovetkez\H{o} k\'{\i}s\'erleteink kiindul\'o pontja, ez\'ert 
+javasoljuk ezt k\"ol\"on is elmenteni.} A fenti k\'od egy r\'esze a kor\'abbi minta alapj\'an el\'egg\'e 
+ismer\H{o}s, de a m\'ar l\'atott r\'eszletekben is van v\'altoz\'as. Az elem kezdet\'enek kezel\H{o}je 
+({\tt startag}) most nem csup\'an \ kezd\H{o}d\H{o} elem nev\'et kapja meg argumentumk\'ent, hanem az 
+ahhoz tartoz\'o kapcsol\'ok list\'aj\'at is. Emellett n\'egy \'uj met\'odus is megjelent, amelyek az 
+eddig nem lekezelt HTML jelens\'egek eset\'en h\'{\i}v\'odnak meg. (Ezek: a megjegyz\'esek, dokumentum 
+le\'{\i}r\'ok, az \'ekezetes bet\H{o}k \'es a k\"ul\"onb\"oz\H{o} egy\'eb specialis r\'eszek.) Kezdj\"uk 
+a pr\'ob\'alkoz\'ast egy olyan elemmel, amelyik egy k\'epet illesst be a dokumentumba (innent\H{o}l az 
+egyszer\H{u}s\'eg kedv\'e\'ert csak a v\'altoz\'o k\'odsorakat fogjuk megmutatni):
+
+\begin{Verbatim}[fontsize=\small]
+parser.feed('<img src="kep.png" alt="Rainbow">')
+\end{Verbatim}
+
+\noindent A futtat\'as ut\'an a kimenet:
+
+\begin{Verbatim}[fontsize=\small]
+Kezdo: img
+     kapcs: ('src', 'kep.png')
+     kapcs: ('alt', 'Rainbow')
+\end{Verbatim}
+
+\noindent Megn\'ezve az eredm\'enyt, \'eszre lehet venni, a kapcsol\'ok list\'aja a megfelel\H{o} 
+sorrendben lett \'atadva, \'es az val\'oj\'aban egy sz\'ot\'ar, ami a kapcsol\'ok nev\'et \'es 
+\'ert\'eket tartalmazza. Most n\'ezz\"unk meg egy szabv\'anyos dokumentum le\'{\i}r\'ot:
+
+\begin{Verbatim}[fontsize=\small]
+parser.feed('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">')
+\end{Verbatim}
+
+\noindent ennek eredm\'enye:
+
+\begin{Verbatim}[fontsize=\small]
+Leir     : DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN"
+\end{Verbatim}
+
+\noindent Csak \'erdekess\'egk\'ent jegyezz\"uk meg, hogy ilyet gener\'al a {\tt pydoc.py} 
+dokument\'aci\'os szkript, amit m\'ar ismertett\"unk a \ref{pydoc} fejezetben. N\'ezz\"unk 
+egy tov\'abbi p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+parser.feed('<!-- a comment -->'
+\end{Verbatim}
+
+\noindent melynek kimenete:
+
+\begin{Verbatim}[fontsize=\small]
+Megjegyz  :  teszt sor
+\end{Verbatim}
+
+\noindent Egy\'ertelm\H{u}en sikeresen emelte ki a bemenetb\H{o}l a HTML kommentet.
+
+TODO html3.py mi\'ert nem m\H{u}k\"odik a doksi szerint? htmlx.py
+
+\subsection{XML \'allom\'anyok feldolgoz\'asa}
+\index{XML}
+
+T\"ort\'enetileg az XML form\'atum a HTML \'altal\'anos\'{\i}t\'asa, e\'ert l\'enyeg\'eben 
+a form\'atuma is hasonl\'o. Abban is nagyon hasonl\'{\i}t az el\H{o}dj\'ere, hogy ez is 
+``b\H{o}besz\'ed\H{u}'' \'allom\'anyt\'{\i}pus, teh\'at itt is gondot okozhat az nagy 
+m\'eret. A Python nyel XML eszk\"oz\"okben is b\H{o}velkedik, t\"obbek k\"oz\"ott a 
+rendelkez\'es\"unkra a DOM \'es SAX2 adatmodell is, amely t\"obb m\'as programoz\'asi 
+nyelvre is meg lett \'{\i}rva. Igaz\'an nagy adatsorok feldolgoz\'as\'ara azonban egyik 
+sem teljesen alkalmas a szerz\H{o}k tapasztalatai szerint, mert egyszerre kell beolvasni 
+a feldolgoz\'as el\H{o}tt mindent. Ez\'ert mi az {\tt ElementTree} m\'odszert javasoljuk, 
+amit nem is olyan nezh\'es haszn\'alni. Ahogyan a HTML eset\'eben nem foglalkoztunk azzal, 
+hogyan is kell ilyen adatokat l\'etrehozni, most az XML eset\'eben sem \'erintj\"uk ezt a 
+t\'em\'at. 
+
+Az XML adatsor is elemeket tartalmaz egym\'asba \'agyazva, gondoljuk ezzel alapvet\H{o}en 
+minden olvas\'onk tiszt\'aban van. Egyel\'H{o}re a feldolgoz\'as l\'epeseit az al\'abbi 
+egyszer\H{u} bemeneten fogjuk pr\'ob\'algatni:
+
+\begin{Verbatim}[fontsize=\small]
+<?xml version="1.0" encoding="UTF-8"?>
+<!--proba.xml-->
+<raktar>
+   <aru tipus = "fuzet">
+      <leiras meret = "A4">spiral</leiras>
+      <helye>
+	 <gondola>A</gondola>
+	 <polc oldal = "bal">3</polc>
+	 <keszlet igeny = "nagy" rendeles = "visszaigazolva">
+	    55
+	 </keszlet>
+      </helye>
+   </aru>
+</raktar>
+\end{Verbatim}
+
+\noindent Most n\'ezz\"uk azt meg, hogy mik\'ent tudjuk ebben megkeresni az egyes XML elemek 
+elej\'et \'es v\'eg\'et:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+import xml.etree.ElementTree as ET
+
+if __name__ == "__main__":
+    fileName = "proba.xml"
+    print('----- Start')
+    for event, element in ET.iterparse(fileName):
+        if event == "end":
+            print (' > End %s'%element.tag)
+        if event == "start":
+            print (' < Start %s'%element.tag)
+        element.clear()
+
+    print('----- End')
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Miel\H{o}tt t\'enylegesen meg is n\'ezn\'enk a futtat\'as eredm\'enny\'et, 
+vizsg\'aljuk egy kicsit alaposabban a k\'odot mag\'at. A {\tt for} ciklus utols\'o 
+sor\'aban m\'aris l\'atszik, hogy mi\'ert ezt a feldolgoz\'o m\'odszert v\'alasztottuk. 
+Az {\tt element.clear()} h\'{\i}v\'as ugyanis a teljesen feldolgozott XML elemet 
+t\"orli a mem\'ori\'ab\'ol, az teh\'at m\'ar nem foglal helyet. Most l\'assuk a kimenetet:
+
+\begin{Verbatim}[fontsize=\small]
+----- Start
+ > End leiras
+ > End gondola
+ > End polc
+ > End keszlet
+ > End helye
+ > End aru
+ > End raktar
+----- End
+\end{Verbatim}
+
+\noindent Tal\'an sokan meglep\H{o}dnem, hogy az els\H{o} megtal\'alt elem nem az, amelyik a 
+bemenetben el\H{o}sz\"or van, de ez teljesen \'erthet\H{o}. A k\'od el\H{o}sz\"or a lez\'ar\'okat 
+keresi, \'es val\'oban el\H{o}sz\"or a {\tt leiras} v\'eg\'et olvassa be. Azt, hogy \'eppen melyik 
+elemet dolgozzuk fel, a ciklus az {\tt element} v\'alto\'oba teszi, az esem\'eny jelleg\'et pedig 
+az {\tt event} nev\H{u}be. A fenti lista alapj\'an l\'atjuk, a kezdetek nem is sz\'am\'{\i}tanak 
+egyel\H{o}re. A k\"ovetkez\H{o} l\'ep\'esben pr\'ob\'aljuk meg az XML elembe csomagolt adatot 
+kinyerni, ehhez a fenti k\'odot csak egy kicsit kell m\'odos\'{\i}tani:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+import xml.etree.ElementTree as ET
+
+if __name__ == "__main__":
+    fileName = "proba.xml"
+    print('----- Start')
+ 
+    for event, element in ET.iterparse(fileName):
+        if event == "end":
+            print (' > End %s'%element.tag)
+            if element.text != None and element.text.strip() != '':
+                print ('-------->' + element.text.strip())
+        if event == "start":
+            print (' < Start %s'%element.tag)
+        element.clear()
+
+    print('----- End')    
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Az {\tt element.text} mez\H{o}be ker\"ul a k\'erd\'eses adat, teh\'at l\'atjuk, hogy az 
+{\tt element} tulajdonk\'eppen egy {\bf objektum}, a tov\'abbiakban \'{\i}gy is fogjuk kezelni. A 
+kiirat\'asban ugyanakkor van egy \'erdekess\'eg, ez adat ugyanis sz\"oveges, viszont az XML szabv\'any 
+lehet\H{o}v\'e teszi, hogy egy elem adatr\'esz\'eben ak\'ar t\"obb sz\'ok\"os legyen, illetve ak\'ar 
+t\"obb sorra is el lehet osztva. Ez\'ert van sz\"uks\'eg arra, hogy a karakterl\'ancokra \'ertelmezett 
+{\tt strip} met\'odussal a bevezet\H{o} \'es z\'ar\'o t\'erkit\"olt\H{o }karaktereket elt\'avol\'{\i}tsuk. 
+A kimenet:
+
+\begin{Verbatim}[fontsize=\small]
+----- Start
+ > End leiras
+-------->spiral
+ > End gondola
+-------->A
+ > End polc
+-------->3
+ > End keszlet
+-------->55
+ > End helye
+ > End aru
+ > End raktar
+----- End
+----- End
+\end{Verbatim}
+
+\noindent A kimenet alapj\'an l\'atszik, hogy a kiirat\'asn\'al nem csak azt kell ellen\H{o}rizni, 
+hanem azt is, hogy a felesleges karakterek elt\'avol\'{\i}t\'asa ut\'an marad-e egy\'altal\'an 
+valami. Ez megint csak az XML form\'atumok szabad form\'atuma miatt sz\"uks\'eges. A k\"ovetk\'ez\H{o} 
+probl\'em\'ank az lesz, hogy is tudjuk az XML elem kapcsol\'oinak list\'aj\'at kiolvasni:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+import xml.etree.ElementTree as ET
+
+if __name__ == "__main__":
+    fileName = "proba.xml"
+    print('----- Start')
+
+    for event, element in ET.iterparse(fileName):
+        if event == "end":
+            print (' > End %s'%element.tag)
+            if len(element.attrib) != 0:
+                print(element.attrib)
+        if event == "start":
+            print (' < Start %s'%element.tag)
+
+        element.clear()
+    print('----- End')    
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Gondoljuk, hogy a bementi adatok tanulm\'anyoz\'asa alapj\'an minden olvas\'onknak 
+vil\'agos, hogy a kapcsol\'ok alapj\'an egy Python sz\'ot\'arat lehet l\'etrehozni, amelyben 
+t\'enyleges akkor vannak adatok, ha l\'eteznek ilyen kapcsol\'ok az adott XML elemben. Ez\'ert 
+kell a k\'odban a sz\'ot\'ar  m\'eret\'ere sz\H{u}rni. Itt a kimenet:
+
+\begin{Verbatim}[fontsize=\small]
+----- Start
+ > End leiras
+{'meret': 'A4'}
+ > End gondola
+ > End polc
+{'oldal': 'bal'}
+ > End keszlet
+{'igeny': 'nagy', 'rendeles': 'visszaigazolva'}
+ > End helye
+ > End aru
+{'tipus': 'fuzet'}
+ > End raktar
+----- End
+\end{Verbatim}
+
+\noindent A kiemeneten l\'atszik, hogy val\'oban siker\"ult kiszedni a kapcsol\'okat, \'es a 
+sz\'ot\'arakon bel\"uli sorrend pontosan megegyezik a bemeneti adatsorral. 
+
+Az eddigiekben megn\'ezt\"uk, hogyan kell egy egyszer\H{u} XML bemenet adatait kiemelni, most 
+viszont meg szeretn\'enk mutatni, hogy a m\'odszerek egy kicsit hosszab adatsor eset\'en is 
+m\H{u}k\"odnek. El\H{o}sz\"or b\H{o}v\'{\i}ts\"uk ``rakt\'arunkat'' m\'eg egy t\'etellel:
+
+\begin{Verbatim}[fontsize=\small]
+<?xml version="1.0" encoding="UTF-8"?>
+<!--proba2.xml-->
+<raktar>
+   <aru tipus = "fuzet">
+      <leiras meret = "A4">spiral</leiras>
+      <helye>
+	 <gondola>A</gondola>
+	 <polc oldal = "bal">3</polc>
+	 <keszlet igeny = "nagy" rendeles = "visszaigazolva">
+	    55
+	 </keszlet>
+      </helye>
+   </aru>
+   <aru tipus = "notesz">
+      <leiras meret = "S">gyurus</leiras>
+      <helye>
+	 <gondola>A</gondola>
+	 <polc oldal = "jobb">2</polc>
+	 <keszlet igeny = "kicsi" rendeles = "nincs">
+	    5
+	 </keszlet>
+      </helye>
+   </aru>
+</raktar>
+\end{Verbatim}
+
+\noindent K\"ul\"on\"sebb magyar\'azat \'es sz\'oszapor\'{\i}t\'as n\'elk\"ul le fogjuk erre a 
+bemenetre futtatni a k\'et utols\'o szkript\"unket, b\'ar a teljes programk\'odot m\'eg egyszer 
+mell\'ekelj\"k. Az els\H{o}:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+import xml.etree.ElementTree as ET
+
+if __name__ == "__main__":
+    fileName = "proba2.xml"
+    print('----- Start')
+    for event, element in ET.iterparse(fileName):
+        if event == "end":
+            print (' > End %s'%element.tag)
+            if element.text != None and element.text.strip() != '':
+                print ('-------->' + element.text.strip())
+        if event == "start":
+            print (' < Start %s'%element.tag)
+        element.clear()
+    print('----- End')    
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent amelynek eredm\'enye:
+
+\begin{Verbatim}[fontsize=\small]
+----- Start
+ > End leiras
+-------->spiral
+ > End gondola
+-------->A
+ > End polc
+-------->3
+ > End keszlet
+-------->55
+ > End helye
+ > End aru
+ > End leiras
+-------->gyurus
+ > End gondola
+-------->A
+ > End polc
+-------->2
+ > End keszlet
+-------->5
+ > End helye
+ > End aru
+ > End raktar
+----- End
+\end{Verbatim}
+
+\noindent Most l\'assuk a m\'asikat:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+import xml.etree.ElementTree as ET
+
+if __name__ == "__main__":
+    fileName = "proba2.xml"
+    print('----- Start')
+    for event, element in ET.iterparse(fileName):
+        if event == "end":
+            print (' > End %s'%element.tag)
+            if len(element.attrib) != 0:
+                print(element.attrib)
+        if event == "start":
+            print (' < Start %s'%element.tag)
+        element.clear()
+    print('----- End')    
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent A futtat\'as ut\'an:
+
+\begin{Verbatim}[fontsize=\small]
+----- Start
+ > End leiras
+{'meret': 'A4'}
+ > End gondola
+ > End polc
+{'oldal': 'bal'}
+ > End keszlet
+{'igeny': 'nagy', 'rendeles': 'visszaigazolva'}
+ > End helye
+ > End aru
+{'tipus': 'fuzet'}
+ > End leiras
+{'meret': 'S'}
+ > End gondola
+ > End polc
+{'oldal': 'jobb'}
+ > End keszlet
+{'igeny': 'kicsi', 'rendeles': 'nincs'}
+ > End helye
+ > End aru
+{'tipus': 'notesz'}
+ > End raktar
+----- End
+\end{Verbatim}
+
+\noindent A fentiek alapj\'an teh\'at l\'atjuk, hogyan is tudunk egy XML \'allom\'anyb\'ol adataokat
+``kib\'any\'aszni'', de ez csak a feldolgoz\'as technikai r\'esze. A t\'enyleges \'erdemi munka 
+csak most kezd\H{o}dik, meg kell tetrvezni, hogy a kiszedett adatokkal mit is tudunk, vagy mit is kell 
+csin\'alni. Ez esetr\H{o}l-esetre m\'as lesz.
+
+\section{Oszt\'alyokr\'ol \'es objektumokr\'ol kiss\'e m\'elyeben}
+
+Az el\H{o}z\H{o} f\"uzetben megimserkedt\"unk az oszt\'alyok l\'etreho\'as\'anak \'es 
+p\'eld\'anyo\-s\'{\i}\-t\'a\-s\'a\-nak m\'odj\'aval, \'es egyszer\H{u} esetekben az 
+haszn\'alatukat is megmutattuk a programoz\'as sor\'an. Ez a t\'emak\"or ugyanakkor nagyon 
+fontos, hiszen egyr\'eszt a Python nagy n\'epszer\H{u}s\'eg\'enek egyik oka, m\'asr\'eszt 
+viszont a futtat\'as sor\'an minden v\'altoz\'o objektumk\'ent kezel\H{o}dik. Ez\'ert most 
+\'ujra foglalkozunk ezzel a t\'am\'aval, imm\'aron egy kicsit b\H{o}v\'{\i}tj\"uk az ismereteinket. 
+
+\subsection{N\'eh\'any tov\'abbi sz\'o a destrutorokr\'ol}
+\index{destruktor} \label{destruktor}
+
+A kor\'abbi f\"uzet\"unkben m\'ar eml\'{\i}tett\"uk, hogy vannak olyan esetek, amikor az oszt\'aly 
+nem t\"or\"olhet\H{o} ki egyszer\H{u}en. Ilyenkor van sz\"uks\'eg arra, hogy destruktort is \'{\i}rjunk. 
+Technikailag, \'es a k\'odol\'as szmpontj\'ab\'ol ugyanakkor nem \'art az \'ovatoss\'ag, \'es a 
+r\'eszletekre is oda kell figyelni. L\'enyeg\'eben az oszt\'alyt k\'et esetben semmis\'{\i}ti meg 
+a Python futtat\'o rendszer:
+
+\begin{itemize}
+\item{- a program v\'egrehajt\'as\'anak v\'egen,}
+\item{- az oszt\'alyp\'eld\'any sz\'and\'ekos t\"orl\'ese eset\'en.}
+\end{itemize}
+
+\noindent A k\'et eset sajnos nem teljesen ugyan\'ugy m\H{u}k\"odik, csak hogy az \'elet\"unk ne 
+legyen olyan egyszer\H{u}. A m\'asodik esetben csak annyi t\"ort\'enik, hogy az adott v\'altoz\'o 
+megsz\H{u}nik a t\'arban, de a kor\'abban l\'etrej\"ott programk\"ornyezet megmarad. A destruktor 
+teh\'at teljesen szab\'alyosan, a k\'odnak megfelel\H{o}en fut le. Az els\H{o} esetben azonban 
+m\'as a helyzet, mert a teljes programk\"ornyezetet megsz\"unteti a Python futtat\'orendszer, 
+ami \'erint sok fontos elemet is. Nem sz\'am\'{\i}thatunk p\'eld\'aul arra, hogy az import\'alt 
+modulok m\'eg a rendelkez\'es\"unkre \'allnak, de m\'eg a rendszer be\'ep\'{\i}tett f\"ugg\'enyei 
+sem biztos, hogy haszn\'alhat\'ok. Ez k\"un\"osen akkor okozhat komolyabb probl\'em\'at p\'eld\'aul, 
+az oszt\'aly bels\'ejeben egy \'allom\'any van. L\'assunk erre egy r\"ovid p\'eld\'et (egy kor\'abbi 
+napl\'oz\'o oszt\'aly destruktora): 
+
+\begin{Verbatim}[fontsize=\small]
+    def __del__(self):
+        if self.sor != 0:
+            if self.start:
+                trc = open(self.logNev,self.startMode)
+            else:
+                trc = open(self.logNev,self.mode)
+            for idx in range(self.sor):
+                trc.write(self.puffer[idx])
+            trc.close()
+\end{Verbatim}
+
+\noindent Abban az esetben, ha nem a programoz\'o t\"orli ki a megfelel\H{o} oszt\'aly p\'eld\'any\'at, 
+hanem a szkript v\'ege miatt ker\"ul megsemmis\'{\i}t\'esre, akkor sok esetben kaphatunk 
+hiba\"uzenetet (kiv\'etelt), mert az {\tt open} f\"uggv\'enyt a futtat\'orendszer m\'ar nem 
+tal\'alja meg. 
+
+\index{szem\'etgy\H{u}jt\'es} Nem tartozik ugyan teljes m\'ert\'ekben ide, de sz\"uks\'egesnek 
+tartjuk, hogy az adatok t\"orl\'es\'er\H{o}l ebben a r\'eszben b\H{o}vebben is besz\'elj\"unk. 
+M\'as programoz\'asi nyelvekhez hasonl\'oan a Python sem t\"orli ki azonnal a v\'altoz\'okat 
+\'es azok tartalm\'att abban a pillanatban, amikor feleslegess\'e v\'alnak. A r\"ovidt\'av\'u 
+hat\'ekonys\'ag \'erdek\'eben csak megjelel\"olli a megfelel\H{o} mem\'oriater\"uletet 
+haszn\'a\-lat\-lan\-nak. Amikor m\'ar t\'uls\'agosan sok ilyen megjelel\"olt ter\"ulet van, 
+akkor az eg\'eszet egyszerre elkezdi t\"or\"olni, \'es visszahelyezni az \'ujrahaszn\'alhat\'o 
+ter\"uletek k\"oz\'e. Ez a mechanizmus ugyan megszabad\'{\i}tja a programoz\'okat a t\'enyleges 
+t\"orl\'es \'es felszabad\'{\i}t\'as terh\'et\H{o}l, ugyanakkor egy bonyolultabb program 
+eset\'en megn\"oveli a sz\"uks\'eges mem\'oria nagys\'ag\'at. Szerint\"unk felesleges 
+eml\'{\i}teni, hogy a haszn\'alatot k\"ovet\H{o} t\'arol\'ohely-k\"onyvel\'es is valamennyire 
+lass\'{\i}tja a szkript fut\'as\'at. A Python programoz\'asi nyelvben van egy modul, ami ennek a 
+szem\'et\-gy\H{u}j\-t\H{o} elj\'ar\'asnak a hangol\'as\'at a programoz\'o kez\'ebe adja, de 
+bonyolults\'aga \'es ve\-sz\'e\-lyes\-s\'e\-ge miatt nem foglalkozunk vele.
+
+\subsection{Az objektum, mint rekord}
+\index{rekord} \index{mez\H{o}}
+
+A {\sl rekord} alatt a programoz\'ok adatok szorosan \"oszetartoz\'o, egy egys\'eget le\'{\i}r\'o 
+halmaz\'at \'ertik. Szeml\'eletesen egy t\'abl\'azat egz sor\'at. A rekord r\'eszeit, a benne 
+l\'ev\H{o} adatokat {\sl mez\H{o}nek} nevezz\"uk, ahogyan azt az oszt\'alyok eset\'eben m\'ar 
+kor\'abban is l\'attuk. Aki a kor\'abbiakat tudja, \'es m\'ar a gyakorlatban is haszn\'alta egy 
+kicsit, az \'ujdons\'agot a nyelvi elemekkel kapcsolatban nem fog ebben a r\'eszben tal\'alni. 
+A szeml\'elete viszont m\'as lesz, mit az eddigi.
+
+Ha az objektumokat rekordk\'ent, vagyis els\H{o}sorban {\bf adatok} t\'arol\'as\'ara akarjuk 
+haszn\'alni, akkor az teljesen elt\'er a szok\'assos OOP \index{OOP} megk\"ozel\'{\i}t\'est\H{o}l. 
+Abban ugyanis az oszt\'alyok akt\'{\i}v elemek, nem csup\'an t\'arol\'ok, vagyis a saj\'at 
+adataikkal kapcsolatban sok tev\'ekenys\'eget elv\'egeznek. N\'ezz\"uk meg t\'abl\'azatban is, hogy a 
+haszn\'alatuk sor\'an milyen elt\'er\'esekre kell odafigyelni:
+
+\begin{center}
+    \begin{tabular}{ | l | p{9cm} |}
+    \hline
+    {\bf T\'{\i}pus} & {\bf Megjegy\'es} \\ \hline
+      Objektum & Van konstruktora, \'es lehet destruktora is.\\ \hline
+      Rekord & Konstruktort lehet defini\'alni. \\ \hline
+      Objektum & Garant\'alja a mez\H{o}k adatainak bels\H{o} helyess\'eg\'et minden pillanatban.\\ \hline
+      Rekord & A mez\H{o}k tartalm\'at egy\'altal\'an nem ellen\H{o}rzi. \\ \hline
+      Objektum & Lehet \"or\"okl\'es sor\'an alkalmazni, t\'arolhat m\'as objektumokat.\\ \hline
+      Rekord &  Nem \"or\"ok\"olhet\H{o}, csak egyszer\H{u} adatokat t\'arol. \\ \hline    
+    \end{tabular}
+\end{center}
+
+\noindent Ahogyan a fenti felsorol\'asb\'ol l\'atjuk, gyakorlatilag a fenti alapelveket nek\"unk, 
+programoz\'oknak, kell betartani. Maga a proramoz\'asi nyelv nem k\'enyszer\'{\i}t ki semmit sem. Most 
+az egyszer\H{u}s\'eg kedv\'e\'ert n\'ezz\"unk meg egy egyszer\H{u} p\'eld\'at:
+
+TESzt
+
+\begin{Verbatim}[fontsize=\small]
+class Tortszam:
+
+   self.szamlalo = 0
+   self.nevezo = 0
+
+szam = Tortszam()
+szam.szamlalo = 2
+szam.nevezo = 21
+\end{Verbatim}
+
+\noindent A fenti k\'odr\'eszlet nem tatalmaz tulajdonk\'eppen semmi \'ujdons\'agot, nagyon 
+hasonl\'{\i}t ahhoz, amit az el\H{o}z\H{o} f\"uzetben bemutattunk. Most azonban fontosnak 
+tartottuk, hogy ism\'etl\'esk\'ent felid\'ezz\"uk. Eml\'{\i}tett\"uk m\'ar t\"obbsz\"or 
+azt a t\'enyt, hogy a Python nem szigor\'uan t\'{\i}pusos nyelv, sokszor kell erre 
+k\"ul\"on\"osen \"ugyelni, de az objektumok eset\'eben, ha rekordk\'ent alkalmazzuk, akkor 
+ez az \'atlagosn\'al is nagyobb k\"or\"ultekint\'est ig\'enyel. Ilyenkor lehet konstruktort 
+ig\'enybevenni:
+
+TESzt
+
+\begin{Verbatim}[fontsize=\small]
+class Tortszam:
+
+   def __init__(self, pSzamlalo, pNevezo):
+      self.szamlalo = pSzamlalo
+      self.nevezo = pNevezo
+
+szam = Tortszam(2,21)
+
+\end{Verbatim}
+
+\noindent A fenti p\'elda alapj\'an kimondhatjuk, hogy ezzel a m\'odszerrel az\'ert egy 
+minim\'alis ellen\H{o}rz\'est a rekordok kezel\'es\'en\'el be tudunk vezeni. Ne feledj\"uk el, 
+ha komolyabb ig\'esny is felmer\"ulne, akkor haszn\'aljuk igazi {\bf objektumot}, vagyis 
+{\bf oszt\'alyt.}
+
+\subsection{Pillant\'as az oszt\'alyok belsej\'ebe}
+
+Az els\H{o} f\"uzetben megismert\"uk a konstruktor met\'odust, amelyik minden egyes l\'etrehozott 
+p\'eld\'anyban bel\'all\'{\i}tja a mez\H{o}k (attrib\'utumok) \'ert\'ek\'et. Ezek az \'ert\'ekek 
+m\'asok \'es m\'asok is lehetnek, a p\'eld\'anyhoz (objektum) tartoznak, ez\'ert {\sl obejtummez\H{o}nek} 
+\index{objektmummez\H{o}} nevezhetj\"uk \H{o}ket. Friss\'{\i}ts\"uk fel eml\'ekeinket egy egyszer\H{u} 
+p\'eld\'aval:
+
+\begin{Verbatim}[fontsize=\small]
+class Pont:
+
+   def __init__(self, pX, pY):
+      self.pozX = pX
+      self.pozY = pY
+\end{Verbatim}
+
+\noindent Gondoljuk, hogy olvas\'oink sz\'am\'ara ehhez magyar\'azatot m\'ar nem kell f\H{u}zn\"unk. 
+Most viszont b\H{o}v\'{\i}ts\"uk a fenti k\'odot egy kicsit:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+# pont.py
+
+class Pont:
+
+    tipus = 'Pont'
+
+    def __init__(self, pX, pY):
+        self.pozX = pX
+        self.pozY = pY
+
+    def __str__(self):
+        str = 'Tipus = ' + self.tipus + '\n x = ' 
+        str = str + '%f'%self.pozX + ', y = ' + '%f'%self.pozY
+        return(str)
+
+a = Pont(1,2)
+print(a)
+
+b = Pont(2.3,6)
+print(b)
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Az \'ujdons\'ag, hogy van benne egy mez\H{o}, amit a konstruktoron k\'{\i}v\"ul \'all\'{\i}tunk 
+be, \'es nem tartalmazza a {\tt self} hivatkoz\'ast. Ha a k\'odot lefuttatjuk, akkor az eredm\'eny:
+
+\begin{Verbatim}[fontsize=\small]
+python pont.py
+Tipus = Pont
+ x = 1.000000, y = 2.000000
+Tipus = Pont
+ x = 2.300000, y = 6.000000
+\end{Verbatim}
+
+\noindent J\'ol l\'atszik, hogy a {\tt tipus} nev\H{u} mez\H{o} nem v\'altozik p\'eld\'anyr\'ol 
+p\'eld\'anyra, (hiszen nem a p\'eld\'anyos\'{\i}t\'as sor\'an adtunk neki \'ert\'eket), hanem 
+az oszt\'alyhoz mag\'ahoz tartozik. Ez\'ert ezeket az attrib\'utumokat {\sl oszt\'aly-attributumnak}
+\index{oszt\'aly=attrib\'utum} nevezz\"uk.
+
+Oszt\'alyokkal kapcsolatos minden eddigi p\'eld\'an l\'athattuk, hogy a Python objektumok 
+minden r\'esze korl\'atoz\'as n\'elk\"ul l\'athat\'o \'es el\'erhet\H{o}\footnote{Ebben 
+jelent\H{o}sen a Python elt\'er a legt\"obb m\'asik OOP nyeltvt\H{o}l.}. A programoz\'as sor\'an 
+a leghasznosabb, hogy az objektumok bizonyos fokig tudj\'ak biztos\'{\i}tani az benn\"uk 
+t\'arolt adatok egym\'ashoz illeszked\H{o}s\'eg\'et, bels\H{o} logikuss\'ag\'at. De ezt 
+csak abban az esetben, ha elker\"ulj\"uk az adatok k\"ozvetlen turk\'al\'as\'at, nem \'ugy, 
+mint az el\H{o}z\H{o} r\'eszben le\'{\i}rt rekordok eset\'eben. Ez m\'as sz\'oval azt jelenti, 
+hogy a k\'odol\'as k\"ozben fegyelmezettnek kell lenn\"unk betartani n\'eh\'any az al\'abbihoz 
+hasonl\'o szab\'alyt:
+
+\begin{itemize}
+   \item{az oszt\'aly adatait nem m\'odos\'{\i}tjuk k\"ozvetlen\"ul, csak erre k\"ul\"on meg\'{\i}rt 
+      met\'odusokkal}
+   \item{m\'ar a konstruktor s gondoskodjon arr\'ol, hogy a be\'all\'{\i}tott adatok logikusak \'es 
+      eg\"utt helyesek legyenek}
+   \item{ van olyan met\'odus, amelyet nem akarunk k\'{\i}v\"ulr\H{o}l megh\'{\i}vni, akkor annak a 
+      neve kezd\H{o}dj\"on k\'et al\'ah\'uz\'as karakterrel}   
+\end{itemize}
+
+\noindent Ezek betart\'asa nem csak a k\'od olvashat\'os\'ag\'at jav\'{\i}tja, hanem a fentiek 
+\'ertel\-m\'e\-ben program stabilit\'as\'at is. A bels\H{o}, "priv\'at" met\'odusok nem is kell 
+\"on\'all\'o {\tt pydoc} dokument\'aci\'oval ell\'atni. Azt gondoljuk, hogy ezeket az elveket nem 
+fogjuk p\'elda k\'odokon bemutatni, hiszen az el\H{o}z\H{o} f\"uzetben, \'es ebben szerepl\H{o} 
+progromjainkban ezt a st\'{\i}lust igyekezt\"uk a legt\"obb eseetben alkalmazni. 
+
+-- K\"ozvetlen maniul\'aci\'o
+
+A Python programoz\'asi nylev ugyanakkor a rendelkez\'es\"unkre bocs\'ajt olyan f\"uggv\'enyeket, 
+amelyekkel ak\'ar k\"ozvetlen\"ul bele is ny\'ulhatunk az ojektumok belsej\'ebe. A k\"ozvetlen\"ul 
+ezel\H{o}tt kifejtetett gondolatmenet alapj\'an tudjuk, hogy ezt az\'ert nem szerencs\'es megtenni, 
+mert rendk\'{\i}v\"l nehezen megtal\'alhat\'o hib\'ak forr\'asa lehet. {\bf Az k\"ovetkez\H{o} p\'eld\'at 
+csak az ismeretek teljess\'ege kedv\'e\'ert adjuk meg, ne alkalmazzuk fontos programokn\'al, csak akkor, 
+ha m\'as m\'ar v\'egk\'eppen nem m\H{u}k\"odik. A szok\'asosn\'al is alaposabban tesztelj\"uk le, \'es 
+m\'eg \'ugy is k\'esz\"ulj\"unk v\'aratlan \'es meglep\H{o} hib\'akra.} Most l\'assuk a k\'odot:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+# pont2.py
+
+class Pont:
+
+    tipus = 'Pont'
+
+    def __init__(self, pX, pY):
+        self.pozX = pX
+        self.pozY = pY
+
+    def __str__(self):
+        str = 'Tipus = ' + self.tipus + '\n x = ' 
+        str = str + '%f'%self.pozX + ', y = ' + '%f'%self.pozY
+        return(str)
+
+a = Pont(3,2)
+print(a)
+t = getattr(a,'pozX')
+print(t)
+str = hasattr(a,'pozX')
+print(str)
+setattr(a, 'pozY', 11.2)
+print(a)
+delattr(a,'pozX')
+str = hasattr(a,'pozX')
+print(str)
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent A programk\'od eleje, vagyis a l\'erehozott oszt\'aly, teljesen megyegyezik a kor\'abbi\-val, 
+a p\'eld\'anyos\'{\i}t\'as ut\'an kiiratjuk az aktu\'alis \'allapot\'at. A {\tt getattr} f\"uggv\'eny 
+seg\'{\i}ts\'eg\'evel az adott obektum adott nev\H{u} argumentum\'at tudjuk k\"ozvetlen\"ul lek\'erdezni. 
+Egy mez\H{o} l\'et\'nek ellen\H{o}r\'es\'ere a {\tt hasattr} f\"uggv\'eny haszn\'alhat\'o. A mez\H{o} 
+\'ert\'ek\'et a {\tt setattr} f\"uggv\'eny v\'altoztatja meg, mind a h\'aromn\'al az attrib\'utum nev\'et 
+aposztr\'ofok k\"oz\"ott kell megadni. Az utols\'o bemutatott \'erdekess\'eg a {\tt delattr}, amelynek 
+seg\'{\i}ts\'eg\'el az objektum valamleyik mez\H{o}je t\"or\"olhet\H{o}, de oszt\'aly-attrib\'utum 
+megad\'asa eset\'en enn\'el hiba\"uzenetet kapunk, hiszen az nem a p\'eld\'anyhoz kapcsol\'odik, 
+amint azt m\'ar kor\'abban is \'{\i}rtuk. L\'assuk a futtat\'as eredm\'eny\'et:
+
+\begin{Verbatim}[fontsize=\small]
+python pont2.py
+Tipus = Pont
+ x = 3.000000, y = 2.000000
+3
+True
+Tipus = Pont
+ x = 3.000000, y = 11.200000
+False
+\end{Verbatim}
+
+\noindent A {\tt hasattr} visszat\'er\'esi \'ert\'eke logikai, ahogyan azt a kimenetben is l\'atjuk.
+
+\section{Parancssor feldolgoz\'asa}
+
+B\'ar az ut\'obbi k\'et \'evtizedben egyre elterjedtebbek a grafikus k\"ornyezerben fut\'o 
+programok, eddigi p\'eld\'ainkat minden esetben parancssori k\"ornyezetben futtattuk. Sokan 
+tartj\'ak ezt elavultnak, de egy feladat gyors megold\'as\'ahoz m\'egiscsak ez bizonyul a 
+leghasznosabb eszk\"oznek. Ennek a t\'em\'anak sem fogunk, a kor\'abbiakhoz hasonl\'oan, a 
+m\'elys\'eg\'eig eljutni, de elegend\H{o} \'utraval\'ot szeretn\'enk adni ahhoz, hogy az 
+olvas\'oink maguk is tudjanak tov\'abbl\'epni.
+
+N\'emi tov\'abbi indokl\'as, hogy mi\'ert is tartottuyk fontosnak a t\'emak\"ort egy\'altal\'an 
+\'erinteni. A tapasztalatok szerint ak\'armennyirre is alaposan gondoljuk \'at \'es tervezz\"uk 
+meg a programokat, nem lehet minden elk\'epzelhet\H{o} be\'all\'{\i}t\'ast el\H{o}re bek\'odolni. 
+Term\'eszetesen a rendelkez\'es\"unkra \'all az adatok p\'arbesz\'edes bead\'asa, de ez sem 
+t\"ok\'elet megold\'as. Ilyenkor j\"ohetnek j\'ol a parancssori kapcsol\'ok.
+
+\subsection{A Python saj\'at parancsora}
+
+Az eddigiek alapj\'an nem meglep\H{o}, hogy maga a Python \'ertelmey\H{o} is haszn\'al 
+parancsori kapcsol\'okat. Ebbe most nem vessz\"uk bele a futtatand\'o Python programot tartalmaz\'o 
+nev\'et \'allom\'any nev\'et, amit index\'{\i}t\'askor meg kell adnunk. (M\'ar eddig is haszn\'altunk egyet, 
+amikor a tesztel\'es sor\'an bakpocsoltk a b\H{o}vebb kimenetet.) Most csak n\'eh\'anyat fogunk ismertetni, 
+hiszen a legt\"obb olyan k\"ul\"onleges m\H{u}k\"od\'est kapcsol be, amelyre szerint\"unk \'altal\'aban 
+nincsen sz\"uks\'eg. Kezdj\"uk is el az elej\'en:
+
+\begin{Verbatim}[fontsize=\small]
+python -h
+\end{Verbatim}
+
+\noindent Kor\'abban, a grafikus k\"ornyezet elterjed\'ese el\H{o}tt a {\tt -h} kapcsol\'o 
+hat\'as\'ara a programok t\'aj\'rkoztat\'o sz\"oveget ({\it help}) \'{\i}rtak ki, most sem 
+t\"ort\'enik m\'as. Ha nem vagyunk annyira luts\'ak, akkor haszn\'alhatjuk a {\tt --help} 
+alakot is. De n\'ezz\"uk a k\"ovetkez\H{o}t:
+
+\begin{Verbatim}[fontsize=\small]
+python -V
+\end{Verbatim}
+
+\noindent Ennek hat\'as\'ara az \'altalunk haszn\'alt Python verzi\'oja jelenik meg a k\'eperny\H{o}n.
+
+Van olyan parancssori elem is, amelyik 
+
+\subsection{A szkript parancssora}
+
+Az el\H{o}z\H{o} alfejezetben megismert\"uk a Python n\'eh\'any parancssori kapcsol\'oj\'at, most viszont 
+a futatott szkript szempontj\'ab\'ol fogjuk megn\'ezni, hogyan is kell azokat feldolgozni. Mindenekel\H{o}tt 
+import\'alni kell a {\tt sys} modult. Abban egy v\'altoz\'oban a futtat\'o rendszer bet\\"olti automatikusan 
+a oarancssor argumentumokat:
+
+\begin{Verbatim}[fontsize=\small]
+# proba.py 
+import sys
+
+lista = sys.argv
+\end{Verbatim}
+
+\noindent A fenti k\'odr\'eszlet hat\'as\'ara a {\tt lista} nev\H{u} t\"ombbe minden v\'altoztat\'as n\'elk\"ul 
+beker\"ulnek a futtat\'as sor\'an beadott param\'eterek. A legels\H{o} elem minden esetben maga a szkript neve, 
+vagyis a jelen esetben a "proba.py". A t\"omb t\"obbi eleme a t\'enylegesen beadott  argumentumokat tartalmazza. 
+Ezek feldolgoz\'asa teh\'at a szok\'asos m\'odon mehet. 
+
+M\'eg a grafikus felhaszn\'al\'oi k\"ornyezetek nagy ar\'any\'u elterjed\'ese el\H{o}tt volt a parancsosri 
+argumentumok haszn\'alat\'ara egy gyakorlatban szabv\'anynak sz\'a\-m\'{\i}\-t\'o alapelv, ezt fogjuk most 
+nagyon r\"oviden ismertetni. Alapvet\H{o}en az argumentumoknak k\'etfg\'ele t\'{\i}pusa van: a {\sl kapcsol\'ok} 
+\'es a f\'ajlnevek, de term\'eszetesen ez nem ennyire v\'alik \'elesen sz\'et. Vagyis lehetnek olyan kapcsol\'ok 
+is, amelyek ut\'an k\"ozvetlen\"ul valamilyen \'allom\'anyn\'ev kell. N\'eh\'any tipikus mint\'at az 
+al\'abbi t\'abl\'azatban bemutatunk. Term\'eszetesen nem lehet m\'eg az alapelvek seg\'{\i}ts\'eg\'evel sem 
+v\'egleges megold\'asokat tal\'alni, de \'utmutat\'onak hasznosnak tartjuk:
+
+\begin{tabular}{lll}
+   {\bf R\"ovid alak} & {\bf Hossz\'u alak} & {\bf Jelent\'es}\\
+   -h & --help & R\"ovid seg\'{\i}t\H{o} t\'aj\'akoztat\'as (help).\\
+   -d & --debug & Hibakeres\H{o} \"uzemm\'od.\\
+   -o & --output & Kimeneti \'allom\'any neve.\\
+   -l & --log & Napl\'o (log) f\'ajl neve.\\
+\end {tabular}
+
+\noindent A fenti t\'abbl\'azatban alapvet\H{o}en kapcsol\'okat tartalmaz, de az\'ert akad k\"uzt\"uk, amelyik 
+ut\'an \'allom\'anyneveket kell bedni. P\'eld\'aul a k\'et utols\'o ilyen. Most n\'ezz\"uk meg azt a k\'erd\'est, 
+hogy milyen sorrendben kell beadni ezeket ay argumentumok. A r\'egi programoz\'o gyakorlat szerint:
+
+\begin{Verbatim}[fontsize=\small]
+python program.py <kapcsolok> file1 file2 file3
+\end{Verbatim}
+
+\noindent A fenti p\'elda alapj\'an l\'attuk, hogy egy parancssorban ak\'ar t\"obb \'allom\'anyt is fel tudunk 
+dolgoztatni.
+
+Ha meg akarjuk engedni, ahogy a kapcsol\'okat egym\'ashoz k\'epest tetsz\H{o}leges sorrendben szerepelhessenek, 
+akkor az argumentumok list\'aj\'at el\'egg\'e bonyolult m\'odon tudjuk csak feldolgozni. Szerencs\'ere a Python 
+programoz\'asi nyelvben van lehet\H{o}s\'eg, hogy ezt egy szabv\'anyos f\"uggv\'enyh\'{\i}v\'assal ezt a k\'erd\'est 
+\index{getopt} k\"onnyed\'en meg tudjuk oldani. Elegend\H{o} import\'alni a {\tt getopt} modult ehhez. Ez a 
+modul tartalmaz egy azonos nev\H{u} f\"uggv\'enyt, amely fel tudja dolgozni mind az kapcsol\'ok r\"ovid, mind 
+pedig a hossz\'u alakj\'at, valamint a f\'ajlnevek list\'aj\'at. Elegend\H{o} ehhez \'atadni a parancssori 
+argumentumokat \'atadni a szkript nev\'et lesz\'am\'{\i}tva. 
+
+\begin{Verbatim}[fontsize=\small]
+import getopt
+list = '-d -b -lfoo.trc bar a1 a2'.split()
+
+optlist, args = getopt.getopt(list, 'dbl:')
+\end{Verbatim}
+
+\noindent A fenti p\'elda el\H{o}sz\"or a r\"vid alakok haszn\'alat\'at mutatja be, a k\"onnyebb 
+meg\'ert\'es kedv\'e\'ert kezdj\"uk al\H{o}sz\"or a kimenenetekkel.A k\'et visszadatott \'ert\'ek 
+k\"oz\"ul a m\'asodik f\'ajln\'ev list\'at tartalmazza, ez a jelen esetben ['bar', 'a1', 'a2']. 
+Az els\H{o} viszont a kapcsol\'okat tartalmaz\'o sz\'ot\'ar, amely tartalma: [('-d', ''), ('-b', ''), 
+('-l', 'foo.trc')]. A keresend\H{o} argumentumokat a h\'{\i}v\'as sor\'an adjuk meg, ez a m\'asodik 
+param\'etere a f\"uggv\'enynek. A 'd' \'es 'b' bet\\H{u} azt jelzi, hogy az csak egy egyszer\H{u} 
+kapcsol\'o, vagyis be\'all\'{\i}t\'asa eset\'en {\tt True}, egy\'ebk\'ent {\tt False}. Az 'l' ut\'ani 
+kett\H{o}spont azt jellenti, hogy az tov\'abbi \'allom\'anynevet k\'er, ez most a 'foo.trc'.  
+
+A {\tt getopt} h\'{\i}v\'as sor\'an teljesen mindegy, hogy a kapcsol\'okat milyen sorrendben soroljuk 
+fel a parancssorban, de az is tejesen mindegy, hogy f\"uggv\'eny m\'asodik param\'eterben a bet\H{u}ket 
+milyen sorrendben adjuk be. Most n\'ezz\"uk, meg ha ugyanezeket a kapcsol\'okat hossz\'u alakban 
+haszn\'aljuk:
+
+\begin{Verbatim}[fontsize=\small]
+import getopt
+lis = '--debug --block --log-file foo.trc bar a1 a2'.split()
+params = ['debug', 'block', 'log-file=']
+
+optlist, args = getopt.getopt(lis, x, params )
+\end{Verbatim}
+
+\noindent Most a m\'asodik kimenet tejless\'eghel ugyanaz, mint az el\H{o}z\H{o} esetben. Az els\H{o} 
+viszont a hossz\'u alakokat tartalmazza: [('--debug', ''), ('--block', ''), ('--log-file', 'foo.trc')]. 
+
+Nagyon fontos egjegyezn\"unk a {\tt getopt} alkalmaz\'asa sor\'an {\bf els\H{o} nem kapcsol\'o jelleg\H{u} 
+parancssori argumentum ut\'an m\'ar minden tov\'abbit \'allom\'any jelleg\H{u}nek tekint}. Ha az argumentumok 
+feldolgoz\'asa sor\'an valamilyen hiba l\'ep fel, akkor a {\tt getopt.GetoptError} kiv\'etelt fogja dobni. 
+Ez abban az esetben fordulhat el\H{o}, ha vagy ismeretlen kapcsol\'oval tal\'alkozik, vagy pedig pedig nem 
+tala\'al f\'ajln\'ev param\'etert egy olyan kapcsol\'o eset\'eben, amelyhez kellett volna ilyet megadni. 
+
+

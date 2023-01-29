@@ -1,0 +1,1873 @@
+\documentclass[12pt]{article}
+\usepackage[magyar]{babel}
+%% \documentstyle[12pt, babel, magyar]{article}
+
+\usepackage{makeidx}
+
+\usepackage{graphicx}
+\usepackage{float}
+
+\usepackage[magyar]{babel}
+
+\usepackage{fancyvrb}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\fancyhead[R]{\today}
+\fancyfoot[C]{\thepage}
+
+%% \renewcommand{\headrulewidth}{0.4pt}
+%% \renewcommand{\footrulewidth}{0.4pt}
+
+
+\newcommand{\konnyu}{$\diamondsuit$}
+\newcommand{\kozepes}{$\diamondsuit\diamondsuit$}
+\newcommand{\nehez}{$\diamondsuit\diamondsuit\diamondsuit$}
+
+%% szamlalok
+
+\newcounter{minta}[section]
+\newcommand{\incminta}{\stepcounter{minta}}
+%% \newcommand{\theminta}{\arabic{minta}}
+\newcommand{\pelda}{\stepcounter{minta} \theminta. p\'elda \vspace{5mm}}
+
+\newcounter{feladat}
+\newcommand{\theproblem}[1]{\stepcounter{feladat}  \noindent{\bf \arabic{feladat}. feladat:} {\it #1}}
+
+\newcounter{megold}
+\renewcommand{\themegold}{\stepcounter{megold}  \noindent{\bf \arabic{megold}. megold\'as:}}
+
+\setlength\paperheight {297mm}
+\setlength\paperwidth  {210mm} 
+
+\setlength{\baselineskip}{8mm}
+\setlength{\parskip}{+3pt}
+\setlength{\topmargin}{-2cm}
+\setlength{\textheight}{23cm}
+%% \setlength{\textwidth}{15cm}
+\setlength{\textwidth}{14cm}
+\setlength{\hoffset}{-1.5cm}
+
+\title{S\'eta a Python-nal}
+
+%% \author{Urb\'an G\'abor}
+
+\makeindex 
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+
+\begin{abstract}
+Ebben a le\'{\i}r\'asban megismerked\"unk a Python programoz\'asi nyelvvel, a\-mely\-nek seg\'{\i}ts\'eg\'evel 
+egyszer\H{u} m\'odszerekkel bonyolult programokat is meg tud\-unk \'{\i}r\-ni. Nem fogjuk bemutatni minden 
+r\'eszlet\'et, de ki fogunk t\'erni a legfontosabb \"osszetev\H{o}ire. Felhaszn\'aljuk a lehet\H{o}s\'eget, 
+hogy mag\'ar\'ol a programoz\'asr\'ol is sz\'oljunk egy keveset. Megmutatjuk a legegyszer\H{u}bb, de a 
+gyakorlatban legt\"obbsz\"or el\H{o}fordul\'o szabv\'anyos programoz\'asi probl\'em\'ak megold\'as\'at is. 
+Annak a fejezetnek a v\'eg\'en gyakorl\'asul adunk n\'eh\'any v\'altoz\'o neh\'ezs\'eg\H{u} feladatot, amelyekkel 
+az olvas\'ok kipr\'ob\'alhatj\'ak a frissen megszerzett tud\'asukat. \'Utmutat\'ast, pontosabban lehets\'eges 
+megold\'asokat, a f\"ugge\-l\'ek\-ben lehet tal\'alni. 
+
+Le\'{\i}r\'asunkat els\H{o}rban nagyobb gyermekek, fiatalok sz\'am\'ara k\'esz\'{\i}\-tet\-t\"uk, a megc\'elzott 
+koroszt\'aly a 13-16 \'evesek csoportja. Ennek megfelel\H{o}en igyekezt\"unk a magyar\'azatokat \'es a 
+p\'eld\'akat a lehet\H{o} legegyszer\H{u}bben megfogalmazni, \'illtve a szakkifejez\'esekkel az olvas\'okat 
+megismertetni. \'Igy felt\'etelezt\"uk, hogy az olvas\'oink nem ismernek kor\'abbr\'ol m\'as programoz\'asi 
+nyelvet, ez\'ert az elej\'en meglehet\H{o}sen lassan fogunk el\H{o}re haladni. Ez\'ert mindenkit\H{o}l 
+eln\'es\'et \'es term\'eszetesem t\"urelmet k\'er\"unk. Ugyanakkor er\H{o}teljes javasoljuk az egy-k\'et 
+nyelvet m\'ar tud\'oknak is (ha akad ilyen olvas\'onk) azt, hogy kezdj\'et az elej\'er\H{o}l, ne sajn\'alj\'ak 
+r\'a az id\H{o}t \'es f\'arads\'agot. Ahogyan l\'atni fogj\'ak ugyanis, a Python er\H{o}sen elt\'er a t\"obbi 
+programoz\'asi nyelvt\H{o}l.
+\end{abstract}
+
+\tableofcontents
+
+\section{Hogyan olvassuk, hogyan \'{\i}rjuk}
+
+Egy programoz\'asi nyelv megtanul\'as\'ahoz sokat kell pr\'ob\'alkozni, k\'{\i}s\'erletezni, 
+lefuttatni egy-egy parancsot. A sz\'am\'{\i}t\'og\'ep az utas\'{\i}t\'asainkat sz\'o 
+szerint \'ertelmezi \'es hajtja v\'egre, ez\'ert nagyon fontos, hogy bet\H{u} szerint 
+pontosan \'{i}rjuk be a billenty\H{u}zeten. Minden olvas\'ot fel is k\'erek arra, hogy 
+pr\'ob\'algassa nyugodtan a bemutatott parancsokat, hogy minn\'el alaposabban megtanulhassuk 
+a programoz\'asi nyelvet.
+
+Az els\H{o} id\H{o}kben a legfontosabb az lesz, hogy el tudjuk ind\'{\i}tani a Python 
+parancs\-\'er\-tel\-me\-z\H{o}t, ehhez elk\'epzelhet\H{o}, hogy egy feln\H{o}tt seg\'{\i}ts\'eg\'et 
+kell k\'erni. Windows k\"ornyezetben a szok\'asosan a start men\"ub\H{o}l \'erhetj\"uk el. 
+Linux/Unix rendszerben elegend\H{o} a termin\'al ablakban be\'{\i}rni a "python" parancsot.
+
+Sikeres ind\'{\i}t\'as eset\'en egy parancskonzolt kapunk, amelynek fels\H{o} 
+r\'esz\'en an\-gol nyel\-v\H{u} t\'a\-j\'e\-koz\-ta\-t\'ast kapunk, n\'emi alapvet\H{o} seg\'{\i}ts\'eget 
+szint\'en angol nyelven. Az als\'o sorban az al\'abbi sort l\'atjuk.
+
+\begin{Verbatim}[fontsize=\small]
+>>> 
+\end{Verbatim}
+
+\noindent A fenti jelek ut\'an beg\'epelhetj\"uk a parancsainkat. A k\'es\H{o}bbiekben pedig olyan 
+parancs\'allom\'anyokat fogunk majd \'{\i}rni, amelyeket egyben fogunk tudni v\'egre\-hajt\-tat\-ni.	
+A parancsokat minden esetben az {\tt ENTER} billenty\H{u} lenyom\'as\'aval fejezz\"uk be, \'es 
+ekkor a sz\'am\'{\i}t\'og\'ep v\'egre is hajtja.
+
+M\'eg n\'eh\'any sz\'o ennek a le\'{\i}r\'asnak a fel\'ep\'{\i}t\'es\'er\H{o}l, a sz\'amozott 
+fejezetekben vannak azok a legfontosabb ismeretek, amelyeket mindenk\'eppen el kellene saj\'at\'{\i}tanunk 
+ahhoz, hogy Pythonban meg tudjunk egyed\"ul is \'{\i}rni egy-egy egyszer\H{u}bb programot. Ezekben a 
+r\'eszekben sok p\'eldaprogramot mutatunk be, mindenk\'eppen javasoljuk a beg\'epel\'es\'et \'es a 
+kipr\'ob\'al\'as\'at. Esetenk\'ent kimondottan fel is sz\'ol\'{\i}tjuk az olvas\'okat a k\'{\i}s\'erletez\'esre, 
+de ezt \'erdemes a t\"obbi esetben is megtenni. Ilyen m\'odon szerezhet\"unk t\'enyleg j\'ol haszn\'alhat\'o 
+ismereteket. A f\"uggel\'ekekben, amelyek fejezeteit bet\H{u}k\-kel jel\"olt\"unk ugyanakkor olyan 
+kieg\'esz\'{\i}t\'o dolgokat is megmutatunk, amelyekkel vagy sokkal \'erthet\H{o}bb\'e v\'alik minden, 
+vagy pedig seg\'{\i}tenek bonyolultabb programok meg\'{\i}r\'a\-sa\-kor is. Mindenk\'eppen \'er\-de\-mes 
+elolvasni, de tal\'an nem azonnal.
+
+A bemutatott p\'eld\'ak a le\'{\i}rtaknak megfelel\H{o}en m\H{u}k\"onek a legt\"obb \'ujabb Python rendszeren, 
+de tal\'alkozhatnak Olvas\'oink r\'egebbi v\'altozatokkal is. Ha ez a futtat\'as sor'an n\'eh\'any elt\'er\'est 
+jelenthet, akkor azt k\"ul\"on jelezni fogjuk. Magyar\'azatul csak annyit mondan\'ank, hogy a programoz\'asi 
+nyelv sok-sok programoz\'o \"otletei \'es tan\'ancsai alapj\'n gyorsan el\'eg g yorsan fejl\H{o}dik, b\H{o}v\"ul.
+
+\section{Python sz\'amol\'og\'ep}
+
+Kezdj\"uk az ismerked\'est azzal, hogy a legegyszer\H{u}bb p\'eld\'akat pr\'ob\'aljuk ki, vagyis 
+sima sz\'amtani utas\'{\i}tokat adunk ki a Python futtat\'o rendszernek: 
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+>>> 2 + 7
+9
+>>> 60 - 5*6
+30
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent A fenti k\'et p\'eld\'an l\'atjuk hogy milyen m\'odon tudjuk haszn\'alni a Python \'ertel\-me\-z\H{o}t. 
+N\'ezz\"unk meg egy m\'asik p\'eld\'at is:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+>>> ( 60 - 5 ) * 6
+330
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent L\'atszik, hogy a sz\'amtan\'or\'an megtanultak szerint m\H{u}k\"odik minden. De m\H{u}\-ve\-le\-te\-ket nem 
+csak sz\'amokon lehet v\'egezni a Python programoz\'asi nyelven, hanem szavakkal, bet\H{u}sorozatokkal, de 
+egyes bet\H{u}kkel is:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+>>> 'a' + 'B'
+aB
+>>> 'a' * 3
+aaa
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Ezen eredm\'enyeket egy kicsit magyar\'azni kell. Az els\H{o} sor azt mutatja, hogy a k\'et bet\H{u}t 
+egyszer\H{u}en \"osszedva k\'et bet\H{u}b\H{o}l \'all\'o sorozatot, "sz\'ot" kapunk.  Enn\'el sokkal 
+\'erdekesebb viszont a m\'asodik sor, az eredm\'eny alapj\'an vil\'agos, hogy a szorz\'as ut\'an a 
+kimeneten pontosan annyi 'a' bet\H{u}t kapunk, amilyen sz\'am a szorz\'ojel ut\'an \'all. Ezt igazolhatjuk 
+m\'eg az al\'abbi pr\'ob\'alkoz\'assal:
+
+\begin{Verbatim}[fontsize=\small]
+>>> 'aD' * 4
+aDaDaDaD
+\end{Verbatim}
+\pelda
+
+\noindent T\'erj\"unk vissza egy kicsit m\'eg a sz\'amokkal v\'egzett m\H{u}veletekhez, \'es n\'ezz\"uk meg az al\'abbi 
+p\'eld\'at:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+>>> 6 / 4
+1.5
+>>> 6 % 4
+2
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Ez teljesen a v\'arakoz\'asnak megfelel, viszont r\'egebbi Python v\'altozat eset\'eben ugyanez:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+>>> 6 / 4
+1
+>>> 6 % 4
+2
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent Mivel a 6 nem oszthat\'o marad\'ek n\'elk\"ul 4-el, ez\'ert az els\H{o} sorban szerepl\H{o} oszt\'as 
+eredm\'enye $1$ lett, a m\'asodik sor viszont a marad\'ekot hat\'arozta meg. Minden esetben, amikor eg\'esz 
+sz\'amokr\'ol van sz\'o, akkor az oszt\'as eredm\'eny\'et, a h\'anyadost, a r\'egebbi Python eg\'eszre 
+kerek\'{\i}ti.  Pontosan ki is tudjuk az eredm\'enyt sz\'amoltatni a Python v\'altozatt\'ol f\"uggetlen\"ul:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+>>> float(6) / 4
+1.5
+>>> float(6)
+6.0
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent A p\'eld\'aban szerepl\H{o} {\tt float(6)} jelzi a Python parancs\'ertelmez\H{o}nek, hogy most pontos 
+\'ert\'ekkel kell sz\'amolni, \'{\i}gy ki is j\"on az ismert eredm\'eny. A m\'asodik sor megmutatja, hogy a 6-t 
+t\'enyleg tizedes t\"ortk\'ent kezeli ilyenkor.
+
+\section{V\'altoz\'ok \'es utas\'{\i}t\'asok}
+
+A sz\'am\'{\i}t\'og\'ep az adatokat a mem\'ori\'aj\'aban t\'arolja, \'es ezt a t\'arol\'ohelyet legink\'abb 
+fi\'okosszekr\'enynek kell elk\'epzelni. Minden egyes fi\'ok, egy-egy {\sl v\'altoz\'onak} \index{v\'altoz\'o} felel 
+meg, minden egyes 
+v\'altoz\'onak {\it neve} van, amelyet szakkifejez\'essel {\sl azonos\'{\i}t\'onak} \index{azonos\'{\i}t\'o} h\'{\i}vunk. 
+K\'epzelj\"uk \'ugy el, hogy a v\'altoz\'ok nevei a fi\'okokra vannak fel\'{\i}rva. Amikor hivatkozni akarunk a 
+v\'altoz\'ora, akkor a pontoss\'ag kedv\'e\'ert a n\'evvel hivatkozunk. A k\"ovetkez\H{o} k\'et r\'eszben fokozatosan 
+fogunk megismerkedni a v\'altoz\'ok l\'etrehoz\'as\'aval, haszn\'alat\'aval. Nem akarjuk az olvas\'okat feleslegesen 
+untatni, de ezeketet az adatokat az\'ert h\'{\i}vjuk v\'altoz\'onak, mert az utas\'{\i}t\'asok meg is v\'alroztatathatj\'ak 
+t\'enylegesen az \'ert\'ek\'et.
+
+\subsection{Egyszer\H{u} v\'altoz\'ok}
+
+A Python programoz\'asi nyelvben szerencs\'ere v\'altoz\'ok l\'etrehoz\'asa nem ig\'enyel sok 
+munk\'at, egyszer\H{u} \'ertak\'assal megoldhat\'o:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+>>> a = 32
+>>> x = 3.7
+>>> t = "test"
+>>> a
+32
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent A p\'eld\'at alaposabban megn\'ezve l\'atjuk, hogy teljesen mindegy, milyen \'ert\'eket t\'arolunk a 
+v\'alt\'o\-z\'o\-ban. A neve nem mutatja meg, hogy sz\'amot, t\"ortsz\'amot, vagy pedig bet\H{u}k 
+sorozat\'at adtunk neki \'ert\'ekk\'ent. Az\'ert nevezz\"uk ezeket egyszer\H{u} v\'al\-to\-z\'ok\-nak, 
+mert csak egyetlen adatot t\'arolnak. Ez m\'eg akkor is igaz, ha az egyik v\'altoz\'o \'ert\'eke az a 
+n\'egybet\H{u}s sz\'o, hogy "test". (Tegy\"uk hozz\'a, hogy err\H{o}l majd k\'es\H{o}bb egy kicsit 
+b\H{o}vebben is besz\'el\"unk.)
+
+Az \'{\i}gy megadott v\'altoz\'oinkat felhaszn\'alhatjuk a tov\'abbi sz\'amol\'asokhoz, m\H{u}ve\-le\-tek\-hez:
+
+\incminta
+\begin{Verbatim}[fontsize=\small]
+>>> b = a + 2
+>>> print(b)
+>>> 34
+>>> print(2 * x)
+>>> 7.2
+\end{Verbatim}
+\theminta. p\'elda
+
+\noindent A bemutatott p\'eld\'ak alapj\'an levonhatjuk a k\"ovetkeztet\'est, hogy a v\'altoz\'okat u\-gyan\-\'ugy 
+hasz\-n\'al\-hat\-juk, mintha az \'ert\'ekeit be\'{\i}rn\'ank a hely\'ere. Seg\'{\i}ts\'eg\"ukkel tov\'abbi 
+v\'altoz\'okat tudunk l\'etrehozni.
+
+Van egy \'erdekes tulajdons\'aga, amelyet a k\"ovetkez\H{o} p\'eld\'an mutatunk be:
+
+\begin{Verbatim}[fontsize=\small]
+>>> a = 2
+>>> a
+2
+>>> a = a + 3
+>>> a
+5
+\end{Verbatim}
+
+\noindent A parancsok v\'egrehajt\'asa alapj\'an l\'atszik, hogy a v\'altoz\'o pillanatnyi \'ert\'et fel lehet haszn\'alni 
+az \'uj \'ert\'ek meghat\'aroz\'as\'ara. Az m\'asodik \'ert\'ekad\'as ut\'an {\tt a} eredeti \'ert\'eke 
+term\'eszetesen elveszett.
+
+A fenti p\'eld\'aban bemutattunk egy \'ujdons\'agot, ez pedig nem m\'as, mint a {\tt print} parancs, 
+ez az els\H{o} utas\'{\i}t\'as, amit megismer\"unk. Err\H{o}l kicsit b\H{o}vebben fogunk m\'eg olvasni, 
+most csak annyit eml\'{\i}ts\"unk meg, hogy hat\'as\'ara a v\'altoz\'o \'ert\'eke ki\'{\i}r\'odik a k\'eperny\H{o}re.
+
+\subsection{T\"obb adatot t\'arol\'o v\'altoz\'ok}
+
+Visszat\'erve a kor\'abban m\'ar l\'atott p\'eld\'ara:
+
+\begin{Verbatim}[fontsize=\small]
+>>> t = "test"
+>>> print(t[2])
+>>> e
+\end{Verbatim}
+
+\noindent A {\tt t} v\'altoz\'o, amelyik a "test" sz\'ot t\'arolja, el\'erhet\H{o}v\'e teszi a sz\'o egyes 
+bet\H{u}it is, ha \'ugy tetszik, akkor t\"obb adatot tartalmaz. A p\'elda alapj\'an lehet l\'atni, 
+k\"ul\"on ki tudjuk iratni a m\'asodik, vagy ak\'armelyik r\'esz\'et. Az ilyen jelleg\H{u} v\'altoz\'okat 
+a Python vil\'ag\'aban {\sl list\'aknak} \index{lista} nevezz\"uk. Ilyen list\'akat m\'as adatokb\'ol is 
+l\'etre lehet hozni, p\'eld\'aul sz\'amokb\'ol:
+
+\begin{Verbatim}[fontsize=\small]
+>>> sor = [3,2,1]
+\end{Verbatim}
+
+\noindent Ebben az esetben a "sor" nev\H{u} list\'at sz\'amokb\'ol hoztuk l\'etre, \'es ebbe most 3 sz\'amot tett\"unk. 
+A v\'altoz\'o maga ilyenkor pontosan ny\'{\i}lv\'antartja, hogy h\'any \'ert\'eket helyezt\"unk el benne, 
+ezt le is tudjuk k\'erdezni:
+
+\begin{Verbatim}[fontsize=\small]
+>>> len(sor)
+3
+>>> len('ablak')
+5
+\end{Verbatim}
+
+\noindent A t\'arolt elemek sz\'am\'at a lista m\'eret\'enek, vagy hossz\'anak is h\'{\i}vhatjuk, \'es l\'attuk, 
+hogy a szavak l\'enyeg\'eben listak\'ent viselkednek. A lista egyes tagjait a sorban elfoglalt hely\"uk, a 
+sorsz\'amuk alapj\'an tudjuk lek\'erni, ezt a sorsz\'amot a programoz\'ok {\sl indexnek} \index{index} szokt\'ak 
+nevezni:
+
+\begin{Verbatim}[fontsize=\small]
+>>> sor[0]
+3
+>>> sor[2]
+1
+\end{Verbatim}
+
+\noindent A p\'eld\'aban l\'attuk, hogy a lista eset\'eben az indexek mindig 0-r\'ol indulnak, \'es a legnagyobb 
+szab\'alyos \'ert\'eke a lista hossz\'an\'al eggyel kisebb. 
+
+A list\'aba ut\'olag is tudunk \'uj elemet illeszteni, de minden esetben a v\'eg\'ere, ha az {\bf append} 
+utas\'{\i}t\'ast haszn\'aljuk :
+
+\begin{Verbatim}[fontsize=\small]
+>>> sor.append(14)
+>>> sor
+[1, 2, 3, 14]
+\end{Verbatim}
+
+\noindent A Python programoz\'asi nyelv egyik \'erdekes tulajdons\'aga, hogy egy list\'aba ak\'ar teljesen vegyesen 
+is rakt\'arozhatunk el adatokat. L\'assunk erre is p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+>>> lista = [2, 4.5, 'eke', 2 ]
+\end{Verbatim}
+
+\noindent Ebben az esetben az egyes elemek el\'er\'ese eset\'en a Python \'ertelmez\H{o} pontosan tudni fogja, hogy 
+azzal az adattal mi minden lehet csin\'alni, \'es azt hogyan. A t\"obb adatot t\'arol\'o v\'altoz\'okr\'ol, 
+a Pythonben rendelkez\'es\"unkre \'all\'o tov\'abbi lehet\H{o}s\'egekr\H{o}l \'es a list\'akr\'ol a 
+f\"uggel\'ekben b\H{o}vebben is olvashatunk.
+
+Felmer\"ulhet az olvas\'okban, hogy lehet-e valamilyen m\'odon m\H{u}veletet v\'egezni. A v\'alasz erre 
+term\'eszetesen igen, l\'assunk is erre egy egyszet\H{u} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+>>> a = [1,2,3]
+>>> b = [44,55]
+>>> a + b
+[1, 2, 3, 44, 55]
+>>> c = ['er', 'qq']
+>>> a+c
+[1, 2, 3, 'er', 'qq']
+>>>
+\end{Verbatim}
+
+Ahogyan a minta is mutatja, ha k\'et list\'at \"osszeadunk, akkor sim\'an egym\'as ut\'an m\'asol\'odnak 
+az \'ert\'ekek.
+
+\subsection{Utas\'{\i}t\'asok}
+
+Az eddigi p\'eld\'aink sor\'an egyszer\H{u} utas\'{\i}t\'asokat ismert\"unk meg, itt az ideje teh\'et, hogy 
+kiss\'e b\H{o}v\'{\i}ts\"uk tud\'asunkat. Egy fontos, amit m\'ar eddig is haszn\'altunk, az \'ert\'ekad\'as. 
+Ezzel \'uj v\'altoz\'ot tudunk l\'etrehozni, vagy ak\'ar egy r\'eginek \'uj \'ert\'eket adni. P\'eld\'aul:
+
+\begin{Verbatim}[fontsize=\small]
+>>> a = 32
+>>> a
+32
+>>> a = 11
+>>> a
+11
+\end{Verbatim}
+
+A Python programoz\'asi nyelven egy\'ebk\'ent nem csak egyetlen v\'altoz\'onak tudunk egy utas\'{\i}t\'asssal 
+\'ert\'eket adni:
+
+\begin{Verbatim}[fontsize=\small]
+>>> a, b = 2, 45
+>>> a
+2
+>>> b
+45
+\end{Verbatim}
+
+Az eredm\'eny mag\'a\'ert besz\'el.
+
+A kor\'abbiakban megismert\"uk m\'eg a {\tt print} \'es a {\tt len} utas\'{\i}t\'asokat, amelyek k\"oz\"ul 
+az els\H{o} a k\'ep\'erny\H{o}re \'ir ki adatokat, a m\'asodik pedig a lista elemsz\'am\'at adja meg. 
+N\'ezz\"uk meg kiss\'e b\"ovebben a kiirat\'ast, lehet a kimenetet egy kiss\'e olvashat\'obb\'a 
+var\'azsolni, de ehhez m\'eg egy \'ujdons\'agot kell megismern\"unk: az {\tt str} utas\'{\i}t\'ast 
+(f\"ugg\-v\'enyt):
+
+\begin{Verbatim}[fontsize=\small]
+>>> a = 32
+>>> s = 'A-ban = ' + str(a)
+>>> s
+A-ban = + 32
+\end{Verbatim}
+
+Tulajdonk\'eppen az {\tt str} a kapott sz\'amot sz\'amjegyek, teh\'at bet\H{u}k (jelek) sorozat\'av\'a 
+alak\'{\i}tja \'at. Ezt kipr\'ob\'alhatjuk tizedes t\"ortek eset\'eben is:
+
+\begin{Verbatim}[fontsize=\small]
+>>> r = 3.4
+>>> r
+3.3999999999999999
+>>> str(r)
+'3.4'
+\end{Verbatim}
+
+Meglep\H{o}dve vessz\"uk \'eszre, hogy a s\'{\i}ma kiirat\'as eset\'en nem teljesen azt a sz\'amot 
+kapjuk meg, amit be\'{\i}rtunk, ennek oka a sz\'am\'at\'og\'ep bels\H{o} adatr\'arol\'asi m\'odszer\'eben 
+keresend\H{o}. Az elt\'er\'es tulajdonk\'eppen csek\'ely, \'es az {\tt str} h\'{\i}v\'as ut\'an m\'ar 
+pontos eredm\'eny jelent meg a k\'eperny\H{o}n. 
+
+\section{Egyszer\H{u} scriptek}
+
+Az eddigiekben be\'{\i}rt parancsokat a Python seg\'{\i}ts\'eg\'evel v\'egre tudtuk hajtani, \'es meg is 
+kaptuk az eredm\'enyeket. Azonban nagyon k\'enyelmetlen lenne, ha minden esetben \'ujra meg \'ujra be kellene 
+\'{\i}rni ezeket az utas\'{\i}t\'asokat. Ilyenkor seg\'{\i}t sokat, ha a parancsok sorozat\'at elmentj\"uk 
+egy k\"ul\"on \'allom\'anyba. Ehhez egyszer\H{u}en sz\"uks\'eg\"unk lesz egy sz\"ovegszerkeszt\H{o} programra, 
+p\'eld\'aul Windows k\"ornyezetben a Notepad++ j\"ohet sz\'oba, amelyik ingyenesen let\"olthet\H{o} az 
+internetr\H{o}l. Linux/Unix k\"ornyezetben hasonl\'oan k\"onnyen haszn\'alhat\'o szerkeszt\H{o}programot 
+javasolunk, p\'el\-d\'a\-ul a Nedit nev\H{u}t. K\'erj\"unk seg\'{\i}ts\'eget, mit hogyan is tudunk el\'erni. Abban 
+is seg\'{\i}ts\'eget kell k\'erni, mik\'ent kell a kor\'abban elmentett scriptet lefuttatni. Itt el\'egedj\"unk 
+meg annyival, hogy csak v\'azlatosan mutatjuk be. Linux/Unix rendszerben a parancskonzolon a "python" parancs 
+egyszer\H{u} kiad\'as\'aval:
+
+\begin{Verbatim}[fontsize=\small]
+python valami.py
+\end{Verbatim}
+
+Ennek hat\'as\'ara a Python parancs\'ertelmez\H{o} beolvassa \'es v\'egrehajtja a "valami.py" nev\H{u} 
+scriptet. {\bf Hagyom\'anyosan \'es szok\'asosan ez a Python szkriptek elnevez\'esi szab\'alya.} 
+
+Az ilyen elmentett parancssorozatokat a sz\'am\'{\i}t\'og\'epek vil\'ag\'aban {\sl szkriptnek} \index{szkript} 
+szoktuk nevezni. Most egy kicsit ismerkedni fogunk ezek meg\'{\i}r\'as\'aval. L\'assunk egy 
+egyszer\H{o} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# haho.py
+
+ter = 12
+print(ter)
+\end{Verbatim}
+
+Be\'{\i}rva a fenti utas\'{\i}t\'assort a sz\"ovegszerkeszt\H{o}be \'es ments\"uk el mondjuk 
+"haho.py" n\'even egy k\"onyvt\'arba. Az utols\'o k\'et sor nem tartalmaz a sz\'amunkra meglepet\'est, 
+l\'etrehozunk egy "ter" nev\H{u} v\'altoz\'ot, majd annak \'ert\'ek\'et kinyomtatjuk. Ezt a Python 
+pontosan \'{\i}gy is fogja sorrendben \'ertelmezni \'es v\'egrehajtani. Nem \'{\i}gy az els\H{o} sor, a 
+"$\#$ haho.py " a Python sz\'am\'ara megjegyz\'est ({\sl kommentet}) \index{komment} jelent, ezzel nem 
+foglalkozik, nem 
+\'ertelmezi \'es nem is hajtja v\'egre. Ezek a megjegyz\'esek nek\"unk sz\'olnak, pontosabban azoknak, 
+akik a scriptet olvass\'ak. A programoz\'ok arra szokt\'ak haszn\'alni, hogy a scripttel vagy programmal 
+kapcsolatos legfontosabb dolgokat bele\'{\i}rj\'ak a k\'odba. (Mi ezt a megjegyz\'est ebben a f\"uzetben 
+arra fogjuk haszn\'alni, hogy a szkript nev\'et minden esetben bele\'{\i}rjuk.) Ha most ezt a scriptet 
+lefutattjuk, akkor nem meglep\H{o} m\'odon a $12$ sz\'amot kapjuk meg erdem\'eny\"ul. 
+
+Egy feladat megold\'asi m\'odszer\'et matematikus nyelven {\sl algoritmusnak} nevezz\"uk, \index{algoritmus} 
+\'es egy 
+szkript a Python nyelven megfelel egy algoritmusnak. A program\'{\i}r\'as sor\'an is ilyen algoritmust 
+\'{\i}runk \'at egy programoz\'asi nyelvre. J\'ol jegyezz\"uk meg, hogy sokan a sciptben nem szokt\'ak javasolni 
+az \'ekezetes bet\H{u}k haszn\'at\'at, ehhez mi is ragaszkodni fogunk mind a megjegyz\'esek \'{\i}r\'askor, 
+mind pedig a kiiratott sz\"ovegekben.
+
+\section{El\'agaz\'asok, ciklusok}
+
+Az el\H{o}z\H{o} r\'eszekben megismert\"unk n\'eh\'any egyszer\H{u} utas\'{\i}t\'ast, de az esetek 
+t\"obbs\'e\-g\'eb\-en ez nem lesz elegend\H{o} ahhoz, hogy a kit\H{u}z\"ott feladatokat megoldjuk. Sokszor 
+el\H{o}fordul, hogy egy-egy v\'altoz\'o \'ert\'ek\'et\H{o}l f\"ugg\H{o}en m\'as-m\'as utas\'{\i}t\'asokat 
+kell v\'egrehajtani. O\-lyan is lehet, hogy n\'eh\'any parancs-sorozatot egym\'as ut\'an t\"obbsz\"or is 
+v\'egre kell hajtani. Ezekben az esetekben haszn\'aljuk az {\sl el\'agaz\'asokat} \index{el\'agaz\'as} 
+\'es a {\sl ciklusokat} \index{ciklus}, 
+amelyeket k\"oz\"os sz\'oval {\sl vez\'erl\'esi szerekezeteknek} nevezz\"uk. Mindezeket most fogjuk megismerni, 
+\'es minden tov\'abbi bemutatott scriptk\'ent fogunk kipr\'ob\'alni.
+
+\subsection{El\'agaz\'asok}
+
+T\"olts\"uk be a haszn\'alt sz\"ovegszerkeszt\H{o}nket, \'es \'{\i}rjuk be az al\'abbi egyszer\H{u} scriptet: 
+
+\begin{Verbatim}[fontsize=\small]
+# if1.py
+
+szam = 12    # majd atirjuk
+
+if szam < 15:
+   print('Kicsi')
+
+print('Vege')
+\end{Verbatim}
+
+Lefuttatva a fenti kis programocsk\'at a k\'eperny\H{o} megjelenik a "Kicsi" felirat. Soronk\'ent megn\'ezve 
+a scriptet l\'atszik, hogy az {\tt if} utas\'{\i}t\'as m\"og\"ott \'all\'o felt\'etel igaz, ez\'ert a Python 
+ki\'{\i}rja a sz\"oveget. Most \'{\i}rjuk \'at az {\tt if1.py} scripben az \'ert\'ekad\'ast az al\'abbira:
+
+\begin{Verbatim}[fontsize=\small]
+szam = 18    # majd atirjuk
+\end{Verbatim}
+
+Az ism\'elt futtat\'as alapj\'an l\'atszik, hogy nem jelenik meg a fenti felirat, mert a felt\'etel szerint 
+nem is kell megjelennie. N\'ezz\"uk meg most a k\"ovetkez\H{o} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# if2.py
+
+szam = 19    # majd atirjuk
+
+if szam < 15:
+   print('Kicsi')
+else:
+   print('Nagy')
+
+print('Vege')
+\end{Verbatim}
+
+Ezt a kis scriptet megn\'ezve l\'atjuk, hogy az {\tt if} utas\'{\i}t\'as most ki van b\H{o}v\'{\i}tve, van egy 
+olyan \'aga, amelyet a felt\'etel {\bf nem teljes\"ul\'ese} eset\'en fut le. A v\'arakoz\'asnak megfelel\H{o}en 
+val\'oban a "Nagy" sz\'ot \'{\i}rja ki a k\'eperny\H{o}re. Kit\"or\"olve az \'ert\'ekad\'asban az 1-est, ment\'es 
+ut\'an \'ujrafuttatva a programocsk\'at a l\'athat\'o m\'odon az eredm\'eny megint megfelel az elv\'artnak, mert 
+most a felt\'etel teljes\"ul. Olyen eset is el\H{o}fordulhat, hogy \"osszetettebb el\'agaz\'ast kell haszn\'alnunk, 
+mint p\'eld\'aul:
+
+\begin{Verbatim}[fontsize=\small]
+# if3.py
+
+szam = 19    # majd atirjuk
+
+if szam < 17:
+   print('Kicsi')
+elif szam == 17:
+   print('Egal')
+else:
+   print('Nagy')
+
+print('Vege')
+\end{Verbatim}
+
+Most a felt\'etel nem teljes\"ul\'ese eset\'en egy m\'asik felt\'etelt is megvizsg\'alunk. Az \'ugynevezett "{\tt if}" 
+\'agra akkor fut r\'a, ha a sz\'am kisebb 17-n\'el. A m\'asik \'ag, az \'ugynevezett "{\tt else}" \'ag viszont 
+tov\'abb bomlik, megvizsg\'aljuk ugyanis, hogy egyenl\H{o}-e 17-el. Erre szolg\'al az {\tt elif} utaas\'{\i}t\'as, 
+ami tulajdonk\'eppen nem m\'as, mint az {\tt else} \'es az {\tt if} kever\'eke. 
+
+%% TODO and \'es or
+
+N\'eha nem csup\'an egy felt\'etelt kell a k\'odban ellener\H{o}rizni. Erre val\'o Pythonban az {\tt and}, illetve az 
+{\tt or} utas\'{\i}t\'as. Az el\H{o}bbi az {\bf \'es}, a m\'asodik pedig a {\bf vagy} m\H{u}velet. L\'assunk ezekre 
+egyszer\H{u} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# if4.py
+
+szam = 16    # majd atirjuk
+
+if szam < 21 and szam %2 == 0:
+   print('Kicsi paros')
+else:
+   print('Nem jo')
+
+print('Vege')
+\end{Verbatim}
+
+Kipr\'ob\'alva a fenti scriptet m\'odos\'{\i}tgatva a {\tt szam} nev\H{u} v\'altoz\'o \'ert\'ek\'et (\'erdemes 
+p\'aratlan sz\'amokkal, vagy esetleg 21-n\'el nagyobbakkal pr\'ob\'alkozni), l\'athat\'o, hogy mind a k\'et 
+felt\'etelnek teljes\"ulni kell ahhoz, hogy az {\tt if}-\'ag fusson le. 
+
+A k\"ovetkez\H{o}kben n\'ezz\"uk meg az {\tt or} utas\'{\i}t\'ast a fenti k\'odban:
+
+\begin{Verbatim}[fontsize=\small]
+# if5.py
+
+szam = 16    # majd atirjuk
+
+if szam < 21 or szam %2 == 0:
+   print('Kicsi vagy paros')
+else:
+   print('Nem jo')
+
+print('Vege')
+\end{Verbatim}
+
+Ism\'et javasoljuk ay olvas\'oknak, hogy pr\'ob\'algass\'ak a fenti secriptet. A v\'altoz\'o \'ert\'ek\'enek 
+v\'altoztatgat\'as\'aval meg tudjuk \'allap\'{\i}tani, hogy nem kell egyszerre mind a k\'et felt\'etelnek 
+teljes\"ulnie, elegend\H{o}, ha az egyik teljes\"ul. Folglaljuk most \"ossze a tapasztalatainkat t\'abl\'azatos 
+form\'aban, ahol k\'et \'allit\'as {\bf{A} \'es \bf{B}}, \'es a k\'et m\H{u}velet szerepel:
+
+\begin{center}
+   \begin{tabular}{clll}
+   {\bf A} & {\bf B} & {\bf and} & {\bf or} \\
+   Igaz & Igaz & Igaz & Igaz \\
+   Igaz & Hamis & Hamis & Igaz \\
+   Hamis & Igaz & Hamis & Igaz \\
+   Hamis & Hamis & Hamis & Hamis \\
+   \end {tabular}
+\end{center}
+
+A gyakorlati programoz\'as sor\'an az itt le\'{\i}rtakra nagyon sokszor lesz sz\"uks\'eg\"unk.
+
+\subsection{Ciklusok}
+
+Most a Python programoz\'asi nyelv \'erdekesebb r\'esz\'evel fogunk megismerkedni, azzal, mik\'ent lehet ism\'etlend\H{o} 
+tev\'ekenys\'egeket a sz\'am\'{\i}t\'og\'epnek le\'{\i}rni. K\'et ciklus utas\'{\i}t\'as \'all a rendelkez\'es\"unkre, 
+az egyik a {\tt for}, a m\'asik a {\tt while}. Mind a kett\H{o}vel k\"ul\"on r\'eszben fogunk ismerkedni.
+
+\subsubsection{A {\tt for} ciklus}
+
+Ez a legegyszer\H{u}bben haszn\'alhat\'{o} \'es meg\'erthet\H{o} ciklus, l\'assunk m\'aris egy vil\'agos p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# for1.py
+
+lista = ['Isti', 'Peti', 'Joci'] 
+
+for elem in lista:
+   print( ' > ' + elem)
+
+print('Vege')
+\end{Verbatim}
+
+Lefuttatva a fenti kis egyszer\H{u} scriptet l\'athatjuk, hogy az {\tt elem} nev\H{u} v\'altoz\'o egym\'as ut\'an 
+felveszi a list\'aban szerepl\H{o} \'ert\'eket. Van a {\tt for} utas\'{\i}t\'asnak egy m\'asik haszn\'alata is: 
+
+\begin{Verbatim}[fontsize=\small]
+# for2.py
+
+stop = 6
+
+for i in range(stop):
+   print (i * 'x')
+
+print('Vege')
+\end{Verbatim}
+
+A futtat\'as alkalm\'aval a k\'eperny\H{o}ne megjelennek a megfelel\H{o} hossz\'us\'ag\'u "x"-ekb\H{o}l \'all\'o 
+sorok. A {\tt range(6)} f\"ugg\'enyh\'{\i}v\'as tulajdonk\'eppen olyan mintha el\H{o}\'allitana egy hatelem\H{u}, 
+eg\'essz\'amokb\'ol \'all\'o list\'at. (K\"ozvetlen\"ul kiiratni ugyan nem tudn\'ank, de programk\'odban fel 
+tudjuk haszn\'alni.) Ismerkedj\"unk meg egy fogalommal: a {\sl ciklusmaggal} \index{ciklusmag}, amely nem m\'as, mint az 
+ism\'etelt 
+utas\'{\i}t\'asok sorozata. Szokt\'ak egyszer\H{u}en a ciklus belsej\'enek is nevezni. (Jelen esetben ez csak a 
+print f\"uggv\'enyh\'{\i}v\'as.)
+
+\subsubsection{A {\tt while} ciklus}
+
+A kor\'abban megismert {\tt for} ciklus alapvet\H{o}en list\'ak, vagy sz\'amsorozatok  feldolgoz\'as\'ara haszn\'alhat\'o, 
+de sok olyan eset fordulhat el\H{o} amikor ez nem ilyen egyszer\H{u}. Ilyenkor egy felt\'etelt\H{o}l f\"ugg, hogy 
+h\'anyszor kell ism\'etelni. Ezt k\'odojuk le a {\tt while} utas\'{\i}t\'as seg\'{\i}ts\'eg\'evel:
+
+\begin{Verbatim}[fontsize=\small]
+# while1.py
+
+lim = 24
+i = 2
+
+while lim > 1:
+   if lim % i == 0:
+      lim = lim / i
+      print (i)
+   else:
+      i = i + 1
+
+print(lim)
+
+print('Vege')
+\end{Verbatim}
+
+A fenti ciklus lefuttat\'asa ut\'an a k\'eperny\H{o}n a 24 oszt\'oi jelennek meg, m\'eghozz\'a olyanok, amelyeknek 
+maguknak nincs igazi oszt\'ojuk. A ciklus a fentiek szerint addig fut, ameddig a felt\'etel igaz. Amint hamiss\'a 
+v\'alik, a ciklus meg\'all. 
+
+\begin{Verbatim}[fontsize=\small]
+# while2.py
+
+n = 23
+szam1 = 0
+szam2 = 1 
+
+while szam2 < n:
+   print szam2
+   szam2 = szam1 + szam2
+   szam1 = szam2 - szam1
+
+print('Vege')
+\end{Verbatim}
+
+Futtassuk le most ezt a scriptet is. J\'ol l\'atszik, hogy amig a {\tt szam2} \'ert\'eke nem \'eri el az 
+{\tt n}-ben megadott hat\'art, addig a ciklusmag ism\'etelten lefut. Pr\'ob\'aljuk ezt a hata\'art egy 
+kicsit megv\'altoztatni.
+
+\subsubsection{A {\tt break}, a {\tt continue} \'es az {\tt else} utas\'{\i}t\'as}
+
+Az el\H{o}z\H{o} k\'et r\'eszben megismert\"uk a k\'et ciklusutas\'{\i}t\'ast. Nagyobb scriptek \'{\i}r\'asa 
+eset\'en az\'ert enn\'el t\"obbre lehet sz\"uks\'eg. Sokszor forulhat el\H{o} p\'eld\'aul azt, hogy a 
+ciklust nem az el\H{o}re meghat\'arozott esetben kell le\'all\'{\i}tani. 
+
+\begin{Verbatim}[fontsize=\small]
+# break1.py
+
+lim = 19
+i = 2
+
+while i < lim:
+   if lim % i == 0:
+      break
+   i = i + 1
+
+print('Vege i = ' + str(i))
+\end{Verbatim}
+
+Kipr\'ob\'alva a fenti scriptet l\'athatjuk, hogy a k\'erny\H{o}re a $19$-es sz\'amot \'{\i}rja ki. Ez helyes 
+is, hiszen a $19$-et csak az $1$ \'es \"onmaga az oszt\'oja. \'At\'{\i}rva a sz\'amot:
+
+\begin{Verbatim}[fontsize=\small]
+lim = 35
+\end{Verbatim}
+
+Ism\'et lefuttatva a scriptet az eredm\'eny most $5$ lett, hiszen az osztja marad\'ek\-ta\-la\-nul a sz\'amot. Ezzel 
+a tapasztalattal n\'ezz\"uk most meg a ciklus belsej\'eben l\'ev\H{o} el\'agaz\'ast. Ha a marad\'ek 0, akkor a 
+{\tt break} utas\'{\i}t\'asra fut a Python, \'es azonnal v\'egeszakad a ciklus tov\'abbi v\'egrehajt\'as\'anak. A 
+{\tt break} pontosan erre is szolg\'al, hogy a ciklusnak v\'ege lehessen, miel\H{o}tt az el\H{o}re meghat\'arozott 
+felt\'etel teljes\"ult volna. A programoz\'as sor\'an sokszor szokott ez kelleni. Szokt\'ak erre a programoz\'ok 
+\'ugy mondani, hogy {\sl kiugrunk} a ciklusb\'ol.
+
+N\'ezz\"uk, hogy mi t\"ort\'enik akkor, ha nem egyetlen ciklus eset\'en alkalmazzuk a {\tt break} utas\'{\i}t\'as: 
+
+\begin{Verbatim}[fontsize=\small]
+# break2.py
+
+list = [49, 21,35]
+
+for elem in list:
+   print ("Szam = ", elem)
+   for x in range(2,lim):
+   if elem % x == 0:
+      print ("Megvan = ", x)
+      break
+
+print('Vege')
+\end{Verbatim}
+
+A ki\'{\i}rt sorok alapj\'an l\'atszik, hogy a {\tt break} utas\'{\i}t\'as minden esetben azt a legbels\H{o} ciklust 
+\'all\'{\i}tja meg, amelyikben szerepel. A van azonban a p\'eld\'aban k\'et m\'as jelleg\H{u} \'ujdons\'ag, az egyik a
+kib\H{o}v\'{\i}tett {\tt range} h\'{\i}v\'as. Az els\H{o} {\sl param\'eter} \index{param\'eter} a sz\'amlista kezdet\'et 
+adja meg. A m\'asik pedig, hogy a {\tt print} utas\'{\i}t\'asban most nem alak\'{\i}tottuk a sz\'amokat bet\H{u}sorozatok\'a, 
+mint kor\'abban, mert a {\tt print} maga is t\"ok\'eletesen elint\'ezi ezt nek\"unk. 
+
+A gyakorlatban olyan eset is el\H{o} szokott fordulni, hogy a ciklusmagot felesleges teljesen v\'egrehaj\-ta\-ni, 
+egy ponton el kell kezdeni a k\"ovetkez\H{o} ism\'etl\'est. Erre haszn\'alhat\'o a {\tt continue} utas\'{\i}t\'as. 
+
+\begin{Verbatim}[fontsize=\small]
+# continue1.py
+
+szam = 3
+lim = 26
+
+for x in range(2,lim):
+   if x % szam == 0:
+      print ("Megvan = ", x)
+      continue
+   print ("Teszt = ", x)
+
+print('Vege')   
+\end{Verbatim}
+
+Ennek a scriptnek a lefuttat\'as\'an\'al l\'atjuk, hogy amikor a ciklusmagben oszt\'ot tal\'altunk, akkor nem 
+jelenik meg a "Teszt .." felirat a k\'eperny\H{o}n. 
+
+Ciklusok \'{\i}r\'asokor el\H{o} szokott fordulni, hogy tudnunk kell, vajon rendesen fejez\H{o}d\"ott-e be a 
+ciklusmag ism\'etelget\'ese, vagy pedig k\"ul\"on kiugrottunk bel\H{o}le. Erre a c\'elra haszn\'alhat\'o a 
+Python programoz\'asi nyelven az ilyenkor is bevethet\H{o} {\tt else} utas\'{\i}t\'as:
+
+\begin{Verbatim}[fontsize=\small]
+# forelse1.py
+
+szam = 25
+j = 2
+
+while j < szam:
+   for t in range(2,j):
+      if j % t == 0:
+         break
+
+   j = j + 1
+   else:
+      print('Megvan / ', j)
+
+print('Vege')   
+\end{Verbatim}
+
+Lefuttatva a fenti scriptet l\'atjuk, hogy azokban az esetben \'{\i}rja ki a Python a "Megvan / .." sz\"oveget, 
+amikor a vizsg\'alt sz\'amnak egyetlen oszt\'oja sem volt, vagyis soha nem volt a marad\'ek 0. Ez\'ert teh\'at 
+a bels\H{o} ciklus szab\'alyosan \'er v\'eget, \'{\i}gy lefut az {\tt else} \'ag, amelyre csakis ebben az esetben 
+ker\"ul a vez\'erl\'es.
+
+A veg\'en engedj\"unk meg egy megjegyz\'est magunknak. Az ebben a r\'eszben megismert utas\'{\i}t\'asokat mind a 
+k\'et ciklus eset\'en hasz\'alhatjuk, de itt helyhi\'any miatt csak egyikkel, vagy m\'asikkal mutattuk be.
+
+\subsection{Tov\'abbi tudnival\'ok a vez\'erl\'esi szerkezetekr\H{o}l}
+
+A fejezet\"unk v\'eg\'ere \'ert\"unk, de nem besz\'elt\"unk az uas\'{\i}t\'asok egym\'asba 
+\'agyaz\'as\'ar\'ol, amit a legutols\'o p\'eldaprogramban m\'ar l\'attunk:
+
+\begin{Verbatim}[fontsize=\small]
+(1)  while j < szam:
+(2)     for t in range(2,j):
+(3)        if j % t == 0:
+(4)           break
+
+(2)     j = j + 1
+(2)     else:
+(3)        print('Megvan / ', j)
+
+(1)  print('Vege')   
+\end{Verbatim}
+
+Ez a k\'odr\'eszlet most nem futtathat\'o le, a z\'ar\'ojelben szerepl\H{o} sz\'amok azt mutatj\'ak meg, hogy 
+az egyes utas\'{\i}t\'asok milyen m\'elys\'egbe vannak egym\'asba \'agyazva. Nagyon fontos, hogy a bekezd\'esek 
+pontosan feleljenek meg a be\'egyaz\'asi m\'elys\'egnek, mindig pontosan ugyanannyi sz\'ok\"oz, vagy TAB jel  
+szerepeljen el\H{o}tt\"uk. Ez m\'as sz\'oval azt jelenti, hogy az azonos m\'elys\'egben be\'agyazott sorok 
+pontosan egym\'as alatt kell, hogy legyenek. De nagyon fontos, hogy a sz\'ok\"oz\"ok \'es TAB jelek ne keveredjenek 
+egym\'assal, mert szerencs\'es esetben csak annyi t\"ort\'enik, hogy a Python futtat\'o rendszer nem a mi 
+elgondol\'asainknak megfelel\H{o}en sorolja be a v\'egrehajtatand\'o sorokat. S\'ulyosabb esetben m\'eg 
+hib\'a\"uzenetet is kaphatunk.
+
+Az alfejezet c\'{\i}me alapj\'an tudjk m\'ar,  hogy a ciklusokat \'es el\'agaz\'asokat k\"oz\"osen {\sl vez\'erl\'esi 
+szerkezeteknek} \index{vez\'erl\'esi szerkezet} h\'{\i}vjuk. Az utas\'{\i}t\'asok egym\'asba \'agyaz\'asa ezek szerint 
+vez\'erl\'esi szerkezetek
+egym\'asba \'agyaz\'as\'at jelenti. T\"ukr\"ozi ez\'ert a szkript fel\'ep\'{\i}t\'ese a programoz\'asi feladat 
+megold\'anak (szaksz\'oval az {\sl algoritmusnak}) \index {algoritmus} a szerkezetet\'et. A programk\'od j\'o 
+olvashat\'os\'aga \'es 
+\'erthet\H{o}s\'ege nagyon fontos a sz\'amunkra, esetleg m\'asok sz\'am\'ara is, ez\'ert t\"orekedni kell arra, hogy 
+ezt a szerkezetet ne bonyol\'{\i}tsuk el. A tapasztalataok szerint 4-5  egym\'asba \'agyazott szint m\'eg el\'eg 
+j\'ol meg\'erthet\H{o}. Ha m\'egis sz\"uks\'eg lenne az algoritmus szempontj\'ab\'ol enn\'el nagyobb be\'agyaz\'asi 
+m\'elys\'egre, akkor \'erdemes ilyenkor egy {\sl f\"uggv\'enybe} \index{f\"uggv\'eny} elhelyezni az megfelel\H{o} 
+utas\'{\i}t\'asokat. Ezekr\H{o}l mindj\'art a k\"ovetkez\H{o} fejezetben olvashatunk.
+
+\section{F\"ugg\'enyek}
+
+Gyakorlatban, amikor scriptet vagy programot \'{\i}runk, sok esetben fordul el\H{o}, hogy v\'altoz\'o adatokkal 
+ugyanazt a utas\'{\i}t\'as-csoportot akajuk lefuttatni. Ha ez az utas\'{\i}t\'as sorozat j\'ol meghat\'arozhat\'o 
+r\'eszfeladatot old meg, akkor k\'enyelmesen \'ujra \'es \'ujra felhaszn\'alhatjuk ha k\"ul\"on nevet adunk neki. 
+Az ilyen k\'odr\'eszleteket szakkifejez\'essel {\sl f\"ugg\'enyeknek} \index{f\"uggv\'eny} nevezz\"uk. 
+
+\subsection{Egyszer\H{u} f\"uggv\'enyek \'es megh\'{\i}v\'asuk}
+
+N\'ezz\"unk meg most bevezet\'esk\'ent egy meglehet\H{o}sen egyszer\H{u} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# fugg1.py
+
+# fuggveny kovetkezik
+
+def paros(n):
+   maradek = n % 2
+
+   if maradek == 0:
+      ki = 'I'
+   else:
+      ki = 'N'
+
+   return(ki)
+
+# fuggveny vege
+
+j = paros(25)
+print(j)
+
+j = paros(28)
+print(j)
+
+print('Vege')  
+\end{Verbatim}
+
+Miel\H{o}tt lefuttatn\'ank a scriptet, vizsg\'alljuk meg, hogy milyen \'ujdons\'agokat ta\-l\'a\-lunk benne.  
+
+\begin{Verbatim}[fontsize=\small]
+def paros(n):
+\end{Verbatim}
+
+Ebben a sorban kezd\H{o}dik a f\"ugg\'eny defin\'{\i}ci\'oja, a neve "{\tt paros}" lesz, \'es a z\'ar\'ojel\-ben 
+l\'ev\H{o} {\tt n} pedig annak a v\'altoz\'onak a neve, amelyet a f\"ugg\'eny belsej\'eben fogunk haszn\'alni. 
+Ezt a v\'altoz\'ot szoktuk a f\"ugg\'eny {\sl param\'eter\'enek} \index{param\'eter}, vagy {\sl argumentum\'anak} 
+\index{argumentum}nevezni. A 
+f\"uggv\'eny nev\'enek \'es param\'etereinek ilyen felsorol\'as\'at {\sl f\"uggv\'enyfejnek} h\'{\i}vj\'ak 
+szakkifejez\'es szerint. Beljebb kezdve j\"onnek a f\"uggv\'eny utas\'{\i}t\'asai, amelyek most minden p\'aros 
+sz\'am eset\'en a {\tt ki} nev\H{u} v\'altoz\'oba az "I" \'ert\'eket teszi bele. (P\'aros sz\'amokn\'al 
+ugyanis a 2-vel vett marad\'ek 0.) Az utols\'o sor a {\tt return} utas\'{\i}t\'as a f\"ugg\'eny belsej\'eben 
+el\H{o}\'all\'{\i}tott 
+{\tt ki} v\'altoz\'ot visszaadja a megh\'{\i}v\'as sor\'ahoz. Ezt szoktuk a f\"uggv\'eny {\sl visszat\'ersi 
+\'ert\'ek\'enek} nevezni. -- K\'epzelj\"uk el \'ugy, mintha a f\"uggv\'eny k\"ul\"on bubor\'ekban futna a 
+szkript t\"obbi utas\'{\i}t\'as\'ahoz k\'epest, azokt\'ol elszigetelve. Befel\'e ebbe a bubor\'ekba adatot 
+csak a param\'eterrel k\"uldhet\"unk be, kifele pedig a f\"uggv\'eny a {\tt return} utas\'{\i}t\'assal tud 
+k\"uldeni.
+
+Ha most lefuttatjuk a fenti scriptet, akkor l\'atjuk, hogy a p\'aros sz\'amn\'al val\'oban az "I" bet\H{u}t 
+\'{\i}rja ki. A f\"uggv\'eny t\'enyleges {\sl h\'{\i}v\'asa} \index{f\"uggv\'enyh\'{\i}v\'as} p\'eld\'aul a: 
+
+\begin{Verbatim}[fontsize=\small]
+j = paros(25)
+\end{Verbatim}
+
+Ilyenkor az {\tt n} param\'eter hely\'ere a $25$-\"os sz\'am ker\"ul. Ezt a programoz\'ok a param\'eter 
+{\sl aktu\'alis \'ert\'ek\'enek} \index{aktu\'alis \'ert\'ek} szokt\'ak nevezni. A Python nem csak egyetlen 
+param\'etert enged a f\"ugg\'enyek eset\'eben. L\'assunk erre is egyszer\H{u} p\'ald\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# fugg2.py
+
+def oszto(n, start):
+   ret = 0
+
+   i = start + 1
+
+   while n % i <> 0 and i < n:
+      i = i + 1
+
+   if i <> n:
+      ret = i
+
+   return(ret)
+
+k = oszto(34,5)
+print(k)
+
+print('Vege')  
+\end{Verbatim}
+
+Lefuttatva a scriptet a ki\'{\i}rt sz\'am mutatja, hogyan is m\H{u}k\"odik a f\"uggv\'enyh\'{\i}v\'as k\'et param\'eter 
+eset\'en. Arra nem akarunk sok sz\'ot pazarolni, hogy pontosan mit is csin\'al a f\"uggv\'eny, azt az olvas\'ok is ki 
+tudj\'ak tal\'alni. Elegend\H{o} a f\"uggv\'enyh\'{\i}v\'asban szerepl\H{o} sz\'amokkal kis\'erletezni. 
+
+Miel\H{o}tt tov\'abbi p\'eld\'akat n\'ezn\'enk a f\"uggv\'enyek \'{\i}r\'as\'ara, vess\"unk egy pillant\'ast a fenti k\'od 
+egy kicsinyke r\'ersz\'ere:
+
+\begin{Verbatim}[fontsize=\small]
+   i = i + 1
+\end{Verbatim}
+
+\noindent K\"ul\"on nem akarjuk nagyon magyar\'azni, hoszen egy\'ertelm\H{o}en az {\tt i} v\'altoz\'o \'ert\'ek\'et 
+n\"oveli minden alkalommal 1-el. Egyszer\H{u}bbem is jel\"olhetj\"uk ugyanezt:
+
+\begin{Verbatim}[fontsize=\small]
+   i += 1
+\end{Verbatim}
+
+\noindent Legyen mindenkor a legfontosabb szempont a meg\'{\i}rt Python k\'od olvashat\'os\'aga \'es 
+\'erthet\H{o}s\'ege. A tov\'abbiakban a r\"ods\'eg kedv\'e\'ert alkalmazni fogjuk. 
+
+Nem minden f\"uggv\'eny eset\'eben alkalmazzuk a {\tt return} utas\'{\i}t\'ast, vannak olyan f\"uggv\'enyek, amelyek nem 
+adnak vissza \'ert\'eket\footnote{Vannak olyan programoz\'asi nyelvek, amelyek megk\"ul\"onb\"oztetik azokat a saj\'at 
+n\'evvel rendelkez\H{o} utas\'{\i}t\'ascsoportokat a visszat\'er\'esi \'ert\'ek alapj\'an. Ha van, akkor f\"uggv\'enyek, 
+ha nem, akkor elj\'ar\'asok.}. P\'eldak\'ent \'{\i}rjunk olyan f\"uggv\'enyt, amelyik a beadott sz\'am oszt\'oit \'{\i}rja:
+
+\begin{Verbatim}[fontsize=\small]
+# fugg3.py
+
+def osztok(n):
+   i = 2
+
+   while i < n:
+      if n % i == 0:
+         print (i)
+      i = i + 1
+
+osztok(14)
+
+osztok(24)
+
+print('Vege')  
+\end{Verbatim}
+
+A fenti p\'eld\'ahoz sem f\H{u}z\"unk tov\'abbi magyar\'azatot, a futtat\'asi eredm\'eny \'es a Python szkript el\'egg\'e 
+egyszer\H{u}, \'es mag\'a\'ert besz\'el.
+
+F\"uggv\'enyekkel kapcsolatban van m\'eg egy fontos r\'eszletk\'erd\'es, amit r\'eszletesen is meg kell vizsg\'alni. 
+A f\"uggv\'eny neve (amely tulajdonk\'eppen ugyan\'ugy {\sl azonos\'{\i}t\'ok\'ent} szolg\'al, mint a v\'altoz\'ok 
+eset\'eben) \'es a param\'eterek list\'aja egy\'ertelm\H{u}en le\'{\i}rja azt, nevezhetj\"uk ez\'ert nyugodtan a 
+f\"uggv\'eny  n\'evjegy\'enek. K\'erd\'es mer\"ul fel, hogy lehets\'eges-e azonos nev\H{u} f\"uggv\'enyeket 
+k\"ul\"onb\"oz\H{o} param\'eterekkel haszn\'alni. L\'assunk erre egy p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# fugg4.py
+
+def maxA(x, y):
+   ret = 0
+   if x > y:
+      ret = x
+   else:
+      ret = y
+   return(ret)
+
+def maxA(lista):
+   return(lista[len(lista)-1])
+
+print (maxA(3,29))
+
+sor = [3,1,22,4,12,2,5,77,8,9,0]
+
+print (maxA(sor))
+
+print('Vege')  
+\end{Verbatim}
+
+Az \"otlet j\'o lenne, de a fenti programk\'od sajnos nem m\H{u}k\"odik, mert a {\tt maxA} v\"uggv\'eny 
+m\'asodik defin\'{\i}\'oja fel\"ul\'{\i}rja az els\H{o}t, \'es ez\'ert a futtat\'as sor\'an hiba keletkezik. 
+Erre mindenk\'eppen vigy\'aznunk kell.
+
+A bevezet r\'esz v\'eg\'en szeretn\'enk az olvas\'oink figyelm\'et felh\'{\i}vni arra a t\'enyrem hogy az 
+eddigi k\"ozvetlen\"u v\'egrehajthat\'o utas\'{\i}t\'asokkal szemben a f\"ugg\'eny defin\'{\i}ci\'oja nem 
+hajthat\'o azonnal v\'egre. Val\'oj\'aban csak l\'etrehozza adott n\'evvel a mem\'ori\'aban a f\"uggv\'enyt. 
+T\'enyleges v\'egrehajt\'as csak a megh\'{\i}v\'asakor t\"ort\'enik.
+
+\subsection{Param\'eterek egyszer\H{u}bben, automatikusan}
+
+Most hatoljunk egy kiss\'e beljebb a f\"uggv\'eny\'{\i}r\'as rejtelmeibe. Minden programoz\'o alapvet\H{o}en k\'enyelmes, 
+mondhatni lusta, ez\'ert nem szeret t\'uls\'agosan sokat g\'epelni. Meg tudjuk-e mondani Python nyelven, hogy a 
+f\"uggv\'enyt az esetek t\"obbs\'eg\'eben milyen param\'eterrel fogj\'ek megh\'{\i}vni? Szerencs\'ere erre van lehet\H{o}s\'eg, 
+l\'assuk az al\'abbi scriptet:
+
+\begin{Verbatim}[fontsize=\small]
+# fugg5.py
+
+def oszto(n, start = 1):
+   ret = 0
+
+   i = start + 1
+
+   while n % i <> 0 and i < n:
+      i = i + 1
+
+   if i <> n:
+      ret = i
+
+   return(ret)
+
+k = oszto(34,5)
+print(k)
+
+k = oszto(34)
+print(k)
+
+print('Vege')  
+\end{Verbatim}
+
+A f\"uggv\'eny tulajdonk\'eppen megegyezik a {\tt fugg2.py} scriptben szerepl\H{o} k\'oddal, csak annyi a 
+k\"ul\"onbs\'eg, hogy most a ciklus kezd\H{o}\'ert\'ek\'et nem kell minden esetben megadni. Ha elegend\H{o}, 
+hogy az els\H{o} oszt\'ot $2$-t\H{o}l keresi, akkor a m\'asodik argumentumot k\'enyelmesen ki lehet hagyni. Az 
+ilyen param\'etereket szakkifejez\'essel {\sl alap\'ertelmezettnek} \index{alap\'ertelmezett param\'eter} nevezz\"uk. 
+Ez \'ertelemszer\H{u}en azt is jelenti, hogy az {\tt n} argumentumot viszont minden esetben meg kell adni, az teh\'at 
+{\sl k\"otelez\H{o} param\'eter} \index{k\"otelez\H{o} param\'eter}. 
+
+Nagyon fontos szab\'aly az alap\'ertelmezett param\'etetrek haszn\'ata sor\'an, hogy azokat f\"uggv\'enyek 
+defini\'al\'asa sor\'an {\bf csak} a param\'eterlista v\'eg\'er\H{o}l lehet elkezdeni. \'Igy helyesek lehetnek az 
+al\'abbi f\"uggv\'enyfejek:
+
+\begin{Verbatim}[fontsize=\small]
+def fv1(x, y, t = 0.1):
+....
+def fv2(x, y = 2.2, t = 0.1):
+....
+def fv3(x = 12.1, y = 2.2, t = 0.1):
+\end{Verbatim}
+
+L\'atszik, hogy t\'enyleg a utols\'o param\'eterekn\'el kezdt\"uk az alap\'ertelmezett \'ert\'ekek felsorol\'as\'at. Most 
+viszont n\'ezz\"unk egy hib\'asat is:
+
+\begin{Verbatim}[fontsize=\small]
+def haho(szo = 'kakukk', c)
+\end{Verbatim}
+
+A Python programoz\'asi nyelv formai szab\'alyai szerint az els\H{o} nem lehet alap\'ertelmezett argumentum, ha a 
+m\'asodik nem az.
+
+\subsection{A param\'eterek sorrendje}
+
+Az olvas\'okban felmer\"ulhet, hogy a f\"uggv\'enyh\'{\i}v\'as sor\'an mindenk\'eppen k\"ovetni kell-e a 
+param\'eterek defin\'{\i}ci\'oban szerepl\H{o} sorrendj\'et. A Python programoz\'asi nyelvben van 
+lehet\H{o}s\'eg a n\'ev szerinti param\'eter-\'atad\'asra. N\'ezz\"uk meg ezt egy egyszer\H{u} 
+p\'eld\'an:
+
+\begin{Verbatim}[fontsize=\small]
+# fugg6.py
+
+def oszto(n, start):
+   ret = 0
+
+   i = start + 1
+
+   while n % i <> 0 and i < n:
+      i = i + 1
+
+   if i <> n:
+      ret = i
+
+   return(ret)
+
+k = oszto(n = 34, start = 5)
+print(k)
+
+k = oszto(start = 2, n = 55)
+print(k)
+
+print('Vege')  
+\end{Verbatim}
+
+A futtat\'as sor\'an ki\'{\i}rt sz\'amok elegend\H{o} magyar\'azatot tartalmaznak, ehhez semmit sem kell a mi 
+r\'esz\"unkr\H{o}l hozz\'atenni. 
+
+%% TODO
+
+Ha a programoz\'as sor\'an a k\'od olvashat\'os\'aga miatt egy esetben a n\'ev szerinti param\'eter-\'atad\'as 
+mellett d\"ont\"ott\"unk, akkor tartsuk magunkat ahhoz a szab\'alyhoz, hogy minden param\'etert a neve szerint 
+adunk \'at. A Python elvileg ugyan lehet\H{o}v\'e tenn\'e a vegyes \'atad\'ast, a szerz\H{o} szerint viszont 
+ez nem jav\'{\i}tja szkript \'erthet\H{o}s\'eg\'et.  K\"ul\"onosen akkor kell gondot ford\'{\i}tani a 
+f\"uggv\'enyek  h\'{\i}v\'as\'anak k\'odol\'asi st\'{\i}lus\'ara, ha abban szerepelnek a m\'ar eml\'{\i}tett 
+alap\'ertelmezett argumentumok is. 
+
+\subsection{T\"obbsz\"or\"os param\'eterek \'es visszat\'er\'esi \'ert\'ekek}
+
+A fentebb bemutatott f\"uggv\'enyek eset\'eben mind a param\'eterek, mind pedig a visszat\'er\'esi \'ert\'ekek 
+egyszer\H{u} v\'altoz\'ok, de m\'ar az eddigiekb\H{o}l tudjuk, hogy a Python a list\'akat is alapvet\H{o}en 
+s\'{\i}ma v\'altoz\'ok\'ent kezeli. Nem okozhat teh\'at senkinek sem gondot, ha egy olyan f\"uggv\'enyt kell 
+meg\'{i}rnia, amelyik list\'at vesz \'at param\'eterk\'ent, de az\'ert adunk egy p\'eld\'at (a futtathat\'o 
+szkript meg\'{\i}r\'as\'at kedves olvas\'oinkra b\'{\i}zzuk):
+
+\begin{Verbatim}[fontsize=\small]
+# fugg7.py
+
+def osszeg(pLista):
+   sum = 0
+   for elem in pLista:
+      sum += elem
+   return(sum)
+\end{Verbatim}
+
+Azt gondoljuk, hogy a fenti egyszer\H{u} k\'od nem ig\'enyel k\"ul\"on\"osebb magyar\'azatot. Menj\"unk most 
+egy l\'ep\'esel tov\'abb. Hasonl\'oan k\"onny\H{u} meg\'{\i}rni olyan f\"uggv\'enyt, ami t\"obbsz\"or\"os 
+\'ert\'eket ad vissza, \'es itt most nem a list\'akr\'ol besz\'el\"unk. (Ahogyan m\'ar eml\'{\i}tottuk, a lista 
+maga is tulajdonk\'eppen sima v\'altoz\'o.) L\'assuk:
+
+\begin{Verbatim}[fontsize=\small]
+# fugg8.py
+
+def SumAtl(pLista):
+   sum = 0
+   db = 0
+   for elem in pLista:
+      sum += elem
+      db += 1
+   atlag = sum / db
+   return(sum, atlag)
+\end{Verbatim}
+
+A fenti f\"uggv\'eny annyivel t\'er csak el az el\H{o}z\H{o}t\H{o}l, hogy nem a csak a list\'aban \'atadott 
+sz\'amok \"osszeg\'et hat\'arozza meg, hanem azok \'atlag\'at is, Mind a k\'et eredm\'enyt \'atadja a {\tt return}
+utas\'{\i}t\'assal, csak annyit kell ehhez tenni, hogy vessz\H{o}vel elv\'alasztva \'irjuk a z\'ar\'ojelve. 
+(\'Erdekl\H{o}d\H{o} olvas\'oink a f\"uggel\'ek {\bf B} r\'esz\'eben tal\'alhatnak b\H{o}vebb le\'{\i}r\'ast a 
+t\"obbsz\"or\"os adatokr\'ol.)
+
+\section{Bevezet\'es a programoz\'asba}
+
+A sz\'am\'{\i}t\'og\'ep kiv\'al\'o eszk\"oz a probl\'em\'ak megold\'as\'ara, ha a megold\'as l\'ep\'eseit 
+pontosan ismerj\"uk. Nagyon r\'eszletesen meg kell adni a sz\'am\'{\i}t\'og\'epnek a v\'eg\-re\-haj\-tan\-d\'o 
+utas\'{\i}t\'asokat, \'es azok sorrendj\'et. Ezt nevezz\"uk programoz\'asnak, a program ugyanis nem m\'as, 
+mind a feladat megold\'as\'ara \'{\i}rt utas\'{\i}t\'assorozat. A m\'ar megismert szakkifejez\'es szerint 
+algoritmus. A Python programoz\'asi nyelv eset\'eben a program a scriptben van elmentve. Miel\H{o}tt tov\'abb 
+menn\'enk, szeretn\'enk az olvas\'oinknak hangs\'ulyozni, hogy ebben a fejezetben le\'{\i}rt m\'odszerek minden 
+programoz\'asi nyelven m\H{u}k\"odnek, nem k\"ot\H{o}dnek egy\'altal\'an a Python-hoz. Ez\'ert javasoljuk, hogy 
+alaposan \'erts\'ek meg az itt bemutatott m\'odszereket.
+
+Nem t\H{u}nik olyan neh\'eznek egy programot meg\'{\i}rni, de sokat kell gyakorolni. A gondokat ugyanis az okozza, 
+hogy a kis l\'ep\'eseket alaposan \'at kell gondolni, \'es a sorrendj\"ukat helyesen meg\'allap\'{\i}tani. M\'eg 
+tapasztalt programoz\'ok is k\"ovetnek el hib\'akat, ezek megkeres\'ese \'es kijav\'{\i}t\'asa sok esetben 
+pr\'ob\'ara teheti tud\'asunkat.
+
+\subsection{Hogyan k\"ovess\"uk a program v\'egrehajt\'as\'at?}
+
+%% TODO
+
+Folytassuk egy kicsit azt a gondolatot\footnote{Az ebben az alfejezetben le\'{\i}rtakat nagyon fontosnak tartjuk, 
+ez\'ert javasoljuk olvas\'oinknak, hogy feladmegold\'as k\"ozben id\H{o}nk\'ent olvass\'ak el \'ujra \'es \'ujra.}, 
+amelyet az el\H{o}z\H{o} bekezd\'esben m\'ar eml\'{\i}tett\"unk. Minden igyekezet\"unk mellett is nagyon sokszor 
+el\H{o}fordul, hogy a meg\'{\i}rt szkript nem teljesen \'ugy m\H{u}k\"odik, ahogyan azt elgondoltunk. Ilyen 
+esetekben nagy val\'osz\'{\i}\-n\H{u}s\'eg\-gel nem elegend\H{o} a meg\'{\i}rt k\'od bogar\'asz\'asa, hanem sz\"uks\'eg 
+lehet a t\'enyleges v\'egrehajt\'as megvizsg\'al\'as\'ara is. M\'as programoz\'asi nyelvhez hasonl\'oan a Python-ban 
+is vannak erre k\"ul\"onf\'ele lehet\H{o}s\'egek, de a legegyszer\H{u}bb a m\'ar megismert {\tt print} utas\'{\i}t\'as.
+Eddig a programfut\'as eredm\'eny\'et, vagy eredm\'enyeit irattuk ki vele, innent\H{o}l arra fogjuk haszn\'alni, hogy 
+kider\"ulj\"on, pontosan hogyan is t\"ort\'enik a program v\'egrehajt\'asa.
+
+Az els\H{o} p\'elda legyen a legutols\'o mintaprogram egy r\'esze, amit kiss\'e \'at\'{\i}rtunk:
+
+\begin{Verbatim}[fontsize=\small]
+
+def oszto(n, start):
+   ret = 0
+   print(n)
+   print(start)
+
+   i = start + 1
+
+   while n % i <> 0 and i < n:
+      i = i + 1
+      print(' >> %d'%i)
+
+   if i <> n:
+      ret = i
+
+   print(ret)
+   return(ret)
+
+\end{Verbatim}
+
+Ebben a k\'odban a f\"uggv\'enyben megjelen\'{\i}tj\"uk mind a k\'et param\'eter \'ert\'ek\'et a megh\'{\i}v\'as 
+ut\'an, illetve a ciklusban a v\'altoz\'ot is. Ez pontosan elegend\H{o}, hogy l\'assuk, helyes-e a fut\'asa. 
+(Abban az utas\'{\i}t\'asban, amit a ciklusban alkalmaztunk, a kiirat\'as \'uj lehet\H{o}s\'eg\'et mutattuk be. 
+Ezt b\H{o}vebben az {\bf A.} f\"uggel\'ekben lehet megtal\'alni.) Tov\'abb seg\'{\i} nek\"unk, hogy a f\"uggv\'enyben,  
+a v\'ege el\H{o}tt az el\H{o}\'all\'{\i}tott visszat\'er\'esi \'ert\'eket is kiiratjuk.
+
+Egy m\'asik kor\'abbi p\'eld\'an \'ujabb \"otletet fogunk megmutatni:
+
+\begin{Verbatim}[fontsize=\small]
+
+def maxA(x, y):
+   print(x)
+   print(y)
+   ret = 0
+   if x > y:
+      print('x')
+      ret = x
+   else:
+      print('y')
+      ret = y
+
+   print(ret)
+   return(ret)
+
+\end{Verbatim}
+
+A fenti k\'odr\'eszlet v\'egrehajt\'asa teljes eg\'eszben k\"ovethet\H{o}, \'es net\'ab hiba eset\'en az azonnal 
+megtal\'alhat\'o lenne.
+
+Nem k\'{\i}v\'anjuk olvas\'onkat tov\'abbi k\'odr\'eszletekkel untatni, mert azt gondoljuk, hogy a m\'odszer 
+l\'enyeg\'et le\'{\i}rtuk. Hasznos tan\'acsk\'ent azt viszont mindenkinek tudjuk javasolni, a k\'od meg\'{\i}r\'asakor  
+ne takar\'ekoskodjanak az ilyen nyomk\"ovets\'est lehet\H{o}v\'e tev\H{o} kiirat\'asokkal, de ne is legy\"unk 
+b\H{o}besz\'ed\H{u}ek. Ha a pr\'ob\'algat\'asok, a tesztel\'es sor\'an kider\"ul, hogy minden rendben van, 
+akkor ezeket ut\'olag is ki lehet t\"or\"olni.
+
+M\'eg egy megjegyz\'est ehhez a t\'em\'ahoz, hiszen mindenki sejtheti, hogy nem teljesen mindegy, hogy 
+milyen adatokat iratunk ki a k\'eperny\H{o}re. A szkript (program) meg\'{\i}r\'asa sor\'an tudjuk, egy 
+adott helyen melyik, (melyek) fontos a v\'altoz\'o(k). Elegend\H{o} csak ezt (ezeket) tudnunk ahhoz, hogy a 
+k\'od helyess\'eg\'er\H{o}l megbizonyosodjunk.
+
+\subsection{Programoz\'asi alapfeladatok}
+
+Nagyon sokf\'ele feladat megold\'as\'ara haszn\'alunk sz\'am\'{\i}t\'og\'epes program\'{\i}r\'ast, \'es az a nagy 
+sz\'am eleinte biztosan ijeszt\H{o}en hat. Szerencs\'ere azonban a feladatok pontosabb meg\'ert\'ese \'es megismer\'ese 
+sor\'an r\'a fogunk arra j\"onni, hogy sok hasonl\'o van k\"oz\"ott\"uk, \'{\i}gy v\'arhat\'oan a megold\'asuk is 
+hasonl\'o, vagy l\'enyeg\'eben ugyanaz lesz. Aki hivat\'asszer\H{u}en akar programoz\'o lenni, a tanulm\'anyai sor\'an 
+ezeket az \'altal\'anosan haszn\'alhat\'o megold\'asokat fogja els\H{o}sorban elsaj\'at\'{\i}tani. (Szokt\'ak ezeket 
+id\H{o}nk\'ent programoz\'asi t\'eteleknek is nevezni, mert helyess\'eg\"uk ak\'ar matematikai m\'odszerekkel is 
+igaazolhat\'o.) Itt most n\'eh\'any egyszer\H{u}bb feladatot fogunk le\'{\i}rni, mutatunk minden esetben hasonl\'okat 
+is. Tov\'abb\'a minden r\'eszben tal\'alunk egyszer\H{u}, illetve kiss\'e nehezeb feladatokat, amelyekkel az olvas\'ok 
+is pr\'ob\'ara tehetik magukat. Minden egyes feladatn\'al megjel\"olj\"uk, hogy az adott feladat mennyire neh\'ez.
+
+\begin{center}
+   \begin{tabular}{ll}
+      {\bf Jel} & {\bf Magyar\'azat} \\
+      \konnyu & Nagyon k\"onny\H{u}. \\      
+	 \kozepes & K\"ozepesen neh\'ez. \\
+	 \nehez & Kicsit nehezebb. \\
+   \end{tabular}
+\end{center}
+
+Az els\H{o} tulajdonk\'eppen az olvasottak \'es a bemutatott p\'eld\'ak alapj\'an nagyon kis t\"opreng\'essel megoldhat\'o. 
+A m\'asodik szint\'en a bemutatottakra \'ep\"ul, de t\"obb ismeretet kell hozz\'a alkalmazni. A harmadik is megoldhat\'o 
+a le\'{\i}r\'asok alapj\'an, de sokat kell rajta gondolkodni, \'es sz\"uks\'eges az egyszer\H{u}bb feladatok megold\'as\'aval 
+szerzett tapasztalat. Engedtess\'ek meg a szerz\H{o}nek egy hasznos j\'otan\'acs: \'erdemes lenne most \'atolvasni a 
+f\"uggel\'ek els\H{o} k\'et fejezet\'et, egyel\H{o}re nem megtanul\'asr\'ol van sz\'o.
+
+A bevezet\H{o} gondolatok v\'eg\'en egy \"otlet: miel\H{o}tt a bemutatott megold\'asokat megn\'ezn\'enk \'erdemes lenne a 
+programokat pap\'{\i}ron meg\'{\i}rni, a kor\'abbiak alapj\'an minden tud\'as a birtokunkban van. Ez bizonyosan seg\'{\i}tene 
+a feladatok \"on\'all\'o megold\'as\'aban.
+
+\subsubsection{Els\H{o} probl\'ema}
+
+%% Keres\'es
+
+Kezdj\"uk a programoz\'asi feladatok k\"oz\"ul az egyik legegyszer\H{u}bbel: egy adatsorb\'ol keres\"unk megadott elemeeket. Ha 
+nem egyetlen elem a v\'art eredm\'eny, akkor keres\'esnek, ha t\"obb, akkor v\'ogat\'asnak nevezz\"uk a feladatot. N\'eh\'any 
+esetben el\'egg\'e bonzolult felt\'etel mondja meg, hogy melyik elemet keress\"uk.
+
+\noindent {\it Keres\'es}
+
+\noindent {\bf \'Irjunk olyan programot, ami egy sz\'amsorozatban megkeresi az els\H{o} 3-al oszthat\'o sz\'amot.}
+
+Ha felt\'etelezz\"uk, hogy a sz\'amokat list\'aban t\'aroljuk, akkor a megold\'as nagyon egyszer\H{u}, tulajdonk\'eppen 
+egyenk\'ent megvizsg\'aljuk az elemeket, \'es amint megta\-l\'al\-tuk, akkor kisz\'allunk a ciklusb\'ol. Erre val\'o a 
+m\'ar megismert {\tt break} utas\'{\i}t\'as, a lista feldolgoz\'asa miatt vil\'agos, hogy {\tt for} ciklusra lesz 
+sz\"uks\'eg\"unk. Egyez\"unk meg abban, hogy a programunk nem mag\'at keresett sz\'amot fogja nek\"unk els\H{o}sorban 
+megadni, hanem az index\'et. Gondolom, az olvas\'ok is sejtik, hogy erre f\"ggv\'enyt lenne szerencs\'es \'{\i}rni, \'es 
+nagyon j\'o lenne, ha a f\"uggv\'eny visszat\'er\'esi \'ert\'ek\'eb\H{o}l tudn\'ank, hogy tal\'alt-e ilyen sz\'amot. A list\'ak 
+eset\'eben az index 0-t\'ol indul, a -1-es sz\'am sz\'epen jelezn\'e a keres\'es sikertelens\'eg\'et.
+
+\begin{Verbatim}[fontsize=\small]
+# keres1.py
+
+def keres1(lista):
+   ret = -1
+   num = len(lista)
+   for i in range(num):
+      if lista[i] % 3 == 0:
+         break
+
+   if lista[i] % 3 == 0:
+      ret = i
+
+   return ret
+
+sor = [2,7,17, 26, 33, 6, 21]
+
+idx = keres1(sor)
+print(idx)
+print(sor[idx])
+
+print('Vege')  
+\end{Verbatim}
+
+Megn\'ezve a fenti programk\'odot nem hiszem, hogy t\'uls\'agosan sok magyar\'azatot kellene hossz\'af\H{u}zni, de az\'ert 
+engedtess\'eg meg n\'any egyszer\H{u} megjegyz\'es. Az egyik fontos dolog, hogy a hib\'ara utal\'o visszat\'er\'esi 
+\'ert\'eket m\'ar a f\"uggv\'eny elej\'en be\'all\'{\i}tjuk, ugyanis ilyenkor biztosan nem fogunk r\'ola elfeledkezni. A 
+megtal\'alt sz\'am index\'et a ciklusb\'ol val\'o kil\'ep\'es ut\'an k\'erdezz\"uk le akkor, ha a marad\'ek 0-nak bizonyult. 
+
+\noindent {\bf \'Irjunk olyan programot, ami egy sz\'amsorozatban megkeresi az utols\'o negat\'{\i}v sz\'amot.}
+
+Ha alaposabban meggondondoljuk, ez feladat nagyon hasonl\'o a kor\'abban megoldotthoz, pontosabban l\'enyeg\'eben ugyanaz. 
+Az egyetlen k\"ul\"onbs\'eg, hogy most az els\H{o} helyett az utols\'ot kell megkeresn\"unk. Ennek megold\'as\'ara k\'et 
+leheht\H{o}s\'eg\"unk is van. Az egyik, a Python rendelkezik olyan be\'ep\'{\i}tett f\"uggv\'ennyel, amely a list\'at 
+megford\'{\i}tja. Ekkor haszn\'alhatn\'ank kis m\'odos\'{\i}t\'assal az el\H{o}z\H{o} p\'eld\'aban meg\'{\i}rt f\"uggv\'enyt. 
+Ez egyetlen kisebb neh\'ezs\'eg, hogy az \'{\i}gy magkapott index nem az eredeti list\'anak felel meg. M\'ar csak a 
+tud\'asunk gyarap\'{\i}t\'asa \'erdek\'eben mi magunk fogjuk meg\'{\i}rni a megfelel\H{o} f\"uggv\'enyt:
+
+\begin{Verbatim}[fontsize=\small]
+# keres2.py
+
+def keres2(lista):
+   ret = -1
+   num = len(lista)
+   for i in range(num):
+      if lista[num - i] < 0:
+	 break
+
+   if lista[num - i] < 0:
+      ret = num - i
+
+   return ret
+
+sor1 = [2, 7, 17, 56, -2, 5, -7, 26, 33, 6, 21]
+
+idx = keres1(sor1)
+print(idx)
+print(sor1[idx])  
+
+print('Vege')  
+\end{Verbatim}
+
+Lefuttatva a fenti k\'odot meggy\H{o}z\H{o}dhet\"unk arr\'ol, hogy t\'enyleg helyesen m\H{u}k\"odik, a tanuls\'ag 
+teh\'at az, hogy minden hasonl\'o keres\'essel kapcsolatos feladatra megtal\'altuk a szabv\'anyos\'{\i}that\'o 
+algoritmust.
+
+Folytatva a tanulm\'anyainkat, az eddigiekhez meglehet\H{o}sen hasonl\'o feladatot fogunk megoldani:
+
+\noindent {\it V\'alogat\'as}
+
+\noindent {\bf \'Irjunk olyan programot, ami egy sz\'amsorozatban megkeresi az \"osszes $5$-el oszthat\'o sz\'amot.}
+
+Az eddigiek alapj\'an k\"ul\"on\"osebb teket\'oria n\'elk\"ul neki tudunk \'allni a program meg\'{\i}s\'anak, hiszen 
+a lista elemeit nagyon az e\H{o}z\H{o} k\'et p\'eld\'ahoz hasonl\'oan kell feldolgozni. Az egyetlen k\"u\"onbs\'eg, hogy most 
+nem kell meg\'allni az els\H{o} megfelel\H{o} elem eset\'en:
+
+\begin{Verbatim}[fontsize=\small]
+# valogat.py
+
+def valogat(lista):
+   ret = []
+   num = len(lista)
+   for i in range(num):
+      if lista[i] % 5 == 0:
+	 ret.append{lista[i]}
+
+   return ret
+
+sor1 = [2, 7, -170, 55, -2, 5, -7, 26, 33, 6, 21]
+sor2 = valogat(sor1)
+print sor2
+
+print('Vege')  
+\end{Verbatim}
+
+\noindent L\'atszik, mennyire szoros a rokons\'ag a kor\'abbban megadott algoritmusokkal. Nem k\'{\i}v\'anjuk 
+szapor\'{\i}tani a sz\'ot, a k\'odban szeple\H{o} :
+
+\begin{Verbatim}[fontsize=\small]
+
+   ret = []
+
+\end{Verbatim}
+
+\noindent sor olyan \'ert\'ekad\'ast jelent, amely \"ures list\'at hoz l\'etre.
+
+A k\"ovetkez\H{o} feladat is nagyon hasonl\'o 
+az el\H{o}bbihez:
+
+\noindent {\bf \'Irjunk olyan programot, ami egy sz\'amsorozatban megsz\'amolja az \"osszes $9$-el oszthat\'o sz\'amot.}
+
+Nagyon sok id\H{o}t most sem szeretn\'ek az el\H{o}zetes magyar\'azgat\'assal elt\"olteni, az eddig megszerzett tapasztalatok 
+alapj\'an \'{\i}rhatjuk is a k\'odot:
+
+\begin{Verbatim}[fontsize=\small]
+# megszamol.py
+
+def szamol(lista):
+   ret = 0
+   num = len(lista)
+   for i in range(num):
+      if lista[i] % 9 == 0:
+         ret = ret + 1 
+
+   return ret
+
+sor1 = [2, 7, -170, 55, -2, 81, 5, -7, 26, 33, 36, 21]
+db = szamol(sor1)
+print db
+
+print('Vege')  
+\end{Verbatim}
+
+\noindent Pr\'ob\'algassuk t\'enyleg a fenti szkript futtat\'as\'at a lista megv\'altoztat\'as\'aval, az eredm\'enyek 
+v\'elem\'eny\"unk szerint maguk\'ert besz\'elnek. Szorosan v\'eve es a feladat se nem keres\'es, se nem v\'alogat\'as, 
+de logikailag m\'egis itt a helye.
+
+\noindent {\it Feladatok }
+
+\theproblem{Egy list\'aban t\'aroljuk egy t\'urista\'ut magass\'agi adatai m\'eterekben. \'Irjunk olyan srciptet, amely megkeresi az 
+els\H{o} 500 m\'etern\'el magasabb pontot.} \konnyu
+
+\theproblem{Az el\H{o}z\H{o} feladat adatait felhaszn\'alva \'{\i}rjunk olyan scriptet, amelyik megkeresi az els\H{o} 50 m\'etern\'el 
+nagyobb emelked\H{o}t.} (Megjegyz\'es: az emelked\H{o}ket a k\'et szomsz\'edos magass\'ag k\"ul\"onbs\'eg\'evel tudjuk kisz\'amolni.) 
+\konnyu
+
+\theproblem{Egy list\'aban szavak t\'aroltunk. \'Irjunk olyan programot, amelyik megkeresi az els\H{o} olyat, amelyik hosszabb, mint 
+10 bet\H{u}.}\konnyu
+
+\theproblem{Egy list\'aban sz\'amokat t\'arolunk, \'{\i}rjunk olyan programot, amelyik kisz\'a\-m\'{\i}t\-ja a $100$-n\'al nagyobb 
+elemek \"osszeg\'et.} (Megjegyz\'es: l\'enyeg\'eben az utols\'o bemutatott p\'alda k\'odj\'at kell kiindul\'ask\'ent felhaszn\'alni.) 
+\konnyu
+
+\theproblem{Egyenes vonal ment\'en m\'ert\"uk a tengerszint feletti magass\'agokat. Ahol tenger van, ott negt\'{\i}v sz\'amok jelzik 
+a v\'{\i}zm\'elys\'eget. \'Irjunk olyan programot, amelyik megkeresi az els\H{o} szigetet.} (Megjegyz\'es: a sziget ott kezd\H{o}dik, 
+ahol negat\'{\i}v sz\'am, vagy $0$ ut\'an pozit\'{\i}v k\"ovetkezik, illetve ott v\'egz\H{o}dik, ahol pozit\'{\i}v sz\'am ut\'an 
+negat\'{\i}v sz\'am, vagy $0$ j\"on.) \kozepes
+
+\theproblem{Az el\H{o}z\H{o} feladat alapj\'an \'{\i}rjunk olyan scriptet, amelyik megkeresei az els\H{o}, leg\'alabb 6 egys\'eg 
+hossz\'u szigetet.} (Megjegyz\'es: a sziget hossza kezd\H{o}pont \'es a v\'egpont index\'enek k\"ul\"onbs\'ege.) \nehez
+
+\subsubsection{M\'asodik probl\'ema}
+
+\noindent {\it Legkisebb, legnagyobb elem keres\'ese}
+%% Min max
+
+\noindent {\bf \'Irjunk olyan programot, ami egy sz\'amsorozatban megkeresi a legnagyobb sz\'amot.}
+
+\'Ugy t\H{u}nik,  ez is csak olyan keres\'esi feladat, mint amilyeneket az el\H{o}z\H{o} alfejezetben megoldottunk, 
+de ez csak l\'atsz\'olag igaz. Az a felt\'etel, hogy "legnagyobb", illetve "legkisebb" nem fogalmazhat\'o meg olyan 
+tulajdons\'agk\'ent, ami egyszer\H{u} felt\'etelk\'ent beprogramozhat\'o. Az olvas\'ok is sejtik, hogy a lista minden 
+elem\'et meg kell vizsg\'alni, mint a kiv\'alogat\'as eset\'eben, emellett tudni kell, melyik a m\'ar megvizsg\'altak 
+k\"oz\"ul a legnagyobb, illetve a legkisebb. Igaz\'ab\'ol azonban ez sem okozhat semmi k\"ul\"onosebb neh\'ezs\'eget:
+
+\begin{Verbatim}[fontsize=\small]
+# maxim.py
+
+def legnagyobb(lista):
+   nagy = None
+   nagyIdx = -1
+   num = len(lista)
+   for i in range(num):
+      if nagyIdx == -1:
+       	 nagy = lista[i]
+         nagyIdx = i
+      else:
+         if lista[i] > nagy:
+            nagy = lista[i]
+            nagyIdx = i
+   return nagyIdx
+
+sor1 = [2, 7, -170, 55, -2, 5, -7, 26, 33, 6, 21]
+idx = legnagyobb(sor1)
+print(idx)
+print(sor1[idx])
+
+print('Vege')  
+\end{Verbatim}
+
+\noindent A fenti programk\'odban van egy \'uj Python nyelvi elem, ez pedig nem m\'as, mint a 
+
+\begin{Verbatim}[fontsize=\small]
+nagy = None
+\end{Verbatim}
+
+Nem csin\'al ez m\'ast, mint l\'etrehoz egy v\'altoz\'ot, amelynek nem ad \'ert\'eket, mintegy \"uresen hagyja. Ez a 
+legt\"obb esetben kezdeti \'ert\'ekad\'asn\'al, {\sl inicializ\'asl\'asn\'al} \index{inicializ\'al\'as} fordul el\H{o}. A 
+k\'od egy\'ebk\'ent 
+nem okozhat nagy meglepet\'est. Egyetlen egy dologra kell odafigyelni, a {\tt for} ciklusnak a legels\H{o} fut\'as 
+sor\'an mindenk\'eppen el kell t\'arolni az elemet. Egyetlen megvizsg\'alt elem ugyanis bizonyosan a legnagyobb is. 
+Miel\H{o}tt hasonl\'o feladatokkal csiszoln\'ank olvas\'oink programoz\'oi tud\'as\'at, k\'erj\"uk \"oket arra, hogy 
+a fentiek alapj\'an \'{\i}rj\'ak meg a {\tt legkisebb(...)} f\"uggv\'enyt, ennek nem lenne szabad nez\'ezs\'eget okoznia.
+
+\noindent {\it Feladatok  -- TODO}
+
+\theproblem{Egy list\'aban szavakat t\'arolunk. \'Irjunk olyan scriptet, amelyik megkeresi a leghosszabbat.} \konnyu
+
+\theproblem{K\'et list\'aban t\'aroltuk egy oszt\'aly tagjainak adatait, az egyikben a di\'akok nev\'et, a m\'asikban 
+a pontsz\'amokat. \'Irjunk olyan scriptet, amelyik megkeresi, melyik a legt\"obb pontot el\'ert gyerek.} 
+(Megjegyz\'es: ugyanazon gyermek adatai a list\'akban ugyanazon indexhez tartoznak.) \kozepes
+
+\theproblem{Egyenes ment\'en m\'ert\"uk a magass\'agi adatokat, mint az el\H{o}z\H{o} r\'eszben olvasott feladatban. 
+\'Irjunk olyan scriptet, amelyik megkeresi az els\H{o} sziget legmagasabb cs\'ucs\'at.} \kozepes
+
+\theproblem{Egyenes ment\'en m\'ert\"uk a magass\'agi adatokat, mint az el\H{o}z\H{o} feladatban. \'Irjunk olyan scriptet, 
+amelyik megkeresi a leghosszabb szigetet.} (Megjegyz\'es: kor\'abban olvasott 6. feladat megold\'asa itt is seg\'{\i}t.) 
+\nehez
+
+\subsubsection{Harmadik probl\'ema}
+
+%% Bubor\'ek
+\noindent {\it Elemek rendez\'ese}
+
+Utols\'o feladatcsoportk\'ent n\'ezz\"uk meg, hogyan lehet egy list\'aban l\'ev\H{o} elemeket \'ert\'ek szerint sorrendbe 
+\'all\'{\i}tani. Ez a gyakorlatban nagyon fontos, mert ez a k\'erd\'es a legt\"obb programoz\'asi feladatban t\'enyleg 
+el\H{o} is fordul. Azt is tudni kell, hogy ezzel a programoz\'asi tank\"onyvekben hossz\'u fejezetek foglalkoznak, mert 
+nem mindegy, hogy sok sz\'azezres, vagy ak\'ar milli\'os adatsorokat is rendez\'es\'ehez milyen m\'odszer szerint \'allnak 
+neki. N\'eh\'any egyszer\H{u}bb \"oltletet fogunk bemutatni, amelyeket k\"onnyen meg lehet \'erteni \'es be lehet 
+programozni, b\'ar lehet, hogy nem a leggyorsabban rendezik be az adatokat.
+
+A legegyszer\H{u}bb elj\'ar\'as: vessz\"uk sorra a rendezend\H{o} lista elemeit, \'es egyen\-k\'ent betessz\"uk egy
+rendezetten fel\'ep\'{\i}tett \'uj list\'aba. Van ugyan a Python programoz\'asi nyelvben olyan utas\'{\i}t\'as, amellyel 
+a lista tetsz\H{o}leges hely\'ere tudunk \'uj elemet besz\'urni (ez nem a kor\'abban megismert {\tt append}), viszont ez 
+meglehet\H{o}sen lassan tudna csak lefutni. A k\"ovetkez\H{o} hasonl\'oan sima elgondol\'as, hogy a list\'ab\'ol kiv\'alasztjuk 
+a legkisebb elemet, amelyet elhelyez\"unk egy \"ures lista elej\'ere, majd a marad\'ek lista legkisebb elem\'et a m\'asodik 
+helyre, \'es \'{\i}gy tov\'abb. Olyan f\"uggv\'enyt fogunk \"ossze\'all\'{\i}tani, amelyik minden alkalommal megjelel\"oli azokat 
+az elemeket, amelyeket m\'ar \'athelyezt\"unk a kimeneti list\'asba. Az al\'abbi p\'eldaprogramot azzal a felt\'etelez\'essel 
+fogjuk meg\'{\i}rni, hogy a rendezend\H{o} lista nem tartalmaz sok elemet\footnote{K\'es\H{o}bb elmagyar\'azzuk, hogy mi\'ert 
+tett\"uk most ezt a megjegyz\'est.}:
+
+\begin{Verbatim}[fontsize=\small]
+# rendez1.py
+
+def minKeres(plista, kesz_lista):
+   num = len(plista)
+   minind = -1
+   for idx in range(num):
+      if idx not in kesz_lista:
+         if minind == -1:
+            minind = idx
+         else:
+            if plista[idx] < plista[minind]:
+               minind = idx
+   return(minind) 
+
+def rendez(lista):
+   ujLista = []
+   keszLista = []
+   meret = len(lista)
+   for sorszam in range(meret):
+      minIdx = minKeres(lista, keszLista)
+      if minIdx != -1:
+         ujLista.append(lista[minIdx])
+         keszLista.append(minIdx)
+   return(ujLista)
+
+sor1 = [2, 7, -170, 55, -2, 5, -7, 26, 33, 6, 21]
+sor2 = rendez(sor1)
+print(sor2)
+
+print('Vege')   
+\end{Verbatim}
+
+\noindent A fenti k\'odhoz k\"ul\"on\"osebb magyar\'azatot nem f\H{u}z\"unk, az egyed\"uli k\'erd\'es, hogy 
+mi sz\"uks\'eg vana {\tt keszLista} v\'altoz\'ora. A m\'ar megtal\'alt \'es berendezett elemek index\'et 
+t\'aroljuk benne, mert azokat nem akarjuk k\"ozvetlen\"ul kit\"or\"olni a list\'ab\'ol. Ilyen m\'odon 
+megjel\"olj\"uk, \'es a {\tt minKeres} f\"uggv\'eny egyszer\H{u}en azokat m\'ar nem veszi figyelembe.
+
+Lefuttatva a fenti scriptet l\'atjuk, hogy a rendez\'es val\'oban m\H{u}k\"odik, de gondoljuk meg alaposan, 
+hogy ehhez mi mindenre van sz\"uks\'eg\"unk. H\'arom list\'aval dolgozunk egyszerre, az agyik tartalmazza a 
+rendezend\H{o} adatokat. A m\'asodik a m\'ar feldolgozott elemek index\'et, a harmadik pedig a fokozatosan 
+el\H{o}\'all\'{\i}tott rendezett kimenetet. Mind a k\'et ut\'obbi lista m\'erte a feldolgoz\'as v\'ege fel\'e 
+meg fogja k\"ozel\'{\i}teni az eredeti lista m\'eret\'et. Ha sok ezer adatunk van, akkor ehhez nagyon sok 
+sz\'am\'{\i}t\'og\'epes mem\'ori\'ara lesz sz\"uks\'eg. M\'ar most, a programoz\'asi tanulm\'anyaink elej\'en 
+\'erdemes megszokni, hogy minden esetben azt a megold\'ast keress\"uk meg, amelyik a legkevesebb mem\'ori\'at 
+haszn\'alja fel. Elk\'epzelhet\H{o} a m\'ar feldolgozott elemek list\'aj\'anak kik\"usz\"ob\"ol\'ese, ha minden 
+esetben kit\"or\"olj\"uk azt az elemet a list\'ab\'ol, erre szolg\'al a f\"uggel\'ekben le\'{\i}rt {\tt del} 
+utas\'{\i}t\'as. Az \'uj szkript meg\'{\i}r\'as\'at az olvas\'okra b\'{\i}zzuk. ({\it Megjegyz\'es}: a feldolgozand\'o 
+list\'an ekkor a {\tt while} ciklussal kell v\'egigmenni.)
+
+A megjegyz\'es alapj\'an a legjobb rendez\'esi m\'odszer az lenne, ha nem kellene m\'asik list\'at \'ep\'{\i}teni, 
+az adatokat helyben lehetne sorrendbe igaz\'{\i}tani. Ekkor ugyanis nincs sz\"uks\'eg arra, hogy tov\'abbi list\'ak 
+t\'arol\'as\'aval bajl\'odjunk. Ennek megold\'asak\'ent tov\'abb egyszer\H{u}s\'{\i}tj\"uk az algoritmust, hogy 
+mindig csak a lista szomsz\'edos elemeit hasonl\'{\i}tjuk \"ossze, \'es sz\"uks\'eg eset\'en felcser\'elj\"uk 
+\H{o}ket. Mik\'ent lesz ebb\H{o}l t\'enylegesen rendez\'es, azt a k\'es\H{o}bbiekben megmagyar\'azzuk. Most pedig 
+l\'assuk a scriptet:
+
+\begin{Verbatim}[fontsize=\small]
+# rendez2.py
+
+def bubi(plista):
+   num = len(plista)
+   for idx in range(num):
+      for idx2 in range(num - 1):
+         if plista[idx2] > plista[idx2+1]:
+            a = plista[idx2]
+            pllista[idx2] = plista[idx2+1]
+            plista[idx2+1] = a
+
+   return plista
+
+sor1 = [2, 7, -10, 55, -22, 511, -7, 26, 313, 6, 21]
+sor2 bubi(sor1)
+print(sor2)
+
+print('Vege')   
+\end{Verbatim}
+
+Futtat\'as el\H{o}tt alaposan n\'ezz\"uk meg a k\'et egym\'asba \'agyazott ciklust. (Az\'ert mindenk\'eppen 
+pr\'ob\'aljuk ki.) A bels\H{o} ciklus a nagyobb elemeket a lista v\'ege fel\'e mozgatja, a legnagyobbat mindj\'art 
+a lista legutols\'o hely\'ere. Ha ezt nem l\'atjuk azonnal, akkor pr\'ob\'aljuk meg pap\'{\i}ron k\"ovetni a 
+v\'egrehajt\'ast. A rendezend\H{o} lista jelenleg 11 elemb\H{o}l \'all, a szkript $110$ \"osszehasonl\'{\i}t\'ast 
+v\'egez. \'Altal\'aban: ha $n$ elem\H{u} a lista, akkor $n*(n-1)$ az elv\'egzend\H{o} \"osszehasonl\'{\i}t\'asok 
+sz\'ama. Felmer\"ulhet a k\'erd\'es, hogy sz\"uks\'eg van-e ennyire, hiszen a legnagyobb elemek el\'egg\'e gyorsan 
+a hely\"ukre ker\"ulnek. Pontosabban megfogalmazva a bels\H{o} {\tt for} ciklus els\H{o} lefut\'asakor a legnagyobb 
+elem a lista v\'eg\'ere ker\"ul, a m\'asodik lefut\'asra a m\'asodik legnagyobb elem az utols\'o el\H{o}tti helyre, 
+\'es \'{\i}gy tov\'abb. Az olvas\'ok jogosan vetik fel, hogy teljesen felesleges megvizsg\'alni azokat a listaelemeket, 
+amelyekr\H{o}l tudjuk, hogy biztosan j\'o helyen vannak. Ezt a gondolatot be\'ep\'{\i}tj\"uk a scriptbe, \'es akkor 
+bizonyosak lehet\"unk a futtat\'asi sebess\'eg n\"oveked\'es\'eben:
+
+\begin{Verbatim}[fontsize=\small]
+def bubi2(plista):
+   num = len(plista)
+   for idx in range(num):
+      for idx2 in range( num - (idx - 1) ):
+         if plista[idx2] > plista[idx2+1]:
+            a = plista[idx2]
+            pllista[idx2] = plista[idx2+1]
+            plista[idx2+1] = a
+
+   return plista
+\end{Verbatim}
+
+\noindent A fenti k\'od kipr\'ob\'al\'as\'aval meggy\H{o}z\H{o}dhet\"unk arr\'ol, hogy ez a f\"uggv\'eny is 
+m\H{u}k\"o\-dik. Most viszont nagyj\'ab\'ol feleannyi vizsg\'alatra van hozz\'a sz\"uks\'eg. (Ugyanakkor nem 
+szabad azt elfelejteni, hogy tov\'abbra is l\'enyeg\'eben a rendezend\H{o} elemsz\'am n\'egyzet\'evel 
+ar\'anyos sz\'am\'u \"osszehasonl\'at\'asrt kell v\'egrehajtani.)Az itt bemutatott rendez\'esi m\'odszert 
+nevezik a programoz\'assal foglalkoz\'o szakirodalomban {\sl bubor\'ek rendez\'esnek} \index{bubor\'ek rendez\'es}. 
+Az elnevez\'es 
+el\'egg\'e k\'epszer\H{o}, ha a list\'aban l\'ev\H{o} adatokat f\"ugg\H{o}legesen k\'epzelj\"uk el. A 
+nagy (neh\'ez) elemek gyorsan "s\"ullyednek" a lista alj\'ara (v\'eg\'ere), m\'{\i}g a k\"onny\H{u} 
+(kicsi) elemek lassan emelkednek felfel\'e, a lista elej\'ere.
+
+Gyakorlatban programoz\'asi feladatok megold\'asa sor\'an sokszor fordul el\H{o}, hogy nem egyszer\H{u} list\'at 
+kell rendezni, hanem tulajdonk\'eppen kett\H{o}t, vagy esetleg t\"obbet. T\'etelezz\"unk fel, hogy egy kos\'arlabda 
+bajnoks\'ag adatait t\'aroljuk, a csapatok nev\'et \'es az \'altaluk el\'ert pontsz\'amokat. K\'et list\'at haszn\'alunk, 
+az 
+\"osszetartoz\'o \'ert\'ekek ugyanazon az index\H{u} elemekben vannak t\'arolva. \'Irjunk olyan scriptet, amelyik 
+meghat\'arozza a csapatok helyez\'es\'et, azaz pontsz\'amok szerint cs\"okken\H{o} sorrendbe rendezi az elemeket.
+
+%% ToDO letesztelni
+
+\begin{Verbatim}[fontsize=\small]
+# rendez3.py
+
+## ToDO letesztelni
+
+def helyez(pCsapat, pPontszam):
+   num = len(pCsapat)
+   for idx in range(num):
+      for idx2 in range( num - (idx - 1) ):
+         if pPontszam[idx2] < pPontszam[idx2+1]:
+            a = pPontszam[idx2]
+            pPontszam[idx2] = pPontszam[idx2+1]
+            pPontszam[idx2+1] = a
+            b = pCsapat[idx2]
+            pCsapat[idx2] = pCsapat[idx2+1]
+            pCsapat[idx2+1] = a
+   return (pCsapat, pPontszam)
+
+csap = [ 'Labda' , 'Macska' , 'Kutya' , 'Bokor' ,'Troli' ]
+pont = [ 3, 6, 4,2, 1]
+
+(csap, pont) = helyez(csap, pont)
+
+print(csap)
+print(pont)
+
+print('Vege')   
+\end{Verbatim}
+
+A fenti k\'odot megn\'ezve l\'atszik, hogy a k\'et lista elemeit minden esetben egyszerre cser\'elt\"uk, \'{\i}gy 
+biztos\'{\i}tva az adatok \"osszef\"ugg\'es\'et. Lefuttatva, ellen\H{o}rizhetj\"uk, hogy val\'oban az elgondol\'asaink 
+szerint m\H{u}k\"odik.
+
+\noindent {\it Feladatok  -- TODO}
+
+\theproblem{A {\tt rendez3.py} scriptben \'{\i}rjuk meg a kiirat\'ast, hogy a csapat neve, \'es az \'altaluk el\'ert pontsz\'am 
+egy sorban jelenjen meg a k\'eperny\H{o}n.} \konnyu
+
+\theproblem{Magass\'agm\'er\'esi adatokat t\'arolunk egy list\'aban, \'es olyan scriptet kell \'{\i}rni, amelyik megkeresi a 
+n\'egy legmagasabb pontot.} (Megjegyz\'es: a feladat megold\'as\'ahoz nem kell rendezni a teljes list\'at, a {\tt rendez(lista)} 
+f\"uggv\'enyt javaslom \'at\'{\i}rni.) \konnyu
+
+\theproblem{Egy vonal ment\'en m\'ert\"uk a magass\'agi adatokat, ahol tengert tal\'altunk, ott negat\'{\i}v \'ert\'eket 
+t\'aroltunk. Olyan programot \'{\i}rjunk, amelyik hossz\'us\'ag szerint n\"ovekv\H{o} sorrendben list\'azza ki a 
+szigetek kezdet\'et \'es v\'eg\'et.} (Megjegyz\'es: Kor\'abbi feladatn\'al m\'ar foglalkoztunk szigetekkel, most 
+azt kell felhaszn\'alni. Tov\'abbi \"otlet, hogy a felhaszn\'aljuk a sz\'ot\'arakra vonatkoz\'o ismereteket, amelyeket 
+a f\"uggel\'ekben tal\'alunk.) \nehez
+
+\theproblem{Egy list\'aban t\'aroltuk a r\'esztvev\H{o} csapatok nev\'et, az eddig el\'ert pontsz\'amokat, \'es a 
+leg\'ujabb fordul\'oban szerzett pontok sz\'am\'at. \'Irjunk olyan programot, amelyik meghat\'arozza az \'uj 
+pontsz\'amokat, \'es a csapatokat aszerint cs\"okken\H{o} sorrendben list\'azza a k\'eperny\H{o}re} (Megjegyz\'es: 
+most is \'erdemes sz\'ot\'arban t\'arolni az egy csapat adatait, \'es a sz\'ot\'arakb\'ol list\'at k\'esz\'{\i}teni. 
+R\'esz\-le\-te\-ket a f\"uggel\'elben tal\'alunk.) \nehez
+
+\section{Hib\'ak kezel\'ese}
+
+Amikor egy programot meg\'{\i}runk, nem mindig tudjuk, hogy milyen adatokkal fog futni. El\H{o}fordulhat, hogy a 
+Python \'ertelmez\H{o} hib\'at tal\'al a futtat\'as sor\'an. Ez sajnos azzal j\'ar, hogy a hiba\"uzenettel az 
+eg\'esz programunk meg fog \'allni. Szerencs\'ere azonban van olyan lehet\H{o}s\'eg, amivel ezt az esetet is 
+kezelhet\H{o}v\'e tudjuk tenni. N\'ezz\"unk meg egy egyszer\H{u} p\'eld\'at:
+
+\begin{Verbatim}[fontsize=\small]
+# err0.py
+
+j = 12 
+i = 0
+
+print (j / i)
+
+print('Vege')   
+\end{Verbatim}
+
+Matematik\'ab\'ol tudjuk, hogy a kijel\"olt m\H{u}velet nem hajthat\'o v\'egre, mert szab\'aly\-ta\-lan. A scriptet 
+t\'enylegesen lefuttatva goromba hiba\"uzenetet kapunk:
+
+\begin{Verbatim}[fontsize=\small]
+Traceback (most recent call last):
+  File "err0.py", line 6, in <module>
+    print (j / i)
+ZeroDivisionError: division by zero
+\end{Verbatim}
+
+A m\'asodik sor megmondja, hogy pontosan a scriptben hol a hiba, a harmadik m\'eg a hib\'at okoz\'o utas\'{\i}t\'ast 
+is megmutatja. Az utols\'o sor pedig a hib\'at \'{\i}rja le, nem is v\'eletlen\"ul a $0$-val val\'o oszt\'ast. 
+Minden esetben, amikor egy Python szkript, program fut\'asa eset\'en hiba l\'ep fel, akkor ilyen hiba\"uzenetet kapunk, 
+ak\'ar a helyi sz\'am\'{\i}t\'og\'ep\"unkon futtatunk valamit, ak\'ar egy b\"ong\'esz\H{o}n kereszt\"ul az 
+internet-kiszolg\'al\'on. Azt hiszem, felesleg magyar\'azni, hogy ezt mindenki szeretn\'e elker\"ulni. Az ilyen 
+hib\'ak mindenkor a futtat\'as sor\'an, kiv\'etelesnek sz\'am\'{\i}t\'o esetben j\"onek el\H{o}, szakkifejez\'essel 
+\'elve ez\'ert {\sl kiv\'eteleknek} \index{kiv\'etel} nevezz\"uk. Kezel\'es\"ukre viszont a szkript meg\'{\i}r\'asakor kell 
+gondolni, erre 
+szolg\'al a Pythonban a {\tt try} - {\tt except} utas\'{\i}t\'asp\'ar, amit el\H{o}sz\"or n\'eh\'any p\'eld\'an n\'ez\"unk 
+meg:
+
+\begin{Verbatim}[fontsize=\small]
+# err1.py
+
+j = 12 
+i = 0
+
+try:
+    print (j / i)
+
+except:
+    print ('0 hiba')
+    
+print('Vege')
+\end{Verbatim}
+
+A jav\'{\i}t\'as t\'enyleg siker\"ult a kor\'abbi goromba hiba\"uzenet helyett a "0 hiba" felirat jelent meg a futtat\'as 
+sor\'an. N\'ezz\"uk meg egy kicsit alaposabban ezt a hibakezel\'est. \'Ugy n\'ez ki ez az utas\'{\i}t\'asp\'ar, mint egy 
+vez\'erl\'esi szerkezet. A {\tt try} \'agban t\"ort\'en\H{o} b\'armif\'ele hiba azonnal az {\tt except} \'agra ugratja 
+a v\'egrahajt\'ast. Vizsg\'ajuk meg, mi t\"ort\'enik,  m\'asik hib\'at id\'ez\"unk el\H{o}:
+
+\begin{Verbatim}[fontsize=\small]
+# err01.py
+
+j = 12 
+
+a = j + ret
+
+print('Vege')
+\end{Verbatim}
+
+Ezt a scriptet futtatva az al\'abbi hiba\"uzenetet kapjuk a Python parancs\'ertelme\-z\H{o}\-t\H{o}l:
+
+\begin{Verbatim}[fontsize=\small]
+Traceback (most recent call last):
+  File "err01.py", line 5, in <module>
+    a = j + ret
+NameError: name 'ret' is not defined
+
+\end{Verbatim}
+
+Most is kaptunk a futtat\'as sor\'an hiba\"uzenetet, de l\'athat\'olag m\'as sz\"oveggel. Ennek oka az, hogy m\'as 
+hiba id\'ezte el\H{o}, nevezetesen nem l\'etrehozott v\'altoz\'ot akartunk az \'ert\'ekad\'asban haszn\'alni. 
+Pr\'ob\'alkozzunk a m\'ar bev\'alt jav\'{\i}t\'assal:
+
+\begin{Verbatim}[fontsize=\small]
+# err11.py
+
+j = 12 
+
+try:
+    a = j + ret
+    
+except:
+    print ('0 hiba')
+    
+print('Vege')
+\end{Verbatim}
+
+Ezt a scriptet lefuttatva az egyik szem\"unk \"or\"ulhet, mert t\'enyles siker\"ult a hiba\"u\-ze\-ne\-tet 
+megakad\'alyozni. Viszont a m\'asik s\'{\i}rhat, hiszen a megjelen\H{o} felirat most nem logikus. Mivel a hib\'ak 
+kezel\'es\'et a szkript (program) meg\'{\i}r\'asakor, tervez\'esekor kell kital\'alni, j\'o lenne, ha az 
+{\tt except} \'agon meg tudn\'ank adni a Pythonnak, hogy milyen kiv\'etelt kellene ott lekezelnie. Erre szerencs\'ere 
+a programoz\'asi nyelv ad lehet\H{o}s\'eget:
+
+\begin{Verbatim}[fontsize=\small]
+# err11_jav.py
+
+j = 12 
+i = 0
+
+try:
+    print (j / i)
+    a = j + ret
+    
+except ZeroDivisionError:
+    print ('0 hiba')
+except NameError:
+    print ('Valtozo hiba!')
+    
+print('Vege')
+\end{Verbatim}
+
+Nyugodtan pr\'ob\'algassuk a fenti scriptet, ebben a sorrendben el\H{o}sz\"or az oszt\'asi hiba j\"on el\H{o}. Ha az 
+\"osszead\'assal felcser\'elj\"uk, akkor az elv\'arhat\'o "Valtozo hiba" \"uzenetet fogjuk kapni. Ennek oka, hogy a 
+scriptben most k\'et {\tt except} \'ag szerepel, \'es mind a kett\H{o}nek pontosan megadtuk, hogy melyik kiv\'etelt 
+kell elkapnia. Ha olyan hiba \'allna el\H{o}, ami a k\'odban nem szerepel, akkor a kor\'abbiakban m\'ar megismerthez 
+hasonl\'o  d\"orgedelmes hiba\"uzenetet kapunk meg. A kiv\'etelekr\H{o}l, azok kezel\'es\'er\H{o}l, a benne m\'eg 
+rejl\H{o} lehet\H{o}s\'egekr\H{o}l a f\"uggel\'ekben fogunk b\H{o}vebben olvasni. Engedj\"unk meg most csak egy r\"ovid 
+megjegyz\'est: a be\'agyazott szinten kezeletlen kiv\'etelek magasabb szintre ker\"ulnek, \'es ha ott sincsenek 
+lekezelve, akkor a szkript le\'all\'as\'ahoz vezetnek. 
+
+\input py_oop
+
+\input py_app
