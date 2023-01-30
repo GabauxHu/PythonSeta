@@ -6,7 +6,7 @@ Below in Hungarian:
 A kezdõ és haladó anyagok külön mappában (Fuzet1 és Fuzet2) vannak 
 elhelyezve. Mind a két esetben a fõ szöveg az elsõnél a python.tex, 
 a másodiknál pedig a python2.tex. Hogy a tartalomjegyzékek és a 
-referenciáak jó legyenek, háromször kell a latex paranccsal 
+referenciáak jó legyenek, háromszor kell a latex paranccsal 
 fordítani. Az indexek iatt szükséges a makeindex parancs használata is.
 (Javasolt az elsõ és a második fordítás között.)
 
@@ -16,4 +16,8 @@ csoagok telepítésére fordítás elõtt.
 A tennivalok.lst tartalazza a tervezett komolyabb tartalmi átalakítások 
 listáját.
 
- Javaslatokat és észrevételeket az urbangabo@gmail címre várok. 
+Javaslatokat és észrevételeket az urbangabo@gmail címre várok. 
+
+Természetesn örömel fogadok önkéntes javításokat, és bõvítéseket is. 
+Azt azonnal kérném, hogy minden feltöltött LaTex kód helyesen fordítható 
+legyen.
